@@ -1,6 +1,8 @@
 package football.StatsManagement.model.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import football.StatsManagement.model.data.Club;
@@ -39,6 +41,7 @@ class ClubForStandingTest {
     ClubForStanding expected = new ClubForStanding(gameResults, club, 5, 3, 1, 1, 10, 8, 3, 5);
     // Assert
     assertEquals(expected, actual);
+    verify(service, times(1)).getGameResultsByClubAndSeason(seasonId, club.getId());
   }
 
   @Test

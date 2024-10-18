@@ -1,6 +1,8 @@
 package football.StatsManagement.model.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import football.StatsManagement.exception.ResourceNotFoundException;
@@ -46,5 +48,9 @@ class PlayerSeasonStatTest {
 
     // Assert
     assertEquals(expected, actual);
+    verify(service,times(1)).getPlayer(playerId);
+    verify(service,times(1)).getClub(clubId);
+    verify(service,times(1)).getSeason(seasonId);
+
   }
 }

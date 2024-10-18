@@ -58,42 +58,42 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// Node.js
-node {
-	version = '20.11.1'
-	npmVersion = '10.2.4'
-	download = true
-}
-
-// Reactアプリをビルドするタスク
-task buildReact(type: Exec) {
-	workingDir "$projectDir/react-app"
-	commandLine 'npm.cmd', 'run', 'build'
-}
-
-// static フォルダを削除するタスク
-task deleteStatic(type: Delete) {
-	dependsOn buildReact // Reactのビルドが終わってからコピーを実行
-	delete "$projectDir/src/main/resources/static"
-}
-
-// Reactのビルド結果をSpring Bootのstaticフォルダにコピーするタスク
-task copyToStatic(type: Copy) {
-	dependsOn deleteStatic // staticフォルダを削除してからコピーを実行
-	from "$projectDir/react-app/build"
-	into "$projectDir/src/main/resources/static"
-}
-
-// パッケージング時にもReactのビルドとコピーが行われるように設定
-processResources.dependsOn copyToStatic
-
-gradle.taskGraph.whenReady { taskGraph ->
-	if (taskGraph.hasTask(':test')) {
-		// テスト実行時にReact関連タスクを無効にする
-		tasks.buildReact.enabled = false
-		tasks.deleteStatic.enabled = false
-		tasks.copyToStatic.enabled = false
-	}
-}
+//// Node.js
+//node {
+//	version = '20.11.1'
+//	npmVersion = '10.2.4'
+//	download = true
+//}
+//
+//// Reactアプリをビルドするタスク
+//task buildReact(type: Exec) {
+//	workingDir "$projectDir/react-app"
+//	commandLine 'npm.cmd', 'run', 'build'
+//}
+//
+//// static フォルダを削除するタスク
+//task deleteStatic(type: Delete) {
+//	dependsOn buildReact // Reactのビルドが終わってからコピーを実行
+//	delete "$projectDir/src/main/resources/static"
+//}
+//
+//// Reactのビルド結果をSpring Bootのstaticフォルダにコピーするタスク
+//task copyToStatic(type: Copy) {
+//	dependsOn deleteStatic // staticフォルダを削除してからコピーを実行
+//	from "$projectDir/react-app/build"
+//	into "$projectDir/src/main/resources/static"
+//}
+//
+//// パッケージング時にもReactのビルドとコピーが行われるように設定
+//processResources.dependsOn copyToStatic
+//
+//gradle.taskGraph.whenReady { taskGraph ->
+//	if (taskGraph.hasTask(':test')) {
+//		// テスト実行時にReact関連タスクを無効にする
+//		tasks.buildReact.enabled = false
+//		tasks.deleteStatic.enabled = false
+//		tasks.copyToStatic.enabled = false
+//	}
+//}
 
 

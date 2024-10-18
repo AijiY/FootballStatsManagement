@@ -6,6 +6,15 @@ import java.util.stream.Collectors;
 
 public class RankingUtils {
 
+  public static List<ClubForStanding> sortedClubForStandings(int leagueId, List<ClubForStanding> clubForStandings) {
+    if (leagueId == 7) {
+      return sortedClubForStandingsInPrimeraDivision(clubForStandings);
+    } else if (leagueId == 8) {
+      return sortedClubForStandingsInEnglishPremierLeague(clubForStandings);
+    }
+    return clubForStandings;
+  }
+
   public static List<ClubForStanding> sortedClubForStandingsInPrimeraDivision(List<ClubForStanding> clubForStandings) {
     return clubForStandings.stream()
         .sorted((c1, c2) -> {

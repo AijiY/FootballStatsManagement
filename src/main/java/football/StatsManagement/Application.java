@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @OpenAPIDefinition(info = @Info(title = "サッカースタッツ管理システム"))
 @SpringBootApplication
-@RestController
 public class Application {
 
 	public static void main(String[] args) {
