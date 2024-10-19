@@ -17,14 +17,19 @@ public record Standing(
 
   public static Standing initialStanding(int leagueId, int seasonId, FootballService service) throws ResourceNotFoundException {
     List<Club> clubs = service.getClubsByLeague(leagueId);
+    System.out.println("clubs: " + clubs);
     // リーグによって異なる順位決定方法
     List<ClubForStanding> rankedClubForStandings = rankedClubsForStanding(clubs, seasonId, leagueId, service);
+    System.out.println("rankedClubForStandings: " + rankedClubForStandings);
     // 順位を設定
     for (int i = 0; i < rankedClubForStandings.size(); i++) {
       rankedClubForStandings.get(i).setPosition(i + 1);
     }
+    System.out.println("rankedClubForStandings: " + rankedClubForStandings);
     String leagueName = service.getLeague(leagueId).getName();
+    System.out.println("leagueName: " + leagueName);
     String seasonName = service.getSeason(seasonId).getName();
+    System.out.println("seasonName: " + seasonName);
     return new Standing(leagueId, seasonId, rankedClubForStandings, leagueName, seasonName);
   }
 

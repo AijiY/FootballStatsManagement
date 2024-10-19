@@ -223,6 +223,7 @@ class FootballIntegrationTest {
   @Test
   @DisplayName("リーグIDとシーズンIDに基づく順位表が取得できること")
   void getStanding() throws Exception {
+    System.out.println("Test:リーグIDとシーズンIDに基づく順位表が取得できること");
     int leagueId = 1;
     int seasonId = 201920;
 //    (home_club_id, away_club_id, home_score, away_score, winner_club_id, league_id, game_date, season_id)
