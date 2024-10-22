@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import football.StatsManagement.exception.FootballException;
+import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.model.data.Club;
 import football.StatsManagement.model.data.Country;
 import football.StatsManagement.model.data.GameResult;
@@ -781,38 +782,169 @@ class FootballIntegrationTest {
         }));
   }
 
-//  @ParameterizedTest
-//  @CsvSource({
-//      "PlayerA, 1", // nameのみ
-//      "PlayerAAAA, 99", // numberのみ
-//      "PlayerA, 99" // nameとnumber
-//  })
-//  @DisplayName("選手の更新（名前または背番号）ができること")
-//  void patchPlayer(String updatedName, int updatedNumber) throws Exception {
-//    int playerId = 1;
-//    String requestBody = """
-//        {
-//          "name": "%s",
-//          "number": %d
-//        }
-//        """.formatted(updatedName, updatedNumber);
-//
-//    Player expected = new Player(playerId, 1, updatedName, updatedNumber);
-//    String expectedJson = objectMapper.writeValueAsString(expected);
-//
-//    mockMvc.perform(MockMvcRequestBuilders.patch("/player-patch/" + playerId)
-//        .contentType("application/json")
-//        .content(requestBody))
-//        .andExpect(status().isOk())
-//        .andExpect(content().json(expectedJson));
-//  }
+  @ParameterizedTest
+  @CsvSource({
+      "PlayerA, 1", // nameのみ
+      "PlayerAAAA, 99", // numberのみ
+      "PlayerA, 99" // nameとnumber
+  })
+  @DisplayName("選手の更新（名前または背番号）ができること")
+  void patchPlayer(String updatedName, int updatedNumber) throws Exception {
+    int playerId = 1;
+    String requestBody = """
+        {
+          "name": "%s",
+          "number": %d
+        }
+        """.formatted(updatedName, updatedNumber);
 
+    Player expected = new Player(playerId, 1, updatedName, updatedNumber);
+    String expectedJson = objectMapper.writeValueAsString(expected);
 
-  @Test
-  void transferPlayer() {
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-patch/" + playerId)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
   }
 
   @Test
-  void promoteOrRelegateClub() {
+  @DisplayName("選手の更新_番号が重複する場合はFootballExceptionが発生すること")
+  void patchPlayerWithDuplicateNumber() throws Exception {
+    int playerId = 1;
+    String requestBody = """
+        {
+          "name": "PlayerAAAA",
+          "number": 2
+        }
+        """;
+
+    String expectedMessage = "Player number is already used";
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-patch/" + playerId)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isBadRequest())
+        .andExpect(result -> assertThrows(FootballException.class, () -> {
+          throw new FootballException(expectedMessage);
+        }));
+  }
+
+  @Test
+  @DisplayName("選手の更新_情報の変更がない場合はResourceConflictExceptionが発生すること")
+  void patchPlayerWithNoChange() throws Exception {
+    int playerId = 1;
+    String requestBody = """
+        {
+          "name": "PlayerAAAA",
+          "number": 1
+        }
+        """;
+
+    String expectedMessage = "Player number and name are not changed";
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-patch/" + playerId)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isConflict())
+        .andExpect(result -> assertThrows(ResourceConflictException.class, () -> {
+          throw new ResourceConflictException(expectedMessage);
+        }));
+  }
+
+
+  @Test
+  @DisplayName("選手の移籍ができること")
+  void transferPlayer() throws Exception {
+    int playerId = 1;
+    String requestBody = """
+        {
+          "clubId": 2,
+          "number": 99
+        }
+        """;
+    Player expected = new Player(playerId, 2, "PlayerAAAA", 99);
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-transfer/" + playerId)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  @DisplayName("選手の移籍_クラブが変更されていない場合はResourceConflictExceptionが発生すること")
+  void transferPlayerWithNoClubChange() throws Exception {
+    int playerId = 1;
+    String requestBody = """
+        {
+          "clubId": 1,
+          "number": 1
+        }
+        """;
+
+    String expectedMessage = "Player club is not changed";
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-transfer/" + playerId)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isConflict())
+        .andExpect(result -> assertThrows(ResourceConflictException.class, () -> {
+          throw new ResourceConflictException(expectedMessage);
+        }));
+  }
+
+  @Test
+  @DisplayName("選手の移籍_背番号が重複する場合はFootballExceptionが発生すること")
+  void transferPlayerWithDuplicateNumber() throws Exception {
+    int playerId = 1;
+    String requestBody = """
+        {
+          "clubId": 2,
+          "number": 1
+        }
+        """;
+
+    String expectedMessage = "Player number is already used";
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-transfer/" + playerId)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isBadRequest())
+        .andExpect(result -> assertThrows(FootballException.class, () -> {
+          throw new FootballException(expectedMessage);
+        }));
+  }
+
+  @Test
+  @DisplayName("クラブの昇格・降格ができること")
+  void promoteOrRelegateClub() throws Exception {
+    int clubId = 1;
+    int updatedLeagueId = 2;
+
+    Club expected = new Club(clubId, updatedLeagueId, "ClubAAA");
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/club-promote-or-relegate/" + clubId)
+        .param("leagueId", String.valueOf(updatedLeagueId)))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  @DisplayName("クラブの昇格・降格_リーグが変更されていない場合はResourceConflictExceptionが発生すること")
+  void promoteOrRelegateClubWithNoLeagueChange() throws Exception {
+    int clubId = 1;
+    int updatedLeagueId = 1;
+
+    String expectedMessage = "Club league is not changed";
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/club-promote-or-relegate/" + clubId)
+        .param("leagueId", String.valueOf(updatedLeagueId)))
+        .andExpect(status().isConflict())
+        .andExpect(result -> assertThrows(ResourceConflictException.class, () -> {
+          throw new ResourceConflictException(expectedMessage);
+        }));
   }
 }

@@ -350,6 +350,7 @@ public class FootballController {
    * @param playerId
    * @return 移籍された選手
    */
+  @Operation(summary = "選手の移籍", description = "選手を他のクラブに移籍させます")
   @PatchMapping("/player-transfer/{playerId}")
   public ResponseEntity<Player> transferPlayer(
       @RequestBody @Valid PlayerForTransfer playerForTransfer,
