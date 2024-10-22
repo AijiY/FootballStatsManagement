@@ -1,6 +1,7 @@
 package football.StatsManagement;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -780,9 +781,32 @@ class FootballIntegrationTest {
         }));
   }
 
-  @Test
-  void patchPlayer() {
-  }
+//  @ParameterizedTest
+//  @CsvSource({
+//      "PlayerA, 1", // nameのみ
+//      "PlayerAAAA, 99", // numberのみ
+//      "PlayerA, 99" // nameとnumber
+//  })
+//  @DisplayName("選手の更新（名前または背番号）ができること")
+//  void patchPlayer(String updatedName, int updatedNumber) throws Exception {
+//    int playerId = 1;
+//    String requestBody = """
+//        {
+//          "name": "%s",
+//          "number": %d
+//        }
+//        """.formatted(updatedName, updatedNumber);
+//
+//    Player expected = new Player(playerId, 1, updatedName, updatedNumber);
+//    String expectedJson = objectMapper.writeValueAsString(expected);
+//
+//    mockMvc.perform(MockMvcRequestBuilders.patch("/player-patch/" + playerId)
+//        .contentType("application/json")
+//        .content(requestBody))
+//        .andExpect(status().isOk())
+//        .andExpect(content().json(expectedJson));
+//  }
+
 
   @Test
   void transferPlayer() {
