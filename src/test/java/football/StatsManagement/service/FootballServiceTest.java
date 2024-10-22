@@ -37,6 +37,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -405,15 +407,20 @@ class FootballServiceTest {
     verify(repository, times(1)).updateSeasonsCurrentFalse();
   }
 
-  @Test
+  @ParameterizedTest
+  @CsvSource({
+      "updatedName, 1", // nameのみ
+      "sampleName, 99", // numberのみ
+      "updatedName, 99" // nameとnumber
+  })
   @DisplayName("選手の背番号と名前の更新_リポジトリが適切に処理されること")
-  void updatePlayerNumberAndName() throws ResourceNotFoundException, FootballException, ResourceConflictException {
+  void updatePlayerNumberAndName(
+      String updatedName, int updatedNumber
+  ) throws ResourceNotFoundException, FootballException, ResourceConflictException {
     int id = 1;
-    int number = 99;
-    String name = "newName";
     when(repository.selectPlayer(id)).thenReturn(Optional.of(new Player(id, 1, "sampleName", 1)));
-    sut.updatePlayerNumberAndName(id, number, name);
-    verify(repository, times(1)).updatePlayerNumberAndName(id, number, name);
+    sut.updatePlayerNumberAndName(id, updatedNumber, updatedName);
+    verify(repository, times(1)).updatePlayerNumberAndName(id, updatedNumber, updatedName);
   }
 
   @Test
@@ -422,10 +429,11 @@ class FootballServiceTest {
     when(repository.selectPlayer(1)).thenReturn(Optional.of(new Player(1, 1, "sampleName", 1)));
     // 既に同じ背番号の選手が登録されている状態を作る
     when(sut.getPlayersByClub(1)).thenReturn(List.of(
-        new Player(2, 1, "sampleName", 1)
+        new Player(1, 1, "sampleName", 1),
+        new Player(2, 1, "sampleName", 2)
     ));
     // 例外が投げられることを確認
-    assertThrows(FootballException.class, () -> sut.updatePlayerNumberAndName(1, 1, "sampleName"));
+    assertThrows(FootballException.class, () -> sut.updatePlayerNumberAndName(1, 2, "sampleName"));
   }
 
   @Test

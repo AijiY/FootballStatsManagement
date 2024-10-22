@@ -321,10 +321,10 @@ public class FootballService {
   public void updatePlayerNumberAndName(int id, int number, String name)
       throws ResourceNotFoundException, FootballException, ResourceConflictException {
     Player player = getPlayer(id);
-    // numberが重複していないか確認
+    // numberが重複していないか確認（自身と同様である場合は問題ない）
     List<Player> players = getPlayersByClub(player.getClubId());
     for (Player p : players) {
-      if (p.getNumber() == number) {
+      if (p.getNumber() == number && p.getId() != id) {
         throw new FootballException("Player number is already used");
       }
     }
