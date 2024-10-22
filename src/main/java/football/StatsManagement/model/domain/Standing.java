@@ -16,6 +16,7 @@ public record Standing(
     String seasonName) {
 
   public static Standing initialStanding(int leagueId, int seasonId, FootballService service) throws ResourceNotFoundException {
+    System.out.println("initialStandingを開始");
     List<Club> clubs = service.getClubsByLeague(leagueId);
     // リーグによって異なる順位決定方法
     List<ClubForStanding> rankedClubForStandings = rankedClubsForStanding(clubs, seasonId, leagueId, service);

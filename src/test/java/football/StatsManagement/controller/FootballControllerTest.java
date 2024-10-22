@@ -190,10 +190,11 @@ class FootballControllerTest {
   void getStanding() throws Exception {
     int leagueId = 1;
     int seasonId = 100001;
-    MockedStatic<Standing> standing = mockStatic(Standing.class);
-    mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/standings/" + seasonId))
-        .andExpect(status().isOk());
-    standing.verify(() -> Standing.initialStanding(leagueId, seasonId, service));
+    try (MockedStatic<Standing> standing = mockStatic(Standing.class)) {
+      mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/standings/" + seasonId))
+          .andExpect(status().isOk());
+      standing.verify(() -> Standing.initialStanding(leagueId, seasonId, service));
+    }
   }
 
   @ParameterizedTest
