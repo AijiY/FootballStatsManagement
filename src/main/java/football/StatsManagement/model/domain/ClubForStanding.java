@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor // テスト用に追加
 public class ClubForStanding {
 
+  // Standingクラスで直接対決の成績を取得するために、gameResultsは保持が必要
   private final List<GameResult> gameResults;
 
   private final Club club;
