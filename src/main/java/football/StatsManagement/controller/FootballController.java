@@ -2,6 +2,7 @@ package football.StatsManagement.controller;
 
 import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
+import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.domain.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.domain.json.PlayerForPatch;
 import football.StatsManagement.model.domain.json.PlayerForTransfer;
@@ -238,6 +239,17 @@ public class FootballController {
   @GetMapping("/game-results/{gameId}")
   public GameResult getGameResult(@PathVariable @Positive int gameId) throws ResourceNotFoundException {
     return service.getGameResult(gameId);
+  }
+
+  /**
+   * リーグIDとシーズンIDに紐づく試合結果の取得
+   * @param leagueId
+   * @param seasonId
+   * @return 試合結果
+   */
+  @GetMapping("/leagues/{leagueId}/season-game-results/{seasonId}")
+  public SeasonGameResult getSeasonGameResult(@PathVariable @Positive int leagueId, @PathVariable @Min(100000) int seasonId) {
+    return SeasonGameResult.initialSeasonGameResult(leagueId, seasonId, service);
   }
 
   /**

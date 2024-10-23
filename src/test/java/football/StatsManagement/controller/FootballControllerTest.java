@@ -13,6 +13,7 @@ import football.StatsManagement.model.data.League;
 import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.domain.GameResultWithPlayerStats;
+import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.domain.Standing;
 import football.StatsManagement.model.domain.json.PlayerGameStatForJson;
 import football.StatsManagement.service.FootballService;
@@ -318,6 +319,30 @@ class FootballControllerTest {
     mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
         .andExpect(status().isOk());
     verify(service, times(1)).getGameResult(id);
+  }
+
+  @Test
+  @DisplayName("リーグIDとシーズンIDに紐づく試合結果を取得できること")
+  void getSeasonGameResult() throws Exception {
+    int leagueId = 1;
+    int seasonId = 100001;
+    try (MockedStatic<SeasonGameResult> seasonGameResult = mockStatic(SeasonGameResult.class)) {
+      mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/season-game-results/" + seasonId))
+          .andExpect(status().isOk());
+      seasonGameResult.verify(() -> SeasonGameResult.initialSeasonGameResult(leagueId, seasonId, service));
+    }
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+      "0, 100001",
+      "1,  99999"
+  })
+  @DisplayName("リーグIDとシーズンIDに紐づく試合結果を取得する際のIDのバリデーションテスト")
+  void getSeasonGameResultWithInvalidId(int leagueId, int seasonId) throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/season-game-results/" + seasonId))
+        .andExpect(status().isBadRequest())
+        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
   }
 
   @Test

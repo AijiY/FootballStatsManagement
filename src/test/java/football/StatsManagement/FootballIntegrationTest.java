@@ -18,8 +18,10 @@ import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.domain.ClubForStanding;
+import football.StatsManagement.model.domain.DayGameResult;
 import football.StatsManagement.model.domain.GameResultWithPlayerStats;
 import football.StatsManagement.model.domain.PlayerSeasonStat;
+import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.domain.Standing;
 import football.StatsManagement.model.domain.json.GameResultForJson;
 import football.StatsManagement.model.domain.json.GameResultWithPlayerStatsForJson;
@@ -458,6 +460,32 @@ class FootballIntegrationTest {
 
     mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("リーグIDとシーズンIDに基づく試合結果一覧が取得できること")
+  void getGameResultsByLeagueAndSeason() throws Exception {
+    int leagueId = 1;
+    int seasonId = 201920;
+//    (home_club_id, away_club_id, home_score, away_score, winner_club_id, league_id, game_date, season_id)
+//    (1, 2, 2, 1, 1   , 1, '2019-08-01', 201920),
+//    (2, 1, 2, 2, null, 1, '2019-08-02', 201920),
+
+    List<GameResult> gameResults0801 = List.of(
+        new GameResult(1, 1, 2, 2, 1, 1, 1, LocalDate.of(2019, 8, 1), 201920, "ClubAAA", "ClubAAB")
+    );
+    List<GameResult> gameResults0802 = List.of(
+        new GameResult(3, 2, 1, 2, 2, null, 1, LocalDate.of(2019, 8, 2), 201920, "ClubAAB", "ClubAAA")
+    );
+    DayGameResult dayGameResult0801 = new DayGameResult(LocalDate.of(2019, 8, 1), gameResults0801);
+    DayGameResult dayGameResult0802 = new DayGameResult(LocalDate.of(2019, 8, 2), gameResults0802);
+    SeasonGameResult expected = new SeasonGameResult(leagueId, seasonId, List.of(dayGameResult0801, dayGameResult0802));
+
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/season-game-results/" + seasonId))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
   }
 
   @Test
