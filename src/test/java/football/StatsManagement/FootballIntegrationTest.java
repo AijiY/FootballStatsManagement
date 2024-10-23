@@ -36,6 +36,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,7 +49,7 @@ import org.thymeleaf.spring6.expression.Mvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 // RepositoryTestで用いたH2データベースを利用する
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@AutoConfigureTestDatabase(replace = Replace.ANY)
 // メソッドごとにDBの状態を元に戻す
 @Transactional
 class FootballIntegrationTest {
@@ -69,6 +70,11 @@ class FootballIntegrationTest {
     Season expected = new Season(202021, "2020-21", LocalDate.of(2020, 7, 1),
         LocalDate.of(2021, 6, 30), true);
     String expectedJson = objectMapper.writeValueAsString(expected);
+
+    MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/seasons/current"))
+        .andExpect(status().isOk())
+        .andReturn();
+    System.out.println("actual" + result.getResponse().getContentAsString());
 
     mockMvc.perform(MockMvcRequestBuilders.get("/seasons/current"))
         .andExpect(status().isOk())
