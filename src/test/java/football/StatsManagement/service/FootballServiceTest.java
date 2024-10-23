@@ -309,6 +309,20 @@ class FootballServiceTest {
   }
 
   @Test
+  @DisplayName("リーグIDとシーズンIDによる試合結果一覧の検索_リポジトリが適切に処理されること")
+  void getGameResultsByLeagueAndSeason() {
+    List<GameResult> actual = sut.getGameResultsByLeagueAndSeason(1, 1);
+    verify(repository, times(1)).selectGameResultsByLeagueAndSeason(1, 1);
+  }
+
+  @Test
+  @DisplayName("リーグIDとシーズンIDによる試合日一覧の検索_リポジトリが適切に処理されること")
+  void getGameDatesByLeagueAndSeason() {
+    List<LocalDate> actual = sut.getGameDatesByLeagueAndSeason(1, 1);
+    verify(repository, times(1)).selectGameDatesByLeagueAndSeason(1, 1);
+  }
+
+  @Test
   @DisplayName("IDによる試合結果の検索_リポジトリが適切に処理されること")
   void getGameResult() throws ResourceNotFoundException {
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, 1, 1, LocalDate.now(), 1);
@@ -328,6 +342,12 @@ class FootballServiceTest {
     when(repository.selectGameResult(1)).thenReturn(Optional.empty());
     // 例外が投げられることを確認
     assertThrows(ResourceNotFoundException.class, () -> sut.getGameResult(1));
+  }
+
+  @Test
+  @DisplayName("試合結果にクラブ名をセット_リポジトリが適切に処理されること")
+  void setClubNamesToGameResult() {
+    // 現状テスト項目なし
   }
 
   @Test
@@ -543,6 +563,7 @@ class FootballServiceTest {
   void getWinnerClubId() {
     // 現状テスト項目なし
   }
+
 
   @Test
   @DisplayName("試合結果と選手成績の登録_リポジトリが適切に処理されること")

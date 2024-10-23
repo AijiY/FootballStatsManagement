@@ -11,6 +11,7 @@ import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.domain.GameResultWithPlayerStats;
+import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.domain.json.PlayerGameStatForJson;
 import football.StatsManagement.model.domain.PlayerSeasonStat;
 import football.StatsManagement.repository.FootballRepository;
@@ -189,6 +190,26 @@ public class FootballService {
   }
 
   /**
+   * Get game results by league and season
+   * @param leagueId
+   * @param seasonId
+   * @return game results
+   */
+  public List<GameResult> getGameResultsByLeagueAndSeason(int leagueId, int seasonId) {
+    return repository.selectGameResultsByLeagueAndSeason(seasonId, leagueId);
+  }
+
+  /**
+   * Get game dates by league and season
+   * @param leagueId
+   * @param seasonId
+   * @return game dates
+   */
+  public List<LocalDate> getGameDatesByLeagueAndSeason(int leagueId, int seasonId) {
+    return repository.selectGameDatesByLeagueAndSeason(seasonId, leagueId);
+  }
+
+  /**
    * Get a game result
    * @param id
    * @return a game result
@@ -200,7 +221,12 @@ public class FootballService {
     return gameResult;
   }
 
-  private void setClubNamesToGameResult(GameResult gameResult) throws ResourceNotFoundException {
+  /**
+   * Set club names to game result
+   * @param gameResult
+   * @throws ResourceNotFoundException
+   */
+  public void setClubNamesToGameResult(GameResult gameResult) throws ResourceNotFoundException {
     Club homeClub = getClub(gameResult.getHomeClubId());
     Club awayClub = getClub(gameResult.getAwayClubId());
     gameResult.setHomeClubName(homeClub.getName());
@@ -494,6 +520,7 @@ public class FootballService {
       return 0;
     }
   }
+
 
   /**
    * Register game result and player game stats

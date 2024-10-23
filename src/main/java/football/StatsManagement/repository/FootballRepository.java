@@ -7,6 +7,7 @@ import football.StatsManagement.model.data.League;
 import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Insert;
@@ -124,6 +125,24 @@ public interface FootballRepository {
    */
   @Select("SELECT * FROM game_results WHERE season_id = #{seasonId} AND (home_club_id = #{clubId} OR away_club_id = #{clubId})")
   List<GameResult> selectGameResultsByClubAndSeason(int seasonId, int clubId);
+
+  /**
+   * Select game results by league and season
+   * @param seasonId
+   * @param leagueId
+   * @return
+   */
+  @Select("SELECT * FROM game_results WHERE season_id = #{seasonId} AND league_id = #{leagueId}")
+  List<GameResult> selectGameResultsByLeagueAndSeason(int seasonId, int leagueId);
+
+  /**
+   * Select game dates by league and season
+   * @param seasonId
+   * @param leagueId
+   * @return
+   */
+  @Select("SELECT DISTINCT game_date FROM game_results WHERE season_id = #{seasonId} AND league_id = #{leagueId} ORDER BY game_date")
+  List<LocalDate> selectGameDatesByLeagueAndSeason(int seasonId, int leagueId);
 
   /**
    * Select game result

@@ -158,7 +158,7 @@ class FootballRepositoryTest {
   }
 
   @Test
-  @DisplayName("リーグとシーズンを指定して試合結果を検索できること_件数と情報が適切であること")
+  @DisplayName("クラブとシーズンを指定して試合結果を検索できること_件数と情報が適切であること")
   void selectGameResultsByClubAndSeason() {
     int seasonId = 201920;
     int clubId = 1;
@@ -166,6 +166,34 @@ class FootballRepositoryTest {
     List<GameResult> expected = List.of(
         new GameResult(1, 1, 2, 2, 1, 1   , 1, LocalDate.of(2019, 8, 1), 201920),
         new GameResult(3, 2, 1, 2, 2, null, 1, LocalDate.of(2019, 8, 2), 201920)
+    );
+    assertThat(actual.size()).isEqualTo(expected.size());
+    assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+  }
+
+  @Test
+  @DisplayName("リーグとシーズンを指定して試合結果一覧を検索できること_件数と情報が適切であること")
+  void selectGameResultsByLeagueAndSeason() {
+    int seasonId = 201920;
+    int leagueId = 1;
+    List<GameResult> actual = sut.selectGameResultsByLeagueAndSeason(seasonId, leagueId);
+    List<GameResult> expected = List.of(
+        new GameResult(1, 1, 2, 2, 1, 1   , 1, LocalDate.of(2019, 8, 1), 201920),
+        new GameResult(3, 2, 1, 2, 2, null, 1, LocalDate.of(2019, 8, 2), 201920)
+    );
+    assertThat(actual.size()).isEqualTo(expected.size());
+    assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+  }
+
+  @Test
+  @DisplayName("リーグとシーズンを指定して試合日一覧を検索できること_件数と情報が適切であること")
+  void selectGameDatesByLeagueAndSeason() {
+    int seasonId = 201920;
+    int leagueId = 1;
+    List<LocalDate> actual = sut.selectGameDatesByLeagueAndSeason(seasonId, leagueId);
+    List<LocalDate> expected = List.of(
+        LocalDate.of(2019, 8, 1),
+        LocalDate.of(2019, 8, 2)
     );
     assertThat(actual.size()).isEqualTo(expected.size());
     assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
