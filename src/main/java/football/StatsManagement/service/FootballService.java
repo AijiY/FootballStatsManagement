@@ -194,8 +194,17 @@ public class FootballService {
    * @return a game result
    */
   public GameResult getGameResult(int id) throws ResourceNotFoundException {
-    return repository.selectGameResult(id)
+    GameResult gameResult = repository.selectGameResult(id)
         .orElseThrow(() -> new ResourceNotFoundException("Game result not found"));
+    setClubNamesToGameResult(gameResult);
+    return gameResult;
+  }
+
+  private void setClubNamesToGameResult(GameResult gameResult) throws ResourceNotFoundException {
+    Club homeClub = getClub(gameResult.getHomeClubId());
+    Club awayClub = getClub(gameResult.getAwayClubId());
+    gameResult.setHomeClubName(homeClub.getName());
+    gameResult.setAwayClubName(awayClub.getName());
   }
 
   /**
@@ -527,7 +536,7 @@ public class FootballService {
       registerPlayerGameStat(playerGameStat);
     }
 
-    // 更新された情報を gameResultWithPlayerStats に設定
+    // 更新された情報を gameResultWithPlayerStats に設定（Response用）
     gameResultWithPlayerStats.setGameResult(gameResult);
     gameResultWithPlayerStats.setHomePlayerGameStats(homeClubStats);
     gameResultWithPlayerStats.setAwayPlayerGameStats(awayClubStats);

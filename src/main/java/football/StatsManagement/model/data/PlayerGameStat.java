@@ -86,11 +86,14 @@ public class PlayerGameStat {
         assists == playerGameStat.assists &&
         minutes == playerGameStat.minutes &&
         yellowCards == playerGameStat.yellowCards &&
-        redCards == playerGameStat.redCards;
+        redCards == playerGameStat.redCards &&
+        Objects.equals(gameDate, playerGameStat.gameDate) &&
+        Objects.equals(opponentClubName, playerGameStat.opponentClubName) &&
+        Objects.equals(score, playerGameStat.score);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, gameId, playerId, clubId, number, starter, goals, assists, minutes, yellowCards, redCards);
+    return Objects.hash(id, gameId, playerId, clubId, number, starter, goals, assists, minutes, yellowCards, redCards, gameDate, opponentClubName, score);
   }
 }

@@ -9,17 +9,34 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor // @Select用
+@AllArgsConstructor // テスト用
 public class GameResult {
   private final int id;
   private int homeClubId;
   private int awayClubId;
   private int homeScore;
   private int awayScore;
-  private Integer winnerClubId; // null if draw、外部キー制約のため0→nullに変更
+  private Integer winnerClubId; // null if draw、外部キー制約のため0→nullに変更、nullを許容するIntegerに変更
   private int leagueId;
   private LocalDate gameDate;
   private int seasonId;
+
+  // DBには入れないが、@GetMapping用に追加したフィールド
+  private String homeClubName;
+  private String awayClubName;
+
+  // @Select用
+  public GameResult(int id, int homeClubId, int awayClubId, int homeScore, int awayScore, Integer winnerClubId, int leagueId, LocalDate gameDate, int seasonId) {
+    this.id = id;
+    this.homeClubId = homeClubId;
+    this.awayClubId = awayClubId;
+    this.homeScore = homeScore;
+    this.awayScore = awayScore;
+    this.winnerClubId = winnerClubId;
+    this.leagueId = leagueId;
+    this.gameDate = gameDate;
+    this.seasonId = seasonId;
+  }
 
   // @Insert用
   public GameResult(GameResultForJson gameResultForJson) {
@@ -58,11 +75,13 @@ public class GameResult {
         && winnerClubId == gameResult.winnerClubId
         && leagueId == gameResult.leagueId
         && Objects.equals(gameDate, gameResult.gameDate)
-        && seasonId == gameResult.seasonId;
+        && seasonId == gameResult.seasonId
+        && Objects.equals(homeClubName, gameResult.homeClubName)
+        && Objects.equals(awayClubName, gameResult.awayClubName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, homeClubId, awayClubId, homeScore, awayScore, winnerClubId, leagueId, gameDate, seasonId);
+    return Objects.hash(id, homeClubId, awayClubId, homeScore, awayScore, winnerClubId, leagueId, gameDate, seasonId, homeClubName, awayClubName);
   }
 }

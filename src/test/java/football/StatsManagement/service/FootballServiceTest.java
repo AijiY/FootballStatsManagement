@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -312,6 +313,10 @@ class FootballServiceTest {
   void getGameResult() throws ResourceNotFoundException {
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, 1, 1, LocalDate.now(), 1);
     when(repository.selectGameResult(1)).thenReturn(Optional.of(gameResult));
+    Club homeClub = mock(Club.class);
+    Club awayClub = mock(Club.class);
+    when(repository.selectClub(1)).thenReturn(Optional.of(homeClub));
+    when(repository.selectClub(2)).thenReturn(Optional.of(awayClub));
     GameResult actual = sut.getGameResult(1);
     verify(repository, times(1)).selectGameResult(1);
   }
@@ -1041,6 +1046,10 @@ class FootballServiceTest {
   void getGameResultWithPlayerStats() throws ResourceNotFoundException {
     int gameId = 1;
     when(repository.selectGameResult(gameId)).thenReturn(Optional.of(new GameResult(1, 1, 2, 1, 1, 1, 1, LocalDate.now(), 1)));
+    Club homeClub = mock(Club.class);
+    Club awayClub = mock(Club.class);
+    when(repository.selectClub(1)).thenReturn(Optional.of(homeClub));
+    when(repository.selectClub(2)).thenReturn(Optional.of(awayClub));
     GameResultWithPlayerStats actual = sut.getGameResultWithPlayerStats(1);
     verify(repository, times(1)).selectPlayerGameStatsByGame(gameId);
   }

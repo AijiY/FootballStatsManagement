@@ -443,7 +443,7 @@ class FootballIntegrationTest {
   @DisplayName("IDに対応する試合結果が取得できること")
   void getGameResult() throws Exception {
     int id = 1;
-    GameResult expected = new GameResult(id, 1, 2, 2, 1, 1, 1, LocalDate.of(2019, 8, 1), 201920);
+    GameResult expected = new GameResult(id, 1, 2, 2, 1, 1, 1, LocalDate.of(2019, 8, 1), 201920, "ClubAAA", "ClubAAB");
     String expectedJson = objectMapper.writeValueAsString(expected);
 
     mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
