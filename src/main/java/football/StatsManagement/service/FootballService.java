@@ -404,24 +404,28 @@ public class FootballService {
     List<PlayerGameStat> playerGameStats = repository.selectPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
     // @GetMapping用にgameDate, opponentClubName, scoreを追加
     for (PlayerGameStat playerGameStat : playerGameStats) {
-      GameResult gameResult = getGameResult(playerGameStat.getGameId());
-      // gameDate
-      playerGameStat.setGameDate(gameResult.getGameDate());
-      // opponentClubName
-      int opponentClubId = gameResult.getHomeClubId() == playerGameStat.getClubId() ? gameResult.getAwayClubId() : gameResult.getHomeClubId();
-      playerGameStat.setOpponentClubName(getClub(opponentClubId).getName());
-      // score
-      String score = gameResult.getHomeScore() + "-" + gameResult.getAwayScore();
-      if (gameResult.getWinnerClubId() == null) {
-        score = "△" + score;
-      } else if (gameResult.getWinnerClubId() == playerGameStat.getClubId()) {
-        score = "○" + score;
-      } else {
-        score = "●" + score;
-      }
-      playerGameStat.setScore(score);
+      setFieldsToPlayerGameStat(playerGameStat);
     }
     return playerGameStats;
+  }
+
+  private void setFieldsToPlayerGameStat(PlayerGameStat playerGameStat) throws ResourceNotFoundException {
+    GameResult gameResult = getGameResult(playerGameStat.getGameId());
+    // gameDate
+    playerGameStat.setGameDate(gameResult.getGameDate());
+    // opponentClubName
+    int opponentClubId = gameResult.getHomeClubId() == playerGameStat.getClubId() ? gameResult.getAwayClubId() : gameResult.getHomeClubId();
+    playerGameStat.setOpponentClubName(getClub(opponentClubId).getName());
+    // score
+    String score = gameResult.getHomeScore() + "-" + gameResult.getAwayScore();
+    if (gameResult.getWinnerClubId() == null) {
+      score = "△" + score;
+    } else if (gameResult.getWinnerClubId() == playerGameStat.getClubId()) {
+      score = "○" + score;
+    } else {
+      score = "●" + score;
+    }
+    playerGameStat.setScore(score);
   }
 
   /**
