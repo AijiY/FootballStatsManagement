@@ -252,4 +252,19 @@ export const getCurrentSeason = async (setCurrentSeason) => {
         console.error(error);
     }
   }
+
+  export const getSeasonGameReslt = async (leagueId, seasonId, setSeasonGameResult) => {
+    try {
+        const response = await fetch(`/leagues/${leagueId}/season-game-results/${seasonId}`);
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(text);
+        }
+        const data = await response.json();
+        setSeasonGameResult(data);
+    } catch (error) {
+        alert('Error: ' + error.message);
+        console.error(error);
+    }
+  }
   
