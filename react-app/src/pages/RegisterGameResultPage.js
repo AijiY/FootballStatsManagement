@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '../contexts/ToastContext';
 import { getClubsByLeague, getCurrentSeason, getPlayersByClub, getClub } from '../apis/GetMappings';
 
+import goalsIcon from '../assets/images/goals.png';
+import assistsIcon from '../assets/images/assists.png';
+import minutesIcon from '../assets/images/minutes.png';
+import yellowCardsIcon from '../assets/images/yellow-cards.png';
+import redCardsIcon from '../assets/images/red-cards.png';
+
 function RegisterGameResultPage() {
     const navigate = useNavigate();
     const { showToast } = useToast();
@@ -68,7 +74,7 @@ function RegisterGameResultPage() {
 
 
     // 新しい試合結果を登録する処理
-    const handleForSubmit = (e) => {
+    const handleForSubmit = async (e) => {
         e.preventDefault(); // ページリロードを防ぐ
 
         // リクエストボディを作成
@@ -115,10 +121,10 @@ function RegisterGameResultPage() {
                 }
                 return response.text().then((text) => { throw new Error(text); });
             })
-            .then((newGameResult) => {
+            .then(() => {
                 showToast(`Game result registered successfully!`);
                 // リーグページにリダイレクト
-                navigate(`/countries/${countryId}/leagues/${leagueId}/clubs`);
+                navigate(`/countries/${countryId}/leagues/${leagueId}/clubs`, { state: { showClubsList: false, showGameResults: true } });
             })
             .catch((error) => {
                 alert('Error: ' + error.message);
@@ -167,75 +173,78 @@ function RegisterGameResultPage() {
 
                 <br /> {/* 改行 */}
 
-                {/* ホームクラブの選手一覧：ホームクラブが選択されると表示される */}
-                {homeClub && (
-                    <div>
-                        <h2>{homeClub.name} Players</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Number</th>
-                                    <th>Name</th>
-                                    <th>Starter</th>
-                                    <th>Goals</th>
-                                    <th>Assists</th>
-                                    <th>Minutes</th>
-                                    <th>Yellow Cards</th>
-                                    <th>Red Cards</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {homeClubPlayers.map((player) => (
-                                    <tr key={player.id}>
-                                        <td>{player.number}</td>
-                                        <td>{player.name}</td>
-                                        <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'home', player.id, 'starter')} /></td>
-                                        <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'home', player.id, 'goals')} /></td>
-                                        <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'home', player.id, 'assists')} /></td>
-                                        <td><input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'home', player.id, 'minutes')} /></td>
-                                        <td><input type="number" name="yellowCards" onChange={(e) => handleInputChange(e, 'home', player.id, 'yellowCards')} /></td>
-                                        <td><input type="number" name="redCards" onChange={(e) => handleInputChange(e, 'home', player.id, 'redCards')} /></td>
+                <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                    {/* ホームクラブの選手一覧：ホームクラブが選択されると表示される */}
+                    {homeClub && (
+                        <div>
+                            <h2>{homeClub.name} Players</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Number</th>
+                                        <th>Name</th>
+                                        <th>Starter</th>
+                                        <th><img src={goalsIcon} alt="Goals" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={assistsIcon} alt="Assists" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={minutesIcon} alt="Minutes" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={yellowCardsIcon} alt="Yellow Cards" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={redCardsIcon} alt="Red Cards" style={{ width: '20px', height: '20px' }} /></th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-                <br /> {/* 改行 */}
-                {/* アウェイクラブの選手一覧：アウェイクラブが選択されると表示される */}
-                {awayClub && (
-                    <div>
-                        <h2>{awayClub.name} Players</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Number</th>
-                                    <th>Name</th>
-                                    <th>Starter</th>
-                                    <th>Goals</th>
-                                    <th>Assists</th>
-                                    <th>Minutes</th>
-                                    <th>Yellow Cards</th>
-                                    <th>Red Cards</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {awayClubPlayers.map((player) => (
-                                    <tr key={player.id}>
-                                        <td>{player.number}</td>
-                                        <td>{player.name}</td>
-                                        <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'away', player.id, 'starter')} /></td>
-                                        <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'away', player.id, 'goals')} /></td>
-                                        <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'away', player.id, 'assists')} /></td>
-                                        <td><input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'away', player.id, 'minutes')} /></td>
-                                        <td><input type="number" name="yellowCards" onChange={(e) => handleInputChange(e, 'away', player.id, 'yellowCards')} /></td>
-                                        <td><input type="number" name="redCards" onChange={(e) => handleInputChange(e, 'away', player.id, 'redCards')} /></td>
+                                </thead>
+                                <tbody>
+                                    {homeClubPlayers.map((player) => (
+                                        <tr key={player.id}>
+                                            <td>{player.number}</td>
+                                            <td>{player.name}</td>
+                                            <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'home', player.id, 'starter')}  /></td>
+                                            <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'home', player.id, 'goals')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'home', player.id, 'assists')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'home', player.id, 'minutes')} style={{ width: '40px' }} /></td>
+                                            <td><input type="number" name="yellowCards" onChange={(e) => handleInputChange(e, 'home', player.id, 'yellowCards')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="redCards" onChange={(e) => handleInputChange(e, 'home', player.id, 'redCards')} style={{ width: '30px' }} /></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    <br /> {/* 改行 */}
+                    {/* アウェイクラブの選手一覧：アウェイクラブが選択されると表示される */}
+                    {awayClub && (
+                        <div>
+                            <h2>{awayClub.name} Players</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Number</th>
+                                        <th>Name</th>
+                                        <th>Starter</th>
+                                        <th><img src={goalsIcon} alt="Goals" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={assistsIcon} alt="Assists" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={minutesIcon} alt="Minutes" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={yellowCardsIcon} alt="Yellow Cards" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th><img src={redCardsIcon} alt="Red Cards" style={{ width: '20px', height: '20px' }} /></th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                                </thead>
+                                <tbody>
+                                    {awayClubPlayers.map((player) => (
+                                        <tr key={player.id}>
+                                            <td>{player.number}</td>
+                                            <td>{player.name}</td>
+                                            <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'away', player.id, 'starter')} /></td>
+                                            <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'away', player.id, 'goals')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'away', player.id, 'assists')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'away', player.id, 'minutes')} style={{ width: '40px' }} /></td>
+                                            <td><input type="number" name="yellowCards" onChange={(e) => handleInputChange(e, 'away', player.id, 'yellowCards')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="redCards" onChange={(e) => handleInputChange(e, 'away', player.id, 'redCards')} style={{ width: '30px' }} /></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+
                 <br /> {/* 改行 */}
                 {/* 登録ボタン */}
                 <button type="submit">Register</button>

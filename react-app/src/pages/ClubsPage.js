@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { useToast } from '../contexts/ToastContext';
-import { getClubsByLeague, getCurrentSeason, getLeague, getSeasons, getStanding } from '../apis/GetMappings';
+import { getClubsByLeague, getCurrentSeason, getLeague, getSeasonGameReslt, getSeasons, getStanding } from '../apis/GetMappings';
 
 function ClubsPage() {
   const { showToast } = useToast();
@@ -12,10 +12,18 @@ function ClubsPage() {
   const [clubs, setClubs] = useState([]);
   const [newClubName, setNewClubName] = useState(''); // 新規登録用のstate
   const [league, setLeague] = useState(''); // リーグ名を管理するstate
-  const [isStaidingView, setIsStandingView] = useState(false); // 順位表表示切り替え用のstate
   const [standing, setStanding] = useState([]);
   const [seasons, setSeasons] = useState([]);
   const [selectedSeason, setSelectedSeason] = useState(null);
+  const [seasonGameResult, setSeasonGameResult] = useState([]);
+
+  const location = useLocation();
+  const initialState = {showClubsList: true, showGameResults: false};
+  const navigationsState = location.state || initialState;
+  
+  const [isClubsListView, setIsClubsListView] = useState(navigationsState.showClubsList); // クラブ一覧表示切り替え用のstate
+  const [isStaidingView, setIsStandingView] = useState(false); // 順位表表示切り替え用のstate
+  const [isGameResultsView, setIsGameResultsView] = useState(navigationsState.showGameResults); // 試合結果表示切り替え用のstate
 
   useEffect(() => {
     getSeasons(setSeasons);
@@ -30,8 +38,28 @@ function ClubsPage() {
   useEffect(() => {
     if (selectedSeason) { // selectedSeasonが設定されている場合のみ実行
       getStanding(leagueId, selectedSeason.id, setStanding);
+      getSeasonGameReslt(leagueId, selectedSeason.id, setSeasonGameResult);
     }
   }, [leagueId, selectedSeason]);
+
+  // ビュー切り替え用の関数
+  const switchToClubsList = () => {
+    setIsClubsListView(true);
+    setIsStandingView(false);
+    setIsGameResultsView(false);
+  };
+
+  const switchToStanding = () => {
+    setIsClubsListView(false);
+    setIsStandingView(true);
+    setIsGameResultsView(false);
+  };
+
+  const switchToGameResults = () => {
+    setIsClubsListView(false);
+    setIsStandingView(false);
+    setIsGameResultsView(true);
+  };
 
   const handleSeasonChange = (e) => {
     const selectedSeasonId = Number(e.target.value);
@@ -88,17 +116,16 @@ function ClubsPage() {
       <Link to={`/countries/${countryId}/leagues`}>Back to Leagues</Link>
       {/* リーグ名を表示 */}
       {league && <h1>{league.name} Clubs</h1>} {/* リーグ名を表示する要素を追加 */}
-      {/* クラブ一覧と順位の表示切り替えボタン */}
-      <button onClick={() => setIsStandingView(!isStaidingView)}>
-        {isStaidingView ? 'View Clubs' : 'View Standing'}
-      </button>
+      {/* 3つの表示切替ボタン */}
+      <button onClick={switchToClubsList} disabled={isClubsListView}>Clubs</button>
+      <button onClick={switchToStanding} disabled={isStaidingView}>Standing</button>
+      <button onClick={switchToGameResults} disabled={isGameResultsView}>Game Results</button>
       <br /> {/* 改行 */}
 
       {/* クラブ一覧の表示 */}
-      {!isStaidingView && (
+      {isClubsListView && (
         <>
-          {/* 試合結果登録画面へのリンク */}
-          <Link to={`/countries/${countryId}/leagues/${leagueId}/register-game-result`}>Register Game Result</Link>
+          {/* クラブ一覧 */}
           <ul>
             {clubs.map((club) => (
               <li key={club.id}>
@@ -106,7 +133,6 @@ function ClubsPage() {
               </li>
             ))}
           </ul>
-
           {/* 新しいクラブの登録フォーム */}
           <h2>Register New Club</h2>
           <form onSubmit={handleFormSubmit}>
@@ -140,6 +166,14 @@ function ClubsPage() {
               <tr>
                 <th>Position</th>
                 <th>Club</th>
+                <th>Points</th>
+                <th>Games</th>
+                <th>Wins</th>
+                <th>Draws</th>
+                <th>Losses</th>
+                <th>Goals For</th>
+                <th>Goals Against</th>
+                <th>Goal Difference</th>
               </tr>
             </thead>
             <tbody>
@@ -151,6 +185,14 @@ function ClubsPage() {
                       {clubForStanding.club.name}
                     </Link>
                   </td>
+                  <td>{clubForStanding.points}</td>
+                  <td>{clubForStanding.gamesPlayed}</td>
+                  <td>{clubForStanding.wins}</td>
+                  <td>{clubForStanding.draws}</td>
+                  <td>{clubForStanding.losses}</td>
+                  <td>{clubForStanding.goalsFor}</td>
+                  <td>{clubForStanding.goalsAgainst}</td>
+                  <td>{clubForStanding.goalDifference}</td>
                 </tr>
               ))}
             </tbody>
@@ -158,6 +200,60 @@ function ClubsPage() {
         </>
       )}
 
+      {/* 試合結果の表示 */}
+      {isGameResultsView && (
+        <>
+          {/* 試合結果登録画面へのリンク */}
+          <Link to={`/countries/${countryId}/leagues/${leagueId}/register-game-result`}>Register Game Result</Link>
+
+          <br /> {/* 改行 */}
+
+          <label htmlFor="season-select">Choose a season:</label>
+          <select id="season-select" value={selectedSeason?.id || ''} onChange={handleSeasonChange}>
+            {seasons.map((season) => (
+              <option key={season.id} value={season.id}>
+                {season.name}
+              </option>
+            ))}
+          </select>
+          
+          {seasonGameResult && seasonGameResult.dayGameResults && seasonGameResult.dayGameResults.length > 0 ? (
+            seasonGameResult.dayGameResults.map((dayGameResult) => (
+              <div key={dayGameResult.gameDate}>
+                <h2>{dayGameResult.gameDate}</h2>
+                <table>
+                  {/* <thead>
+                    <tr>
+                      <th>Home</th>
+                      <th>Score</th>
+                      <th>Away</th>
+                    </tr>
+                  </thead> */}
+                  <tbody>
+                    {dayGameResult.gameResults.map((gameResult) => (
+                      <tr key={gameResult.id}>
+                        <td>
+                          <Link to={`/countries/${countryId}/leagues/${leagueId}/clubs/${gameResult.homeClubId}/players`}>
+                            {gameResult.homeClubName}
+                          </Link>
+                        </td>
+                        <td>{gameResult.homeScore} - {gameResult.awayScore}</td>
+                        <td>
+                          <Link to={`/countries/${countryId}/leagues/${leagueId}/clubs/${gameResult.awayClubId}/players`}>
+                            {gameResult.awayClubName}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))
+          ) : (
+            <p>No game results</p>
+          )}
+        </>
+      )}
     </div>
   );
 }
