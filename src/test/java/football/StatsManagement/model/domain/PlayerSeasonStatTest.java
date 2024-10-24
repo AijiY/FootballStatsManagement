@@ -33,10 +33,10 @@ class PlayerSeasonStatTest {
     int seasonId = 1;
     int clubId = 1;
     List<PlayerGameStat> playerGameStats = List.of(
-        new PlayerGameStat(1, 1, 1,1, true, 1, 1, 90, 1, 0, 1, null, null, null),
-        new PlayerGameStat(2, 1, 1,1, true, 0, 0, 75, 2, 1, 2, null, null, null),
-        new PlayerGameStat(3, 1, 1,1, false, 1, 0, 35, 0, 0, 3, null, null, null),
-        new PlayerGameStat(4, 1, 2,1, true, 1, 0, 90, 0, 0, 4, null, null, null)
+        new PlayerGameStat(1, 1, 1,1, true, 1, 1, 0, 90, 1, 0, 1, null, null, null),
+        new PlayerGameStat(2, 1, 1,1, true, 0, 0, 0, 75, 2, 1, 2, null, null, null),
+        new PlayerGameStat(3, 1, 1,1, false, 1, 0, 0, 35, 0, 0, 3, null, null, null),
+        new PlayerGameStat(4, 1, 2,1, true, 1, 0, 0, 90, 0, 0, 4, null, null, null)
     );
     when(service.getPlayer(playerId)).thenReturn(new Player(1, 1, "Sample Player", 1));
     when(service.getClub(clubId)).thenReturn(new Club(1, 1, "Sample Club"));

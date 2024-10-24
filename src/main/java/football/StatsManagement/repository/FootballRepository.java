@@ -56,7 +56,7 @@ public interface FootballRepository {
    * Insert a player game stat
    * @param playerGameStats
    */
-  @Insert("INSERT INTO player_game_stats (player_id, club_id, number, starter, goals, assists, minutes, yellow_cards, red_cards, game_id) VALUES (#{playerId}, #{clubId}, #{number}, #{starter}, #{goals}, #{assists}, #{minutes}, #{yellowCards}, #{redCards}, #{gameId})")
+  @Insert("INSERT INTO player_game_stats (player_id, club_id, number, starter, goals, assists, own_goals, minutes, yellow_cards, red_cards, game_id) VALUES (#{playerId}, #{clubId}, #{number}, #{starter}, #{goals}, #{assists}, #{ownGoals}, #{minutes}, #{yellowCards}, #{redCards}, #{gameId})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertPlayerGameStat(PlayerGameStat playerGameStats);
 
@@ -254,6 +254,7 @@ public interface FootballRepository {
       "pgs.starter AS starter, " +
       "pgs.goals AS goals, " +
       "pgs.assists AS assists, " +
+      "pgs.own_goals AS own_goals, " +
       "pgs.minutes AS minutes, " +
       "pgs.yellow_cards AS yellowCards, " +
       "pgs.red_cards AS redCards, " +

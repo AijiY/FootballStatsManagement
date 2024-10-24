@@ -25,6 +25,9 @@ public class PlayerGameStatForJson {
   private int assists;
 
   @PositiveOrZero
+  private int ownGoals;
+
+  @PositiveOrZero
   private int minutes;
 
   @PositiveOrZero
@@ -39,7 +42,7 @@ public class PlayerGameStatForJson {
   // また、starterはfalseでなければならない
   @AssertTrue(message = "If minutes is 0, stats must be 0, and the player must not be a starter.")
   public boolean isMinutesZero() {
-    return !(minutes == 0 && (goals != 0 || assists != 0 || yellowCards != 0 || redCards != 0 || starter));
+    return !(minutes == 0 && (goals != 0 || assists != 0 || ownGoals != 0 || yellowCards != 0 || redCards != 0 || starter));
   }
 
 }

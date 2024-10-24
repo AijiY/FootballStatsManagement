@@ -20,6 +20,7 @@ public class PlayerGameStat {
   private boolean starter;
   private int goals;
   private int assists;
+  private int ownGoals;
   private int minutes;
   private int yellowCards;
   private int redCards;
@@ -41,13 +42,14 @@ public class PlayerGameStat {
     this.starter = playerGameStatForJson.isStarter();
     this.goals = playerGameStatForJson.getGoals();
     this.assists = playerGameStatForJson.getAssists();
+    this.ownGoals = playerGameStatForJson.getOwnGoals();
     this.minutes = playerGameStatForJson.getMinutes();
     this.yellowCards = playerGameStatForJson.getYellowCards();
     this.redCards = playerGameStatForJson.getRedCards();
   }
 
   // @Select用（DBに存在しないフィールドは除外）
-  public PlayerGameStat(int id, int playerId, int clubId, int number, boolean starter, int goals, int assists, int minutes, int yellowCards, int redCards, int gameId) {
+  public PlayerGameStat(int id, int playerId, int clubId, int number, boolean starter, int goals, int assists, int ownGoals, int minutes, int yellowCards, int redCards, int gameId) {
     this.id = id;
     this.playerId = playerId;
     this.clubId = clubId;
@@ -55,6 +57,7 @@ public class PlayerGameStat {
     this.starter = starter;
     this.goals = goals;
     this.assists = assists;
+    this.ownGoals = ownGoals;
     this.minutes = minutes;
     this.yellowCards = yellowCards;
     this.redCards = redCards;
@@ -84,6 +87,7 @@ public class PlayerGameStat {
         starter == playerGameStat.starter &&
         goals == playerGameStat.goals &&
         assists == playerGameStat.assists &&
+        ownGoals == playerGameStat.ownGoals &&
         minutes == playerGameStat.minutes &&
         yellowCards == playerGameStat.yellowCards &&
         redCards == playerGameStat.redCards &&
@@ -94,6 +98,6 @@ public class PlayerGameStat {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, gameId, playerId, clubId, number, starter, goals, assists, minutes, yellowCards, redCards, gameDate, opponentClubName, score);
+    return Objects.hash(id, gameId, playerId, clubId, number, starter, goals, assists, ownGoals, minutes, yellowCards, redCards, gameDate, opponentClubName, score);
   }
 }

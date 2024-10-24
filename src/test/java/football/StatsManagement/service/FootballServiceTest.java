@@ -106,7 +106,7 @@ class FootballServiceTest {
   @Test
   @DisplayName("選手の試合スタッツが登録できる_リポジトリが適切に処理されること")
   void registerPlayerGameStat() {
-    PlayerGameStatForJson playerGameStatForJson = new PlayerGameStatForJson(1, true, 1, 1, 1, 1, 1);
+    PlayerGameStatForJson playerGameStatForJson = new PlayerGameStatForJson(1, true, 1, 1, 0, 1, 1, 1);
     PlayerGameStat playerGameStat = new PlayerGameStat(playerGameStatForJson);
     sut.registerPlayerGameStat(playerGameStat);
     verify(repository, times(1)).insertPlayerGameStat(playerGameStat);
@@ -353,7 +353,7 @@ class FootballServiceTest {
   @Test
   @DisplayName("IDによる選手試合成績の検索_リポジトリが適切に処理されること")
   void getPlayerGameStat() throws ResourceNotFoundException {
-    PlayerGameStat playerGameStat = new PlayerGameStat(1, 1, 1, 1, true, 1, 1, 1, 1, 1, 1, null, null, null);
+    PlayerGameStat playerGameStat = new PlayerGameStat(1, 1, 1, 1, true, 1, 1, 0, 1, 1, 1, 1, null, null, null);
     when(repository.selectPlayerGameStat(1)).thenReturn(Optional.of(playerGameStat));
     PlayerGameStat actual = sut.getPlayerGameStat(1);
     verify(repository, times(1)).selectPlayerGameStat(1);
@@ -553,12 +553,6 @@ class FootballServiceTest {
   }
 
   @Test
-  @DisplayName("選手試合成績からの得点の取得_リポジトリが適切に処理されること")
-  void getScoreByPlayerGameStats() {
-    // 現状テスト項目なし
-  }
-
-  @Test
   @DisplayName("勝利クラブIDの取得_リポジトリが適切に処理されること")
   void getWinnerClubId() {
     // 現状テスト項目なし
@@ -571,24 +565,24 @@ class FootballServiceTest {
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
-        new PlayerGameStat(0, 1, 0, 0, true, 1, 0, 90, 1, 0, 1, null, null, null),
-        new PlayerGameStat(0, 2, 0, 0, true, 0, 1, 70, 0, 1, 1, null, null, null)
+        new PlayerGameStat(0, 1, 0, 0, true, 1, 0, 0, 90, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 2, 0, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
         // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
+        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
             Collectors.toList())
     );
     // 交代選手を1人追加
-    homeClubStats.add(new PlayerGameStat(12, 12, 0, 0, false, 0, 0, 20, 0, 0, 0, null, null, null));
+    homeClubStats.add(new PlayerGameStat(12, 12, 0, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
 
     List<PlayerGameStat> awayClubStats = new ArrayList<>(List.of(
-        new PlayerGameStat(0, 13, 0, 0, true, 1, 0, 90, 1, 0, 1, null, null, null),
-        new PlayerGameStat(0, 14, 0, 0, true, 0, 1, 90, 0, 0, 1, null, null, null)
+        new PlayerGameStat(0, 13, 0, 0, true, 1, 0, 0, 90, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 14, 0, 0, true, 0, 1, 0, 90, 0, 0, 1, null, null, null)
     ));
     awayClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
+        // あとはgoal～redCardまで0の選手を9人
+        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
             Collectors.toList())
     );
 
@@ -678,11 +672,11 @@ class FootballServiceTest {
     GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 1, 1, 1, LocalDate.now(), 1);
     GameResult gameResult = new GameResult(gameResultForJson);
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -705,11 +699,11 @@ class FootballServiceTest {
     GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 1, 1, 1, LocalDate.now(), 1);
     GameResult gameResult = new GameResult(gameResultForJson);
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -733,12 +727,12 @@ class FootballServiceTest {
     GameResult gameResult = new GameResult(gameResultForJson);
     // 重複する選手を含む選手成績を作成
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 2, 2, 1, 1, 1),
-        new PlayerGameStatForJson(1, true, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 2, 2, 0, 1, 1, 1),
+        new PlayerGameStatForJson(1, true, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -764,13 +758,13 @@ class FootballServiceTest {
     GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 1, 1, 1, LocalDate.now(), 1);
     GameResult gameResult = new GameResult(gameResultForJson);
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     // 重複する選手を含む選手成績を作成
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1),
-        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 2, 2, 0, 1, 1, 1),
+        new PlayerGameStatForJson(2, false, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -789,11 +783,33 @@ class FootballServiceTest {
     GameResult gameResult = new GameResult(gameResultForJson);
     // ホームクラブのスコアが不正な値になるようにする
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 2, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 2, 2, 0, 1, 1, 1)
+    );
+    List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
+    GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
+    setWhenReturnFor2PlayersAtResisterGameResultAndPlayerGameStats();
+
+    // 例外が投げられることを確認、メッセージもチェック
+    FootballException thrown = assertThrows(FootballException.class, () -> sut.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
+    assertEquals("Home score is not correct", thrown.getMessage());
+  }
+
+  @Test
+  @DisplayName("試合結果と選手成績の登録_ホームクラブのスコアが不正な場合に例外処理が発生すること_オウンゴールが含まれる場合")
+  void registerGameResultAndPlayerGameStats_withInvalidHomeScoreWithOwnGoal() {
+    GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 1, 1, 1, LocalDate.now(), 1);
+    GameResult gameResult = new GameResult(gameResultForJson);
+    // ホームクラブのスコアが不正な値になるようにする
+    List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
+        new PlayerGameStatForJson(1, true, 1, 2, 0, 1, 1, 1)
+    );
+    List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
+    List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
+        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -810,12 +826,34 @@ class FootballServiceTest {
     GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 1, 1, 1, LocalDate.now(), 1);
     GameResult gameResult = new GameResult(gameResultForJson);
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 1, 2, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 1, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     // アウェイクラブのスコアが不正な値になるようにする
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 2, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 2, 2, 0, 1, 1, 1)
+    );
+    List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
+    GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
+    setWhenReturnFor2PlayersAtResisterGameResultAndPlayerGameStats();
+
+    // 例外が投げられることを確認、メッセージもチェック
+    FootballException thrown = assertThrows(FootballException.class, () -> sut.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
+    assertEquals("Away score is not correct", thrown.getMessage());
+  }
+
+  @Test
+  @DisplayName("試合結果と選手成績の登録_アウェイクラブのスコアが不正な場合に例外処理が発生すること_オウンゴールが含まれる場合")
+  void registerGameResultAndPlayerGameStats_withInvalidAwayScoreWithOwnGoal() {
+    GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 1, 1, 1, LocalDate.now(), 1);
+    GameResult gameResult = new GameResult(gameResultForJson);
+    List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
+        new PlayerGameStatForJson(1, true, 1, 2, 1, 1, 1, 1)
+    );
+    List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
+    // アウェイクラブのスコアが不正な値になるようにする
+    List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
+        new PlayerGameStatForJson(2, false, 1, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -833,11 +871,11 @@ class FootballServiceTest {
     GameResult gameResult = new GameResult(gameResultForJson);
     // ホームクラブのアシストが不正な値になるようにする
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 1, 2, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 1, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 1, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 1, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -854,12 +892,12 @@ class FootballServiceTest {
     GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 1, 1, 1, LocalDate.now(), 1);
     GameResult gameResult = new GameResult(gameResultForJson);
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 1, 1, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 1, 1, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     // ホームクラブのアシストが不正な値になるようにする
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 1, 2, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 1, 2, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -877,11 +915,11 @@ class FootballServiceTest {
     GameResult gameResult = new GameResult(gameResultForJson);
     // ホームクラブの先発選手数が不正な値になるようにする
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 1, 1, 2, 1, 1)
+        new PlayerGameStatForJson(1, true, 1, 1, 0, 2, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(2, false, 1, 1, 1, 1, 1)
+        new PlayerGameStatForJson(2, false, 1, 1, 0, 1, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -926,33 +964,33 @@ class FootballServiceTest {
     GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 11, 12, 1, LocalDate.now(), 1);
     GameResult gameResult = new GameResult(gameResultForJson);
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(2, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(3, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(4, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(5, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(6, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(7, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(8, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(9, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(10, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(11, true, 1, 1, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(2, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(3, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(4, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(5, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(6, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(7, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(8, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(9, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(10, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(11, true, 1, 1, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     // アウェイクラブの先発選手数が不正な値になるようにする
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(12, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(13, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(14, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(15, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(16, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(17, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(18, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(19, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(20, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(21, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(22, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(23, true, 1, 1, 2, 1, 1)
+        new PlayerGameStatForJson(12, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(13, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(14, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(15, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(16, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(17, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(18, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(19, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(20, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(21, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(22, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(23, true, 1, 1, 0, 2, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -970,31 +1008,31 @@ class FootballServiceTest {
     GameResult gameResult = new GameResult(gameResultForJson);
     // ホームクラブの出場時間が不正な値になるようにする
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(2, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(3, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(4, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(5, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(6, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(7, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(8, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(9, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(10, true, 1, 1, 1, 1, 1),
-        new PlayerGameStatForJson(11, true, 1, 1, 1, 1, 1)
+        new PlayerGameStatForJson(1, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(2, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(3, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(4, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(5, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(6, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(7, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(8, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(9, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(10, true, 1, 1, 0, 1, 1, 1),
+        new PlayerGameStatForJson(11, true, 1, 1, 0, 1, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(12, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(13, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(14, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(15, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(16, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(17, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(18, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(19, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(20, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(21, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(22, true, 1, 1, 2, 1, 1)
+        new PlayerGameStatForJson(12, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(13, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(14, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(15, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(16, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(17, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(18, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(19, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(20, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(21, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(22, true, 1, 1, 0, 2, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
@@ -1011,32 +1049,32 @@ class FootballServiceTest {
     GameResultForJson gameResultForJson = new GameResultForJson(1, 2, 11, 11, 1, LocalDate.now(), 1);
     GameResult gameResult = new GameResult(gameResultForJson);
     List<PlayerGameStatForJson> homeClubStatsForJson = List.of(
-        new PlayerGameStatForJson(1, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(2, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(3, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(4, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(5, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(6, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(7, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(8, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(9, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(10, true, 1, 1, 90, 1, 1),
-        new PlayerGameStatForJson(11, true, 1, 1, 90, 1, 1)
+        new PlayerGameStatForJson(1, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(2, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(3, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(4, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(5, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(6, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(7, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(8, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(9, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(10, true, 1, 1, 0, 90, 1, 1),
+        new PlayerGameStatForJson(11, true, 1, 1, 0, 90, 1, 1)
     );
     List<PlayerGameStat> homeClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(homeClubStatsForJson);
     // アウェイクラブの出場時間が不正な値になるようにする
     List<PlayerGameStatForJson> awayClubStatsForJson = List.of(
-        new PlayerGameStatForJson(12, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(13, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(14, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(15, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(16, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(17, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(18, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(19, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(20, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(21, true, 1, 1, 2, 1, 1),
-        new PlayerGameStatForJson(22, true, 1, 1, 2, 1, 1)
+        new PlayerGameStatForJson(12, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(13, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(14, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(15, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(16, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(17, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(18, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(19, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(20, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(21, true, 1, 1, 0, 2, 1, 1),
+        new PlayerGameStatForJson(22, true, 1, 1, 0, 2, 1, 1)
     );
     List<PlayerGameStat> awayClubStats = sut.convertPlayerGameStatsForInsertToPlayerGameStats(awayClubStatsForJson);
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
