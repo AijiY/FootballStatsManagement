@@ -78,7 +78,7 @@ class FootballRepositoryTest {
   @Test
   @DisplayName("選手試合成績を挿入できること_挿入前後で件数が1件増えていること")
   void insertPlayerGameStat() {
-    PlayerGameStatForJson playerGameStatForJson = new PlayerGameStatForJson(1, false, 1, 1, 1, 1, 1);
+    PlayerGameStatForJson playerGameStatForJson = new PlayerGameStatForJson(1, false, 1, 1, 0, 1, 1, 1);
     PlayerGameStat playerGameStat = new PlayerGameStat(playerGameStatForJson);
     playerGameStat.setPlayerInfo(1, 1);
     playerGameStat.setGameId(1);
@@ -150,7 +150,7 @@ class FootballRepositoryTest {
   @DisplayName("IDを指定して選手試合成績を検索できること_情報が適切であること")
   void selectPlayerGameStat() {
     Optional<PlayerGameStat> actual = sut.selectPlayerGameStat(1);
-    PlayerGameStat expected = new PlayerGameStat(1, 1, 1, 1,  true, 1, 0, 90, 0, 0, 1,null, null, null);
+    PlayerGameStat expected = new PlayerGameStat(1, 1, 1, 1,  true, 1, 0, 0, 90, 0, 0, 1,null, null, null);
     expected.setPlayerInfo(1, 1);
     expected.setGameId(1);
     Optional<PlayerGameStat> expectedOptional = Optional.of(expected);
@@ -214,9 +214,9 @@ class FootballRepositoryTest {
     int playerId = 1;
     List<PlayerGameStat> actual = sut.selectPlayerGameStatsByPlayer(playerId);
     List<PlayerGameStat> expected = List.of(
-        new PlayerGameStat(1,  1, 1, 1, true, 1, 0, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 90, 0, 0, 3, null, null, null),
-        new PlayerGameStat(13,  1, 1, 1, false, 0, 0, 90, 0, 0, 4, null, null, null)
+        new PlayerGameStat(1,  1, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 0, 90, 0, 0, 3, null, null, null),
+        new PlayerGameStat(13,  1, 1, 1, false, 0, 0, 0, 90, 0, 0, 4, null, null, null)
     );
     assertThat(actual.size()).isEqualTo(expected.size());
     assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
@@ -397,30 +397,30 @@ class FootballRepositoryTest {
   void selectPlayerGameStats() {
     List<PlayerGameStat> actual = sut.selectPlayerGameStats();
     List<PlayerGameStat> expected = List.of(
-        new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(2, 2, 1, 2, false, 0, 1, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(3, 3, 2, 1, true, 0, 0, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(4, 4, 2, 2, true, 0, 0, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(5, 5, 3, 1, true, 0, 0, 90, 0, 0, 2, null, null, null),
-        new PlayerGameStat(6, 6, 3, 2, false, 0, 0, 90, 0, 0, 2, null, null, null),
-        new PlayerGameStat(7, 7, 4, 1, true, 0, 0, 90, 0, 0, 2, null, null, null),
-        new PlayerGameStat(8, 8, 4, 2, true, 0, 0, 90, 0, 0, 2, null, null, null),
-        new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 90, 0, 0, 3, null, null, null),
-        new PlayerGameStat(10, 2, 1, 2, true, 0, 0, 90, 0, 0, 3, null, null, null),
-        new PlayerGameStat(11, 3, 2, 1, true, 0, 0, 90, 0, 0, 3, null, null, null),
-        new PlayerGameStat(12, 4, 2, 2, true, 0, 0, 90, 0, 0, 3, null, null, null),
-        new PlayerGameStat(13, 1, 1, 1, false, 0, 0, 90, 0, 0, 4, null, null, null),
-        new PlayerGameStat(14, 2, 1, 2, true, 0, 0, 90, 0, 0, 4, null, null, null),
-        new PlayerGameStat(15, 3, 2, 1, true, 0, 0, 90, 0, 0, 4, null, null, null),
-        new PlayerGameStat(16, 4, 2, 2, true, 0, 0, 90, 0, 0, 4, null, null, null),
-        new PlayerGameStat(17, 5, 3, 1, true, 0, 0, 90, 0, 0, 5, null, null, null),
-        new PlayerGameStat(18, 6, 3, 2, true, 0, 0, 90, 0, 0, 5, null, null, null),
-        new PlayerGameStat(19, 7, 4, 1, true, 0, 0, 90, 0, 0, 5, null, null, null),
-        new PlayerGameStat(20, 8, 4, 2, true, 0, 0, 90, 0, 0, 5, null, null, null),
-        new PlayerGameStat(21, 5, 3, 1, true, 0, 0, 90, 0, 0, 6, null, null, null),
-        new PlayerGameStat(22, 6, 3, 2, true, 0, 0, 90, 0, 0, 6, null, null, null),
-        new PlayerGameStat(23, 7, 4, 1, false, 0, 0, 90, 0, 0, 6, null, null, null),
-        new PlayerGameStat(24, 8, 4, 2, false, 0, 0, 90, 0, 0, 6, null, null, null)
+        new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(2, 2, 1, 2, false, 0, 1, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(3, 3, 2, 1, true, 0, 0, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(4, 4, 2, 2, true, 0, 0, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(5, 5, 3, 1, true, 0, 0, 0, 90, 0, 0, 2, null, null, null),
+        new PlayerGameStat(6, 6, 3, 2, false, 0, 0, 0, 90, 0, 0, 2, null, null, null),
+        new PlayerGameStat(7, 7, 4, 1, true, 0, 0, 0, 90, 0, 0, 2, null, null, null),
+        new PlayerGameStat(8, 8, 4, 2, true, 0, 0, 0, 90, 0, 0, 2, null, null, null),
+        new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 0, 90, 0, 0, 3, null, null, null),
+        new PlayerGameStat(10, 2, 1, 2, true, 0, 0, 0, 90, 0, 0, 3, null, null, null),
+        new PlayerGameStat(11, 3, 2, 1, true, 0, 0, 0, 90, 0, 0, 3, null, null, null),
+        new PlayerGameStat(12, 4, 2, 2, true, 0, 0, 0, 90, 0, 0, 3, null, null, null),
+        new PlayerGameStat(13, 1, 1, 1, false, 0, 0, 0, 90, 0, 0, 4, null, null, null),
+        new PlayerGameStat(14, 2, 1, 2, true, 0, 0, 0, 90, 0, 0, 4, null, null, null),
+        new PlayerGameStat(15, 3, 2, 1, true, 0, 0, 0, 90, 0, 0, 4, null, null, null),
+        new PlayerGameStat(16, 4, 2, 2, true, 0, 0, 0, 90, 0, 0, 4, null, null, null),
+        new PlayerGameStat(17, 5, 3, 1, true, 0, 0, 0, 90, 0, 0, 5, null, null, null),
+        new PlayerGameStat(18, 6, 3, 2, true, 0, 0, 0, 90, 0, 0, 5, null, null, null),
+        new PlayerGameStat(19, 7, 4, 1, true, 0, 0, 0, 90, 0, 0, 5, null, null, null),
+        new PlayerGameStat(20, 8, 4, 2, true, 0, 0, 0, 90, 0, 0, 5, null, null, null),
+        new PlayerGameStat(21, 5, 3, 1, true, 0, 0, 0, 90, 0, 0, 6, null, null, null),
+        new PlayerGameStat(22, 6, 3, 2, true, 0, 0, 0, 90, 0, 0, 6, null, null, null),
+        new PlayerGameStat(23, 7, 4, 1, false, 0, 0, 0, 90, 0, 0, 6, null, null, null),
+        new PlayerGameStat(24, 8, 4, 2, false, 0, 0, 0, 90, 0, 0, 6, null, null, null)
     );
     assertThat(actual.size()).isEqualTo(expected.size());
 //    for (int i = 0; i < expected.size(); i++) {
@@ -463,10 +463,10 @@ class FootballRepositoryTest {
     int gameId = 1;
     List<PlayerGameStat> actual = sut.selectPlayerGameStatsByGame(gameId);
     List<PlayerGameStat> expected = List.of(
-        new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(2, 2, 1, 2, false, 0, 1, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(3, 3, 2, 1, true, 0, 0, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(4, 4, 2, 2, true, 0, 0, 90, 0, 0, 1, null, null, null)
+        new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(2, 2, 1, 2, false, 0, 1, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(3, 3, 2, 1, true, 0, 0, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(4, 4, 2, 2, true, 0, 0, 0, 90, 0, 0, 1, null, null, null)
     );
     assertThat(actual.size()).isEqualTo(expected.size());
     assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
@@ -479,8 +479,8 @@ class FootballRepositoryTest {
     int seasonId = 201920;
     List<PlayerGameStat> actual = sut.selectPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
     List<PlayerGameStat> expected = List.of(
-        new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 90, 0, 0, 1, null, null, null),
-        new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 90, 0, 0, 3, null, null, null)
+        new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, null, null, null),
+        new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 0, 90, 0, 0, 3, null, null, null)
     );
     assertThat(actual.size()).isEqualTo(expected.size());
     assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);

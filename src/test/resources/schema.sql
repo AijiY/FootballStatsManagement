@@ -64,6 +64,7 @@ CREATE TABLE `player_game_stats` (
   `starter` tinyint DEFAULT 1,
   `goals` int DEFAULT NULL,
   `assists` int DEFAULT NULL,
+  `own_goals` int DEFAULT NULL,
   `minutes` int DEFAULT NULL,
   `yellow_cards` int DEFAULT NULL,
   `red_cards` int DEFAULT NULL,

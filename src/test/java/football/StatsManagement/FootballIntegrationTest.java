@@ -329,8 +329,8 @@ class FootballIntegrationTest {
     int seasonId = 201920;
 
     List<PlayerGameStat> expected = List.of(
-        new PlayerGameStat(1, playerId, 1, 1, true, 1, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1"),
-        new PlayerGameStat(9, playerId, 1, 1, true, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2")
+        new PlayerGameStat(1, playerId, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1"),
+        new PlayerGameStat(9, playerId, 1, 1, true, 0, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2")
     );
     String expectedJson = objectMapper.writeValueAsString(expected);
 
@@ -359,10 +359,10 @@ class FootballIntegrationTest {
 //    9:(1, 1, 1, 1, 0, 0, 90, 0, 0, 3),
 //    2:(2, 1, 2, 0, 0, 1, 90, 0, 0, 1),
 //    10:(2, 1, 2, 1, 0, 0, 90, 0, 0, 3),
-    PlayerGameStat playerGameStat11 = new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
-    PlayerGameStat playerGameStat12 = new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
-    PlayerGameStat playerGameStat21 = new PlayerGameStat(2, 2, 1, 2, false, 0, 1, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
-    PlayerGameStat playerGameStat22 = new PlayerGameStat(10, 2, 1, 2, true, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
+    PlayerGameStat playerGameStat11 = new PlayerGameStat(1, 1, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
+    PlayerGameStat playerGameStat12 = new PlayerGameStat(9, 1, 1, 1, true, 0, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
+    PlayerGameStat playerGameStat21 = new PlayerGameStat(2, 2, 1, 2, false, 0, 1, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
+    PlayerGameStat playerGameStat22 = new PlayerGameStat(10, 2, 1, 2, true, 0, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
 
     List<PlayerGameStat> playerGameStats1 = List.of(playerGameStat11, playerGameStat12);
     List<PlayerGameStat> playerGameStats2 = List.of(playerGameStat21, playerGameStat22);
@@ -391,8 +391,8 @@ class FootballIntegrationTest {
     //    (player_id, club_id, number, starter, goals, assists, minutes, yellow_cards, red_cards, game_id)
 //    1:(1, 1, 1, 1, 1, 0, 90, 0, 0, 1),
 //    9:(1, 1, 1, 1, 0, 0, 90, 0, 0, 3),
-    PlayerGameStat playerGameStat11 = new PlayerGameStat(1, playerId, 1, 1, true, 1, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
-    PlayerGameStat playerGameStat12 = new PlayerGameStat(9, playerId, 1, 1, true, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
+    PlayerGameStat playerGameStat11 = new PlayerGameStat(1, playerId, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
+    PlayerGameStat playerGameStat12 = new PlayerGameStat(9, playerId, 1, 1, true, 0, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
 
     List<PlayerGameStat> playerGameStats1 = List.of(playerGameStat11, playerGameStat12);
 
@@ -418,8 +418,8 @@ class FootballIntegrationTest {
     //    (player_id, club_id, number, starter, goals, assists, minutes, yellow_cards, red_cards, game_id)
 //    1:(1, 1, 1, 1, 1, 0, 90, 0, 0, 1),:201920
 //    9:(1, 1, 1, 1, 0, 0, 90, 0, 0, 3),:201920
-    PlayerGameStat playerGameStat11 = new PlayerGameStat(1, playerId, 1, 1, true, 1, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
-    PlayerGameStat playerGameStat12 = new PlayerGameStat(9, playerId, 1, 1, true, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
+    PlayerGameStat playerGameStat11 = new PlayerGameStat(1, playerId, 1, 1, true, 1, 0, 0, 90, 0, 0, 1, LocalDate.of(2019, 8, 1), "ClubAAB", "○2-1");
+    PlayerGameStat playerGameStat12 = new PlayerGameStat(9, playerId, 1, 1, true, 0, 0, 0, 90, 0, 0, 3, LocalDate.of(2019, 8, 2), "ClubAAB", "△2-2");
 
     List<PlayerGameStat> playerGameStats1 = List.of(playerGameStat11, playerGameStat12);
 
@@ -428,7 +428,7 @@ class FootballIntegrationTest {
     );
 
     //    13:(1, 1, 1, 0, 0, 0, 90, 0, 0, 4),:202021
-    PlayerGameStat playerGameStat21 = new PlayerGameStat(13, 1, 1, 1, false, 0, 0, 90, 0, 0, 4, LocalDate.of(2020, 8, 3), "ClubAAB", "●1-2");
+    PlayerGameStat playerGameStat21 = new PlayerGameStat(13, 1, 1, 1, false, 0, 0, 0, 90, 0, 0, 4, LocalDate.of(2020, 8, 3), "ClubAAB", "●1-2");
     List<PlayerGameStat> playerGameStats2 = List.of(playerGameStat21);
     List<PlayerSeasonStat> playerSeasonStats2 = List.of(
         new PlayerSeasonStat(1, playerGameStats2, 202021, 1, 1, 0, 1, 0, 0, 90, 0, 0, "PlayerAAAA", "ClubAAA", "2020-21")
@@ -587,85 +587,85 @@ class FootballIntegrationTest {
 
   @ParameterizedTest
   @CsvSource({
-      "2020-08-01,  4, 9, 10, 30, 0, 0, false, 30, 45, 0, 0, false, 25"
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 1, false, 30, 45, 0, 0, 0, false, 25" // 後からhomeTriggerPlayerのオウンゴールを追加
   })
   @DisplayName("試合結果が登録できること")
   void registerGameResult(
       LocalDate gameDate, int leagueId, int homeClubId, int awayClubId,
-      int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists,
+      int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists, int homeTriggerPlayerOwnGoals,
       boolean homeTriggerPlayerStarter, int homeTriggerPlayerMinutes,
-      int awayTriggerPlayerId, int awayTriggerPlayerGoals, int awayTriggerPlayerAssists,
+      int awayTriggerPlayerId, int awayTriggerPlayerGoals, int awayTriggerPlayerAssists, int awayTriggerPlayerOwnGoals,
       boolean awayTriggerPlayerStarter, int awayTriggerPlayerMinutes) throws Exception {
-    GameResultForJson gameResultForJson = new GameResultForJson(homeClubId, awayClubId, 3, 1, leagueId, gameDate, 202021);
+    GameResultForJson gameResultForJson = new GameResultForJson(homeClubId, awayClubId, 3, 2, leagueId, gameDate, 202021);
     List<PlayerGameStatForJson> homeClubPlayerGameStatsForJson = List.of(
-        new PlayerGameStatForJson(17, true, 1, 2, 90, 0, 0),
-        new PlayerGameStatForJson(18, true, 1, 1, 90, 0, 0),
-        new PlayerGameStatForJson(19, true, 1, 0, 90, 0, 0),
-        new PlayerGameStatForJson(20, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(21, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(22, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(23, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(24, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(25, true, 0, 0, 80, 0, 0),
-        new PlayerGameStatForJson(26, true, 0, 0, 70, 0, 0),
-        new PlayerGameStatForJson(27, true, 0, 0, 60, 0, 0),
-        new PlayerGameStatForJson(28, false, 0, 0, 10, 0, 0),
-        new PlayerGameStatForJson(29, false, 0, 0, 20, 0, 0),
-        new PlayerGameStatForJson(homeTriggerPlayerId, homeTriggerPlayerStarter, homeTriggerPlayerGoals, homeTriggerPlayerAssists, homeTriggerPlayerMinutes, 0, 0)
+        new PlayerGameStatForJson(17, true, 1, 2, 0, 90, 0, 0),
+        new PlayerGameStatForJson(18, true, 1, 1, 0, 90, 0, 0),
+        new PlayerGameStatForJson(19, true, 1, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(20, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(21, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(22, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(23, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(24, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(25, true, 0, 0, 0, 80, 0, 0),
+        new PlayerGameStatForJson(26, true, 0, 0, 0, 70, 0, 0),
+        new PlayerGameStatForJson(27, true, 0, 0, 0, 60, 0, 0),
+        new PlayerGameStatForJson(28, false, 0, 0, 0, 10, 0, 0),
+        new PlayerGameStatForJson(29, false, 0, 0, 0, 20, 0, 0),
+        new PlayerGameStatForJson(homeTriggerPlayerId, homeTriggerPlayerStarter, homeTriggerPlayerGoals, homeTriggerPlayerAssists, homeTriggerPlayerOwnGoals, homeTriggerPlayerMinutes, 0, 0)
     );
     List<PlayerGameStatForJson> awayClubPlayerGameStatsForJson = List.of(
-        new PlayerGameStatForJson(32, true, 1, 0, 90, 0, 0),
-        new PlayerGameStatForJson(33, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(34, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(35, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(36, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(37, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(38, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(39, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(40, true, 0, 0, 85, 0, 0),
-        new PlayerGameStatForJson(41, true, 0, 0, 75, 0, 0),
-        new PlayerGameStatForJson(42, true, 0, 0, 65, 0, 0),
-        new PlayerGameStatForJson(43, false, 0, 0, 5, 0, 0),
-        new PlayerGameStatForJson(44, false, 0, 0, 15, 0, 0),
-        new PlayerGameStatForJson(awayTriggerPlayerId, awayTriggerPlayerStarter, awayTriggerPlayerGoals, awayTriggerPlayerAssists, awayTriggerPlayerMinutes, 0, 0)
+        new PlayerGameStatForJson(32, true, 1, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(33, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(34, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(35, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(36, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(37, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(38, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(39, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(40, true, 0, 0, 0, 85, 0, 0),
+        new PlayerGameStatForJson(41, true, 0, 0, 0, 75, 0, 0),
+        new PlayerGameStatForJson(42, true, 0, 0, 0, 65, 0, 0),
+        new PlayerGameStatForJson(43, false, 0, 0, 0, 5, 0, 0),
+        new PlayerGameStatForJson(44, false, 0, 0, 0, 15, 0, 0),
+        new PlayerGameStatForJson(awayTriggerPlayerId, awayTriggerPlayerStarter, awayTriggerPlayerGoals, awayTriggerPlayerAssists, awayTriggerPlayerOwnGoals, awayTriggerPlayerMinutes, 0, 0)
     );
 
     GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson = new GameResultWithPlayerStatsForJson(
         gameResultForJson, homeClubPlayerGameStatsForJson, awayClubPlayerGameStatsForJson);
     String requestBody = objectMapper.writeValueAsString(gameResultWithPlayerStatsForJson);
 
-    GameResult expectedGameResult = new GameResult(7, homeClubId, awayClubId, 3, 1, homeClubId, leagueId, gameDate, 202021);
+    GameResult expectedGameResult = new GameResult(7, homeClubId, awayClubId, 3, 2, homeClubId, leagueId, gameDate, 202021);
     List<PlayerGameStat> expectedHomePlayerGameStats = List.of(
-        new PlayerGameStat(25, 17, 9, 1, true, 1, 2, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(26, 18, 9, 2, true, 1, 1, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(27, 19, 9, 3, true, 1, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(28, 20, 9, 4, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(29, 21, 9, 5, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(30, 22, 9, 6, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(31, 23, 9, 7, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(32, 24, 9, 8, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(33, 25, 9, 9, true, 0, 0, 80, 0, 0, 7, null, null, null),
-        new PlayerGameStat(34, 26, 9, 10, true, 0, 0, 70, 0, 0, 7, null, null, null),
-        new PlayerGameStat(35, 27, 9, 11, true, 0, 0, 60, 0, 0, 7, null, null, null),
-        new PlayerGameStat(36, 28, 9, 12, false, 0, 0, 10, 0, 0, 7, null, null, null),
-        new PlayerGameStat(37, 29, 9, 13, false, 0, 0, 20, 0, 0, 7, null, null, null),
-        new PlayerGameStat(38, homeTriggerPlayerId, 9, 14, homeTriggerPlayerStarter, homeTriggerPlayerGoals, homeTriggerPlayerAssists, homeTriggerPlayerMinutes, 0, 0, 7, null, null, null)
+        new PlayerGameStat(25, 17, 9, 1, true, 1, 2, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(26, 18, 9, 2, true, 1, 1, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(27, 19, 9, 3, true, 1, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(28, 20, 9, 4, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(29, 21, 9, 5, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(30, 22, 9, 6, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(31, 23, 9, 7, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(32, 24, 9, 8, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(33, 25, 9, 9, true, 0, 0, 0, 80, 0, 0, 7, null, null, null),
+        new PlayerGameStat(34, 26, 9, 10, true, 0, 0, 0, 70, 0, 0, 7, null, null, null),
+        new PlayerGameStat(35, 27, 9, 11, true, 0, 0, 0, 60, 0, 0, 7, null, null, null),
+        new PlayerGameStat(36, 28, 9, 12, false, 0, 0, 0, 10, 0, 0, 7, null, null, null),
+        new PlayerGameStat(37, 29, 9, 13, false, 0, 0, 0, 20, 0, 0, 7, null, null, null),
+        new PlayerGameStat(38, homeTriggerPlayerId, 9, 14, homeTriggerPlayerStarter, homeTriggerPlayerGoals, homeTriggerPlayerAssists, homeTriggerPlayerOwnGoals, homeTriggerPlayerMinutes, 0, 0, 7, null, null, null)
     );
     List<PlayerGameStat> expectedAwayPlayerGameStats = List.of(
-        new PlayerGameStat(39, 32, 10, 1, true, 1, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(40, 33, 10, 2, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(41, 34, 10, 3, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(42, 35, 10, 4, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(43, 36, 10, 5, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(44, 37, 10, 6, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(45, 38, 10, 7, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(46, 39, 10, 8, true, 0, 0, 90, 0, 0, 7, null, null, null),
-        new PlayerGameStat(47, 40, 10, 9, true, 0, 0, 85, 0, 0, 7, null, null, null),
-        new PlayerGameStat(48, 41, 10, 10, true, 0, 0, 75, 0, 0, 7, null, null, null),
-        new PlayerGameStat(49, 42, 10, 11, true, 0, 0, 65, 0, 0, 7, null, null, null),
-        new PlayerGameStat(50, 43, 10, 12, false, 0, 0, 5, 0, 0, 7, null, null, null),
-        new PlayerGameStat(51, 44, 10, 13, false, 0, 0, 15, 0, 0, 7, null, null, null),
-        new PlayerGameStat(52, awayTriggerPlayerId, 10, 14, awayTriggerPlayerStarter, awayTriggerPlayerGoals, awayTriggerPlayerAssists, awayTriggerPlayerMinutes, 0, 0, 7, null, null, null)
+        new PlayerGameStat(39, 32, 10, 1, true, 1, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(40, 33, 10, 2, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(41, 34, 10, 3, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(42, 35, 10, 4, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(43, 36, 10, 5, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(44, 37, 10, 6, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(45, 38, 10, 7, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(46, 39, 10, 8, true, 0, 0, 0, 90, 0, 0, 7, null, null, null),
+        new PlayerGameStat(47, 40, 10, 9, true, 0, 0, 0, 85, 0, 0, 7, null, null, null),
+        new PlayerGameStat(48, 41, 10, 10, true, 0, 0, 0, 75, 0, 0, 7, null, null, null),
+        new PlayerGameStat(49, 42, 10, 11, true, 0, 0, 0, 65, 0, 0, 7, null, null, null),
+        new PlayerGameStat(50, 43, 10, 12, false, 0, 0, 0, 5, 0, 0, 7, null, null, null),
+        new PlayerGameStat(51, 44, 10, 13, false, 0, 0, 0, 15, 0, 0, 7, null, null, null),
+        new PlayerGameStat(52, awayTriggerPlayerId, 10, 14, awayTriggerPlayerStarter, awayTriggerPlayerGoals, awayTriggerPlayerAssists, awayTriggerPlayerOwnGoals, awayTriggerPlayerMinutes, 0, 0, 7, null, null, null)
     );
 
     GameResultWithPlayerStats expected = new GameResultWithPlayerStats(expectedGameResult, expectedHomePlayerGameStats, expectedAwayPlayerGameStats);
@@ -686,62 +686,64 @@ class FootballIntegrationTest {
   @ParameterizedTest
   // テストケースのパラメータを指定（下から作成）
   @CsvSource({
-      "2020-08-01,  4, 9, 10, 30, 0, 0, false, 30, 45, 0, 0, false, 24, 'Away minutes is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0, false, 29, 45, 0, 0, false, 24, 'Home minutes is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0, false, 29, 45, 0, 0,  true, 24, 'Away starter count is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0,  true, 29, 45, 0, 0,  true, 24, 'Home starter count is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0,  true, 29, 45, 0, 2,  true, 24, 'Away assists is more than away score'",
-      "2020-08-01,  4, 9, 10, 30, 0, 1,  true, 29, 45, 0, 2,  true, 24, 'Home assists is more than home score'",
-      "2020-08-01,  4, 9, 10, 30, 0, 1,  true, 29, 45, 1, 2,  true, 24, 'Away score is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 1, 1,  true, 29, 45, 1, 2,  true, 24, 'Home score is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 1, 1,  true, 29, 44, 1, 2,  true, 24, 'Away club has duplicate players'",
-      "2020-08-01,  4, 9, 10, 29, 1, 1,  true, 29, 44, 1, 2,  true, 24, 'Home club has duplicate players'",
-      "2020-08-01,  4, 9, 10, 29, 1, 1,  true, 29,  2, 1, 2,  true, 24, 'Away club and player are not matched'",
-      "2020-08-01,  4, 9, 10,  1, 1, 1,  true, 29,  2, 1, 2,  true, 24, 'Home club and player are not matched'",
-      "2020-08-01,  4, 9,  2,  1, 1, 1,  true, 29,  2, 1, 2,  true, 24, 'Away club is not in the league'",
-      "2020-08-01,  4, 1,  2,  1, 1, 1,  true, 29,  2, 1, 2,  true, 24, 'Home club is not in the league'",
-      "2020-08-01, 99, 1,  2,  1, 1, 1,  true, 29,  2, 1, 2,  true, 24, 'League not found'",
-      "2019-08-01, 99, 1,  2,  1, 1, 1,  true, 29,  2, 1, 2,  true, 24, 'Game date is not in the current season'"
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 30, 45, 0, 0, 0, false, 24, 'Away minutes is not correct'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0, false, 24, 'Home minutes is not correct'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0,  true, 24, 'Away starter count is not correct'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0,  true, 29, 45, 0, 0, 0,  true, 24, 'Home starter count is not correct'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0,  true, 29, 45, 0, 2, 0,  true, 24, 'Away assists is more than away score'",
+      "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 0, 2, 0,  true, 24, 'Home assists is more than home score'",
+      "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 1, 2, 0,  true, 24, 'Away score is not correct'",
+      "2020-08-01,  4, 9, 10, 30, 0, 1, 1,  true, 29, 45, 0, 2, 0,  true, 24, 'Away score is not correct'", // オウンゴールあり、後から追加したパターン
+      "2020-08-01,  4, 9, 10, 30, 1, 1, 0,  true, 29, 45, 1, 2, 0,  true, 24, 'Home score is not correct'",
+      "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 1, 2, 1,  true, 24, 'Home score is not correct'", // オウンゴールあり、後から追加したパターン
+      "2020-08-01,  4, 9, 10, 30, 1, 1, 0,  true, 29, 44, 1, 2, 0,  true, 24, 'Away club has duplicate players'",
+      "2020-08-01,  4, 9, 10, 29, 1, 1, 0,  true, 29, 44, 1, 2, 0,  true, 24, 'Home club has duplicate players'",
+      "2020-08-01,  4, 9, 10, 29, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Away club and player are not matched'",
+      "2020-08-01,  4, 9, 10,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Home club and player are not matched'",
+      "2020-08-01,  4, 9,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Away club is not in the league'",
+      "2020-08-01,  4, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Home club is not in the league'",
+      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",
+      "2019-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Game date is not in the current season'"
   })
   @DisplayName("試合結果の登録_サービス内で例外処理を発生させるパターン")
   void registerGameResultWithExceptionInService(
       LocalDate gameDate, int leagueId, int homeClubId, int awayClubId,
-      int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists,
+      int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists, int homeTriggerPlayerOwnGoals,
       boolean homeTriggerPlayerStarter, int homeTriggerPlayerMinutes,
-      int awayTriggerPlayerId, int awayTriggerPlayerGoals, int awayTriggerPlayerAssists,
+      int awayTriggerPlayerId, int awayTriggerPlayerGoals, int awayTriggerPlayerAssists, int awayTriggerPlayerOwnGoals,
       boolean awayTriggerPlayerStarter, int awayTriggerPlayerMinutes, String expectedMessage) throws Exception {
     GameResultForJson gameResultForJson = new GameResultForJson(homeClubId, awayClubId, 3, 1, leagueId, gameDate, 202021);
     List<PlayerGameStatForJson> homeClubPlayerGameStatsForJson = List.of(
-        new PlayerGameStatForJson(17, true, 1, 2, 90, 0, 0),
-        new PlayerGameStatForJson(18, true, 1, 1, 90, 0, 0),
-        new PlayerGameStatForJson(19, true, 1, 0, 90, 0, 0),
-        new PlayerGameStatForJson(20, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(21, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(22, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(23, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(24, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(25, true, 0, 0, 80, 0, 0),
-        new PlayerGameStatForJson(26, true, 0, 0, 70, 0, 0),
-        new PlayerGameStatForJson(27, true, 0, 0, 60, 0, 0),
-        new PlayerGameStatForJson(28, false, 0, 0, 10, 0, 0),
-        new PlayerGameStatForJson(29, false, 0, 0, 20, 0, 0),
-        new PlayerGameStatForJson(homeTriggerPlayerId, homeTriggerPlayerStarter, homeTriggerPlayerGoals, homeTriggerPlayerAssists, homeTriggerPlayerMinutes, 0, 0)
+        new PlayerGameStatForJson(17, true, 1, 2, 0, 90, 0, 0),
+        new PlayerGameStatForJson(18, true, 1, 1, 0, 90, 0, 0),
+        new PlayerGameStatForJson(19, true, 1, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(20, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(21, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(22, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(23, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(24, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(25, true, 0, 0, 0, 80, 0, 0),
+        new PlayerGameStatForJson(26, true, 0, 0, 0, 70, 0, 0),
+        new PlayerGameStatForJson(27, true, 0, 0, 0, 60, 0, 0),
+        new PlayerGameStatForJson(28, false, 0, 0, 0, 10, 0, 0),
+        new PlayerGameStatForJson(29, false, 0, 0, 0, 20, 0, 0),
+        new PlayerGameStatForJson(homeTriggerPlayerId, homeTriggerPlayerStarter, homeTriggerPlayerGoals, homeTriggerPlayerAssists, homeTriggerPlayerOwnGoals, homeTriggerPlayerMinutes, 0, 0)
     );
     List<PlayerGameStatForJson> awayClubPlayerGameStatsForJson = List.of(
-        new PlayerGameStatForJson(32, true, 1, 0, 90, 0, 0),
-        new PlayerGameStatForJson(33, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(34, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(35, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(36, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(37, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(38, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(39, true, 0, 0, 90, 0, 0),
-        new PlayerGameStatForJson(40, true, 0, 0, 85, 0, 0),
-        new PlayerGameStatForJson(41, true, 0, 0, 75, 0, 0),
-        new PlayerGameStatForJson(42, true, 0, 0, 65, 0, 0),
-        new PlayerGameStatForJson(43, false, 0, 0, 5, 0, 0),
-        new PlayerGameStatForJson(44, false, 0, 0, 15, 0, 0),
-        new PlayerGameStatForJson(awayTriggerPlayerId, awayTriggerPlayerStarter, awayTriggerPlayerGoals, awayTriggerPlayerAssists, awayTriggerPlayerMinutes, 0, 0)
+        new PlayerGameStatForJson(32, true, 1, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(33, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(34, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(35, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(36, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(37, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(38, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(39, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(40, true, 0, 0, 0, 85, 0, 0),
+        new PlayerGameStatForJson(41, true, 0, 0, 0, 75, 0, 0),
+        new PlayerGameStatForJson(42, true, 0, 0, 0, 65, 0, 0),
+        new PlayerGameStatForJson(43, false, 0, 0, 0, 5, 0, 0),
+        new PlayerGameStatForJson(44, false, 0, 0, 0, 15, 0, 0),
+        new PlayerGameStatForJson(awayTriggerPlayerId, awayTriggerPlayerStarter, awayTriggerPlayerGoals, awayTriggerPlayerAssists, awayTriggerPlayerOwnGoals, awayTriggerPlayerMinutes, 0, 0)
     );
 
     GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson = new GameResultWithPlayerStatsForJson(

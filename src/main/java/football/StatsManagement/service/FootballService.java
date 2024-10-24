@@ -499,13 +499,16 @@ public class FootballService {
 
   /**
    * Calculate score from player game stats
-   * @param playerGameStats
+   * @param allyPlayerGameStats
    * @return score
    */
-  public int getScoreByPlayerGameStats(List<PlayerGameStat> playerGameStats) {
+  private int getScoreByPlayerGameStats(List<PlayerGameStat> allyPlayerGameStats, List<PlayerGameStat> opponentPlayerGameStats) {
     int score = 0;
-    for (PlayerGameStat playerGameStat : playerGameStats) {
+    for (PlayerGameStat playerGameStat : allyPlayerGameStats) {
       score += playerGameStat.getGoals();
+    }
+    for (PlayerGameStat playerGameStat : opponentPlayerGameStats) {
+      score += playerGameStat.getOwnGoals();
     }
     return score;
   }
@@ -623,8 +626,8 @@ public class FootballService {
     // スコアが正しいか確認
     int homeScore = gameResult.getHomeScore();
     int awayScore = gameResult.getAwayScore();
-    int homeScoreCalculated = getScoreByPlayerGameStats(homeClubStats);
-    int awayScoreCalculated = getScoreByPlayerGameStats(awayClubStats);
+    int homeScoreCalculated = getScoreByPlayerGameStats(homeClubStats, awayClubStats);
+    int awayScoreCalculated = getScoreByPlayerGameStats(awayClubStats, homeClubStats);
     int homeAssists = homeClubStats.stream().mapToInt(PlayerGameStat::getAssists).sum();
     int awayAssists = awayClubStats.stream().mapToInt(PlayerGameStat::getAssists).sum();
     if (homeScore != homeScoreCalculated) {

@@ -93,6 +93,7 @@ function RegisterGameResultPage() {
                 starter: player.starter,
                 goals: player.goals,
                 assists: player.assists,
+                ownGoals: player.ownGoals,
                 minutes: player.minutes,
                 yellowCards: player.yellowCards,
                 redCards: player.redCards,
@@ -102,6 +103,7 @@ function RegisterGameResultPage() {
                 starter: player.starter,
                 goals: player.goals,
                 assists: player.assists,
+                ownGoals: player.ownGoals,
                 minutes: player.minutes,
                 yellowCards: player.yellowCards,
                 redCards: player.redCards,
@@ -189,6 +191,7 @@ function RegisterGameResultPage() {
                                         <th>Starter</th>
                                         <th><img src={goalsIcon} alt="Goals" style={{ width: '20px', height: '20px' }} /></th>
                                         <th><img src={assistsIcon} alt="Assists" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th>O.G.</th>
                                         <th><img src={minutesIcon} alt="Minutes" style={{ width: '20px', height: '20px' }} /></th>
                                         <th><img src={yellowCardsIcon} alt="Yellow Cards" style={{ width: '20px', height: '20px' }} /></th>
                                         <th><img src={redCardsIcon} alt="Red Cards" style={{ width: '20px', height: '20px' }} /></th>
@@ -202,6 +205,7 @@ function RegisterGameResultPage() {
                                             <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'home', player.id, 'starter')}  /></td>
                                             <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'home', player.id, 'goals')} style={{ width: '30px' }} /></td>
                                             <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'home', player.id, 'assists')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="ownGoals" onChange={(e) => handleInputChange(e, 'home', player.id, 'ownGoals')} style={{ width: '30px' }} /></td>
                                             <td>
                                                 <input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'home', player.id, 'minutes')} style={{ width: '50px' }} list="minutes-options" /></td>
                                                 <datalist id="minutes-options">
@@ -228,6 +232,7 @@ function RegisterGameResultPage() {
                                         <th>Starter</th>
                                         <th><img src={goalsIcon} alt="Goals" style={{ width: '20px', height: '20px' }} /></th>
                                         <th><img src={assistsIcon} alt="Assists" style={{ width: '20px', height: '20px' }} /></th>
+                                        <th>O.G.</th>
                                         <th><img src={minutesIcon} alt="Minutes" style={{ width: '20px', height: '20px' }} /></th>
                                         <th><img src={yellowCardsIcon} alt="Yellow Cards" style={{ width: '20px', height: '20px' }} /></th>
                                         <th><img src={redCardsIcon} alt="Red Cards" style={{ width: '20px', height: '20px' }} /></th>
@@ -241,6 +246,7 @@ function RegisterGameResultPage() {
                                             <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'away', player.id, 'starter')} /></td>
                                             <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'away', player.id, 'goals')} style={{ width: '30px' }} /></td>
                                             <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'away', player.id, 'assists')} style={{ width: '30px' }} /></td>
+                                            <td><input type="number" name="ownGoals" onChange={(e) => handleInputChange(e, 'away', player.id, 'ownGoals')} style={{ width: '30px' }} /></td>
                                             <td>
                                                 <input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'away', player.id, 'minutes')} style={{ width: '50px' }} list="minutes-options" />
                                                 <datalist id="minutes-options">
