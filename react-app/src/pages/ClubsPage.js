@@ -237,7 +237,7 @@ function ClubsPage() {
                             {gameResult.homeClubName}
                           </Link>
                         </td>
-                        <td>{gameResult.homeScore} - {gameResult.awayScore}</td>
+                        <td> {gameResult.homeScore} - {gameResult.awayScore} </td>
                         <td>
                           <Link to={`/countries/${countryId}/leagues/${leagueId}/clubs/${gameResult.awayClubId}/players`}>
                             {gameResult.awayClubName}
