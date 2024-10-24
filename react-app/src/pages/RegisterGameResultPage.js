@@ -138,8 +138,11 @@ function RegisterGameResultPage() {
             {/* Homeに戻るリンク */}
             <Link to="/">Home</Link>
             <br /> {/* 改行 */}
-            {/* ClubsPageに戻るリンク */}
-            <Link to={`/countries/${countryId}/leagues/${leagueId}/clubs`}>Back to Clubs</Link>
+            {/* GameResultsに戻るリンク */}
+            <Link 
+                to={`/countries/${countryId}/leagues/${leagueId}/clubs`}
+                state = {{ showClubsList: false, showGameResults: true }}
+            >Back to Game Results</Link>
 
             
             <form onSubmit={handleForSubmit}>
@@ -181,7 +184,7 @@ function RegisterGameResultPage() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Number</th>
+                                        <th>No.</th>
                                         <th>Name</th>
                                         <th>Starter</th>
                                         <th><img src={goalsIcon} alt="Goals" style={{ width: '20px', height: '20px' }} /></th>
@@ -199,7 +202,11 @@ function RegisterGameResultPage() {
                                             <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'home', player.id, 'starter')}  /></td>
                                             <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'home', player.id, 'goals')} style={{ width: '30px' }} /></td>
                                             <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'home', player.id, 'assists')} style={{ width: '30px' }} /></td>
-                                            <td><input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'home', player.id, 'minutes')} style={{ width: '40px' }} /></td>
+                                            <td>
+                                                <input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'home', player.id, 'minutes')} style={{ width: '50px' }} list="minutes-options" /></td>
+                                                <datalist id="minutes-options">
+                                                    <option value="90" />
+                                                </datalist>
                                             <td><input type="number" name="yellowCards" onChange={(e) => handleInputChange(e, 'home', player.id, 'yellowCards')} style={{ width: '30px' }} /></td>
                                             <td><input type="number" name="redCards" onChange={(e) => handleInputChange(e, 'home', player.id, 'redCards')} style={{ width: '30px' }} /></td>
                                         </tr>
@@ -216,7 +223,7 @@ function RegisterGameResultPage() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Number</th>
+                                        <th>No.</th>
                                         <th>Name</th>
                                         <th>Starter</th>
                                         <th><img src={goalsIcon} alt="Goals" style={{ width: '20px', height: '20px' }} /></th>
@@ -234,7 +241,12 @@ function RegisterGameResultPage() {
                                             <td><input type="checkbox" name="starter" onChange={(e) => handleInputChange(e, 'away', player.id, 'starter')} /></td>
                                             <td><input type="number" name="goals" onChange={(e) => handleInputChange(e, 'away', player.id, 'goals')} style={{ width: '30px' }} /></td>
                                             <td><input type="number" name="assists" onChange={(e) => handleInputChange(e, 'away', player.id, 'assists')} style={{ width: '30px' }} /></td>
-                                            <td><input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'away', player.id, 'minutes')} style={{ width: '40px' }} /></td>
+                                            <td>
+                                                <input type="number" name="minutes" onChange={(e) => handleInputChange(e, 'away', player.id, 'minutes')} style={{ width: '50px' }} list="minutes-options" />
+                                                <datalist id="minutes-options">
+                                                    <option value="90" />
+                                                </datalist>
+                                            </td>
                                             <td><input type="number" name="yellowCards" onChange={(e) => handleInputChange(e, 'away', player.id, 'yellowCards')} style={{ width: '30px' }} /></td>
                                             <td><input type="number" name="redCards" onChange={(e) => handleInputChange(e, 'away', player.id, 'redCards')} style={{ width: '30px' }} /></td>
                                         </tr>
