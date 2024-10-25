@@ -1,9 +1,8 @@
 package football.StatsManagement.model.data;
 
-import football.StatsManagement.model.domain.json.PlayerForJson;
+import football.StatsManagement.model.json.PlayerForJson;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.util.Objects;
 import lombok.AllArgsConstructor;

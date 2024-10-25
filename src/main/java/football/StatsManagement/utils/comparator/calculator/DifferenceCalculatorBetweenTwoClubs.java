@@ -1,6 +1,6 @@
 package football.StatsManagement.utils.comparator.calculator;
 
-import football.StatsManagement.model.domain.ClubForStanding;
+import football.StatsManagement.domain.ClubForStanding;
 
 public class DifferenceCalculatorBetweenTwoClubs {
 

@@ -3,6 +3,8 @@ package football.StatsManagement.model.domain;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import football.StatsManagement.domain.DayGameResult;
+import football.StatsManagement.domain.SeasonGameResult;
 import football.StatsManagement.model.data.GameResult;
 import football.StatsManagement.service.FootballService;
 import java.time.LocalDate;

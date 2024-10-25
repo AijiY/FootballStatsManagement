@@ -1,7 +1,6 @@
-package football.StatsManagement.model.domain;
+package football.StatsManagement.domain;
 
 import football.StatsManagement.exception.ResourceNotFoundException;
-import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.service.FootballService;
 import java.util.List;

@@ -1,6 +1,6 @@
 package football.StatsManagement.model.data;
 
-import football.StatsManagement.model.domain.json.SeasonForJson;
+import football.StatsManagement.model.json.SeasonForJson;
 import java.time.LocalDate;
 import java.util.Objects;
 import lombok.AllArgsConstructor;

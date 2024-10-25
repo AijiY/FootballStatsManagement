@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import football.StatsManagement.exception.FootballException;
 import football.StatsManagement.exception.ResourceConflictException;
@@ -17,21 +16,19 @@ import football.StatsManagement.model.data.League;
 import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
-import football.StatsManagement.model.domain.ClubForStanding;
-import football.StatsManagement.model.domain.DayGameResult;
-import football.StatsManagement.model.domain.GameResultWithPlayerStats;
-import football.StatsManagement.model.domain.PlayerSeasonStat;
-import football.StatsManagement.model.domain.SeasonGameResult;
-import football.StatsManagement.model.domain.Standing;
-import football.StatsManagement.model.domain.json.GameResultForJson;
-import football.StatsManagement.model.domain.json.GameResultWithPlayerStatsForJson;
-import football.StatsManagement.model.domain.json.PlayerGameStatForJson;
+import football.StatsManagement.domain.ClubForStanding;
+import football.StatsManagement.domain.DayGameResult;
+import football.StatsManagement.model.response.GameResultWithPlayerStats;
+import football.StatsManagement.domain.PlayerSeasonStat;
+import football.StatsManagement.domain.SeasonGameResult;
+import football.StatsManagement.domain.Standing;
+import football.StatsManagement.model.json.GameResultForJson;
+import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
+import football.StatsManagement.model.json.PlayerGameStatForJson;
 import football.StatsManagement.utils.TestUtils;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +43,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.spring6.expression.Mvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc

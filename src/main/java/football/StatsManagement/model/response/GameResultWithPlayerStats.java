@@ -1,8 +1,8 @@
-package football.StatsManagement.model.domain;
+package football.StatsManagement.model.response;
 
 import football.StatsManagement.model.data.GameResult;
 import football.StatsManagement.model.data.PlayerGameStat;
-import football.StatsManagement.model.domain.json.GameResultWithPlayerStatsForJson;
+import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.service.FootballService;
 import java.util.List;
 import lombok.AllArgsConstructor;
