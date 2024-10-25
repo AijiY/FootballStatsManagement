@@ -1,6 +1,6 @@
 package football.StatsManagement.model.data;
 
-import football.StatsManagement.model.domain.json.ClubForJson;
+import football.StatsManagement.model.json.ClubForJson;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

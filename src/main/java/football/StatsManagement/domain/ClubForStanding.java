@@ -1,4 +1,4 @@
-package football.StatsManagement.model.domain;
+package football.StatsManagement.domain;
 
 import football.StatsManagement.service.FootballService;
 import football.StatsManagement.model.data.Club;

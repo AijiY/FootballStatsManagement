@@ -5,6 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import football.StatsManagement.domain.PlayerSeasonStat;
 import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.data.Club;
 import football.StatsManagement.model.data.Player;

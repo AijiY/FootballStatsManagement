@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import football.StatsManagement.model.data.Club;
-import football.StatsManagement.model.domain.ClubForStanding;
+import football.StatsManagement.domain.ClubForStanding;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

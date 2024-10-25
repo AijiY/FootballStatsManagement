@@ -1,4 +1,4 @@
-package football.StatsManagement.model.domain.json;
+package football.StatsManagement.model.json;
 
 import jakarta.validation.Valid;
 import java.util.List;

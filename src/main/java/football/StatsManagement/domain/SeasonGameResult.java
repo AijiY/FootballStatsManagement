@@ -1,4 +1,4 @@
-package football.StatsManagement.model.domain;
+package football.StatsManagement.domain;
 
 import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.data.GameResult;

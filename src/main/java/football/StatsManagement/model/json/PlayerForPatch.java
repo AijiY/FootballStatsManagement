@@ -1,17 +1,15 @@
-package football.StatsManagement.model.domain.json;
+package football.StatsManagement.model.json;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ClubForJson {
-
+public class PlayerForPatch {
   @Positive
-  private int leagueId;
+  private int number;
 
   @NotBlank
   private String name;
