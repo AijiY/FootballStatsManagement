@@ -72,7 +72,7 @@ CREATE TABLE `player_game_stats` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (`club_id`) REFERENCES `clubs`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (`game_id`) REFERENCES `game_results`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (`game_id`) REFERENCES `game_results`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
