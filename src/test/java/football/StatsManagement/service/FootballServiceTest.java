@@ -424,6 +424,12 @@ class FootballServiceTest {
     verify(repository, times(1)).selectClubs();
   }
 
+  @Test
+  void getClubIdsByPlayerAndSeason() {
+    List<Integer> actual = sut.getClubIdsByPlayerAndSeason(1, 1);
+    verify(repository, times(1)).selectClubIdsByPlayerAndSeason(1, 1);
+  }
+
 
   @Test
   @DisplayName("シーズンの過去シーズンへの更新_リポジトリが適切に処理されること")
@@ -529,24 +535,6 @@ class FootballServiceTest {
   }
 
   @Test
-  @DisplayName("クラブIDによる選手試合成績の検索_リポジトリが適切に処理されること")
-  void getPlayerSeasonStatsByClubId() {
-    // 現状テスト項目なし
-  }
-
-  @Test
-  @DisplayName("選手IDによる選手シーズン成績の検索_リポジトリが適切に処理されること")
-  void getPlayerSeasonStatByPlayerId() {
-    // 現状テスト項目なし
-  }
-
-  @Test
-  @DisplayName("選手IDによる選手試合成績の検索_リポジトリが適切に処理されること")
-  void getPlayerSeasonStatsByPlayerId() {
-    // 現状テスト項目なし
-  }
-
-  @Test
   @DisplayName("出場選手のみの選手試合成績の検索_リポジトリが適切に処理されること")
   void getPlayerGameStatsExceptAbsent() {
     // 現状テスト項目なし
@@ -557,7 +545,6 @@ class FootballServiceTest {
   void getWinnerClubId() {
     // 現状テスト項目なし
   }
-
 
   @Test
   @DisplayName("試合結果と選手成績の登録_リポジトリが適切に処理されること")

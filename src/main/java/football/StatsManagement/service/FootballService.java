@@ -12,7 +12,7 @@ import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
 import football.StatsManagement.model.json.PlayerGameStatForJson;
-import football.StatsManagement.domain.PlayerSeasonStat;
+import football.StatsManagement.model.domain.PlayerSeasonStat;
 import football.StatsManagement.repository.FootballRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -331,10 +331,11 @@ public class FootballService {
     return repository.selectClubs();
   }
 
+  public List<Integer> getClubIdsByPlayerAndSeason(int playerId, int seasonId) {
+    return repository.selectClubIdsByPlayerAndSeason(playerId, seasonId);
+  }
+
 //  update
-
-
-
   /**
    * Update seasons current false
    * 新シーズン登録前に使用
@@ -425,60 +426,6 @@ public class FootballService {
       score = "●" + score;
     }
     playerGameStat.setScore(score);
-  }
-
-  /**
-   * Get player season stats
-   * @param clubId
-   * @param seasonId
-   * @return player season stats
-   */
-  public List<PlayerSeasonStat> getPlayerSeasonStatsByClubId(int clubId, int seasonId) throws ResourceNotFoundException {
-    List<Player> players = getPlayersByClub(clubId);
-    List<PlayerSeasonStat> playerSeasonStats = new ArrayList<>();
-    for (Player player : players) {
-      List<PlayerGameStat> playerGameStats = getPlayerGameStatsByPlayerAndSeason(player.getId(), seasonId);
-      PlayerSeasonStat playerSeasonStat = PlayerSeasonStat.initialPlayerSeasonStat(player.getId(), playerGameStats, seasonId, clubId, this);
-      playerSeasonStats.add(playerSeasonStat);
-    }
-    return playerSeasonStats;
-  }
-
-  /**
-   * Get player season stat by player ID
-   * @param playerId
-   * @param seasonId
-   * @return player season stat
-   */
-  public List<PlayerSeasonStat> getPlayerSeasonStatByPlayerId(int playerId, int seasonId) throws ResourceNotFoundException {
-    List<PlayerGameStat> playerGameStats = getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
-    // 存在するclubIdを取得（基本は1つだが、シーズン中の移籍があれば複数存在する）
-    List<Integer> clubIds = playerGameStats.stream()
-        .map(PlayerGameStat::getClubId)
-        .distinct()
-        .collect(Collectors.toList());
-    // playerSeasonStatを作成し、各クラブでの成績をリストに追加
-    List<PlayerSeasonStat> playerSeasonStats = new ArrayList<>();
-    for (int clubId : clubIds) {
-      PlayerSeasonStat playerSeasonStat = PlayerSeasonStat.initialPlayerSeasonStat(playerId, playerGameStats, seasonId, clubId, this);
-      playerSeasonStats.add(playerSeasonStat);
-    }
-    return playerSeasonStats;
-  }
-
-  /**
-   * Get player season stats by player ID
-   * @param playerId
-   * @return player season stats
-   */
-  public List<PlayerSeasonStat> getPlayerSeasonStatsByPlayerId(int playerId) throws ResourceNotFoundException {
-    List<PlayerSeasonStat> playerSeasonStats = new ArrayList<>();
-    List<Season> seasons = getSeasons();
-    for (Season season : seasons) {
-      List<PlayerSeasonStat> playerSeasonStatsInSeason = getPlayerSeasonStatByPlayerId(playerId, season.getId());
-      playerSeasonStats.addAll(playerSeasonStatsInSeason);
-    }
-    return playerSeasonStats;
   }
 
   /**

@@ -1,4 +1,4 @@
-package football.StatsManagement.domain;
+package football.StatsManagement.model.domain;
 
 import football.StatsManagement.model.data.GameResult;
 import java.time.LocalDate;

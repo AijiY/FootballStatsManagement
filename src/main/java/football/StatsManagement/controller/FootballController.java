@@ -2,10 +2,11 @@ package football.StatsManagement.controller;
 
 import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
-import football.StatsManagement.domain.SeasonGameResult;
+import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.json.PlayerForPatch;
 import football.StatsManagement.model.json.PlayerForTransfer;
+import football.StatsManagement.service.FactoryService;
 import football.StatsManagement.service.FootballService;
 import football.StatsManagement.exception.FootballException;
 import football.StatsManagement.model.data.Club;
@@ -15,12 +16,12 @@ import football.StatsManagement.model.data.League;
 import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
-import football.StatsManagement.domain.PlayerSeasonStat;
+import football.StatsManagement.model.domain.PlayerSeasonStat;
 import football.StatsManagement.model.json.ClubForJson;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
 import football.StatsManagement.model.json.PlayerForJson;
 import football.StatsManagement.model.json.LeagueForJson;
-import football.StatsManagement.domain.Standing;
+import football.StatsManagement.model.domain.Standing;
 import football.StatsManagement.model.json.SeasonForJson;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -42,11 +43,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 public class FootballController {
-  private FootballService service;
+  private FootballService footballService;
+  private FactoryService factoryService;
 
   @Autowired
-  public FootballController(FootballService service) {
-    this.service = service;
+  public FootballController(FootballService footballService, FactoryService factoryService) {
+    this.footballService = footballService;
+    this.factoryService = factoryService;
   }
 
   /**
@@ -56,7 +59,7 @@ public class FootballController {
   @Operation(summary = "現在シーズンの取得", description = "現在のシーズンを取得します")
   @GetMapping("/seasons/current")
   public Season getCurrentSeason() throws ResourceNotFoundException {
-    return service.getCurrentSeason();
+    return footballService.getCurrentSeason();
   }
 
   /**
@@ -66,7 +69,7 @@ public class FootballController {
   @Operation(summary = "シーズン一覧の取得", description = "登録されているシーズンの一覧を取得します")
   @GetMapping("/seasons")
   public List<Season> getSeasons() {
-    return service.getSeasons();
+    return footballService.getSeasons();
   }
 
   /**
@@ -77,7 +80,7 @@ public class FootballController {
   @Operation(summary = "国の取得", description = "国IDに紐づく国を取得します")
   @GetMapping("/countries/{countryId}")
   public Country getCountry(@PathVariable @Positive int countryId) throws ResourceNotFoundException {
-    return service.getCountry(countryId);
+    return footballService.getCountry(countryId);
   }
 
   /**
@@ -88,7 +91,7 @@ public class FootballController {
   @Operation(summary = "リーグの取得", description = "リーグIDに紐づくリーグを取得します")
   @GetMapping("/leagues/{leagueId}")
   public League getLeague(@PathVariable @Positive int leagueId) throws ResourceNotFoundException {
-    return service.getLeague(leagueId);
+    return footballService.getLeague(leagueId);
   }
 
   /**
@@ -99,7 +102,7 @@ public class FootballController {
   @Operation(summary = "クラブの取得", description = "クラブIDに紐づくクラブを取得します")
   @GetMapping("/clubs/{clubId}")
   public Club getClub(@PathVariable @Positive int clubId) throws ResourceNotFoundException {
-    return service.getClub(clubId);
+    return footballService.getClub(clubId);
   }
 
   /**
@@ -110,7 +113,7 @@ public class FootballController {
   @Operation(summary = "選手の取得", description = "選手IDに紐づく選手を取得します")
   @GetMapping("/players/{playerId}")
   public Player getPlayer(@PathVariable @Positive int playerId) throws ResourceNotFoundException {
-    return service.getPlayer(playerId);
+    return footballService.getPlayer(playerId);
   }
 
   /**
@@ -120,7 +123,7 @@ public class FootballController {
   @Operation(summary = "国一覧の取得", description = "登録されている国の一覧を取得します")
   @GetMapping("/countries")
   public List<Country> getCountries() {
-    return service.getCountries();
+    return footballService.getCountries();
   }
 
   /**
@@ -131,7 +134,7 @@ public class FootballController {
   @Operation(summary = "リーグ一覧の取得", description = "国IDに紐づくリーグの一覧を取得します")
   @GetMapping("/countries/{countryId}/leagues")
   public List<League> getLeaguesByCountry(@PathVariable @Positive int countryId) {
-    return service.getLeaguesByCountry(countryId);
+    return footballService.getLeaguesByCountry(countryId);
   }
 
   /**
@@ -142,7 +145,7 @@ public class FootballController {
   @Operation(summary = "クラブ一覧の取得", description = "リーグIDに紐づくクラブの一覧を取得します")
   @GetMapping("/leagues/{leagueId}/clubs")
   public List<Club> getClubsByLeague(@PathVariable @Positive int leagueId) {
-    return service.getClubsByLeague(leagueId);
+    return footballService.getClubsByLeague(leagueId);
   }
 
   /**
@@ -152,7 +155,7 @@ public class FootballController {
   @Operation(summary = "クラブ一覧の取得", description = "登録されているクラブの一覧を取得します")
   @GetMapping("/clubs")
   public List<Club> getClubs() {
-    return service.getClubs();
+    return footballService.getClubs();
   }
 
   /**
@@ -164,7 +167,7 @@ public class FootballController {
   @Operation(summary = "順位表の取得", description = "リーグIDとシーズンIDに紐づく順位表を取得します")
   @GetMapping("/leagues/{leagueId}/standings/{seasonId}")
   public Standing getStanding(@PathVariable @Positive int leagueId, @PathVariable @Min(100000) int seasonId) throws ResourceNotFoundException {
-    return Standing.initialStanding(leagueId, seasonId, service);
+    return factoryService.createStanding(leagueId, seasonId);
   }
 
 
@@ -176,7 +179,7 @@ public class FootballController {
   @Operation(summary = "選手一覧の取得", description = "クラブIDに紐づく選手の一覧を取得します")
   @GetMapping("/clubs/{clubId}/players")
   public List<Player> getPlayersByClub(@PathVariable @Positive int clubId) {
-    return service.getPlayersByClub(clubId);
+    return footballService.getPlayersByClub(clubId);
   }
 
   /**
@@ -189,7 +192,7 @@ public class FootballController {
   @GetMapping("/players/{playerId}/player-game-stats/{seasonId}")
   public List<PlayerGameStat> getPlayerGameStatsBySeason(@PathVariable @Positive int playerId, @PathVariable @Min(100000) int seasonId)
       throws ResourceNotFoundException {
-    return service.getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
+    return footballService.getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
   }
 
   /**
@@ -202,7 +205,7 @@ public class FootballController {
   @GetMapping("/clubs/{clubId}/players-season-stats/{seasonId}")
   public List<PlayerSeasonStat> getPlayerSeasonStatsByClubId(@PathVariable @Positive int clubId, @PathVariable @Min(100000) int seasonId)
       throws ResourceNotFoundException {
-    return service.getPlayerSeasonStatsByClubId(clubId, seasonId);
+    return factoryService.createPlayerSeasonStatsByClub(clubId, seasonId);
   }
 
   /**
@@ -215,7 +218,7 @@ public class FootballController {
   @GetMapping("/players/{playerId}/player-season-stats/{seasonId}")
   public List<PlayerSeasonStat> getPlayerSeasonStats(@PathVariable @Positive int playerId, @PathVariable @Min(100000) int seasonId)
       throws ResourceNotFoundException {
-    return service.getPlayerSeasonStatByPlayerId(playerId, seasonId);
+    return factoryService.createPlayerSeasonStats(playerId, seasonId);
   }
 
   /**
@@ -226,7 +229,7 @@ public class FootballController {
   @GetMapping("/players/{playerId}/player-career-stats")
   public List<PlayerSeasonStat> getPlayerCareerStatsByPlayerId(@PathVariable @Positive int playerId)
       throws ResourceNotFoundException {
-    return service.getPlayerSeasonStatsByPlayerId(playerId);
+    return factoryService.createPlayerCareerStats(playerId);
   }
 
 
@@ -238,7 +241,7 @@ public class FootballController {
   @Operation(summary = "試合結果の取得", description = "試合IDに紐づく試合結果を取得します")
   @GetMapping("/game-results/{gameId}")
   public GameResult getGameResult(@PathVariable @Positive int gameId) throws ResourceNotFoundException {
-    return service.getGameResult(gameId);
+    return footballService.getGameResult(gameId);
   }
 
   /**
@@ -248,8 +251,9 @@ public class FootballController {
    * @return 試合結果
    */
   @GetMapping("/leagues/{leagueId}/season-game-results/{seasonId}")
-  public SeasonGameResult getSeasonGameResult(@PathVariable @Positive int leagueId, @PathVariable @Min(100000) int seasonId) {
-    return SeasonGameResult.initialSeasonGameResult(leagueId, seasonId, service);
+  public SeasonGameResult getSeasonGameResult(@PathVariable @Positive int leagueId, @PathVariable @Min(100000) int seasonId)
+      throws ResourceNotFoundException {
+    return factoryService.createSeasonGameResult(leagueId, seasonId);
   }
 
   /**
@@ -261,7 +265,7 @@ public class FootballController {
   @PostMapping("/country")
   public ResponseEntity<Country> registerCountry(@RequestParam @NotBlank String name) {
     Country country = new Country(name);
-    service.registerCountry(country);
+    footballService.registerCountry(country);
 
     return ResponseEntity.ok().body(country);
   }
@@ -275,7 +279,7 @@ public class FootballController {
   @PostMapping("/league")
   public ResponseEntity<League> registerLeague(@RequestBody @Valid LeagueForJson leagueForJson) {
     League league = new League(leagueForJson);
-    service.registerLeague(league);
+    footballService.registerLeague(league);
 
     return ResponseEntity.ok().body(league);
   }
@@ -289,7 +293,7 @@ public class FootballController {
   @PostMapping("/club")
   public ResponseEntity<Club> registerClub(@RequestBody @Valid ClubForJson clubForJson) {
     Club club = new Club(clubForJson);
-    service.registerClub(club);
+    footballService.registerClub(club);
 
     return ResponseEntity.ok().body(club);
   }
@@ -303,7 +307,7 @@ public class FootballController {
   @PostMapping("/player")
   public ResponseEntity<Player> registerPlayer(@RequestBody @Valid PlayerForJson playerForJson) throws FootballException {
     Player player = new Player(playerForJson);
-    service.registerPlayer(player);
+    footballService.registerPlayer(player);
 
     return ResponseEntity.ok().body(player);
   }
@@ -318,9 +322,10 @@ public class FootballController {
   public ResponseEntity<GameResultWithPlayerStats> registerGameResult(
       @RequestBody @Valid GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson)
       throws FootballException, ResourceNotFoundException {
-    GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResultWithPlayerStatsForJson, service);
+    GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResultWithPlayerStatsForJson,
+        footballService);
 
-    service.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats);
+    footballService.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats);
 
     return ResponseEntity.ok().body(gameResultWithPlayerStats);
   }
@@ -334,7 +339,7 @@ public class FootballController {
   @PostMapping("/season")
   public ResponseEntity<Season> registerSeason(@RequestBody @Valid SeasonForJson seasonForJson) throws FootballException {
     Season season = new Season(seasonForJson);
-    service.registerSeason(season);
+    footballService.registerSeason(season);
 
     return ResponseEntity.ok().body(season);
   }
@@ -351,9 +356,9 @@ public class FootballController {
       @RequestBody @Valid PlayerForPatch playerForPatch,
       @PathVariable @Positive int playerId)
       throws FootballException, ResourceNotFoundException, ResourceConflictException {
-    service.updatePlayerNumberAndName(playerId, playerForPatch.getNumber(), playerForPatch.getName());
+    footballService.updatePlayerNumberAndName(playerId, playerForPatch.getNumber(), playerForPatch.getName());
 
-    return ResponseEntity.ok().body(service.getPlayer(playerId));
+    return ResponseEntity.ok().body(footballService.getPlayer(playerId));
   }
 
   /**
@@ -368,9 +373,9 @@ public class FootballController {
       @RequestBody @Valid PlayerForTransfer playerForTransfer,
       @PathVariable @Positive int playerId)
       throws FootballException, ResourceNotFoundException, ResourceConflictException {
-    service.updatePlayerClubAndNumber(playerId, playerForTransfer.getClubId(), playerForTransfer.getNumber());
+    footballService.updatePlayerClubAndNumber(playerId, playerForTransfer.getClubId(), playerForTransfer.getNumber());
 
-    return ResponseEntity.ok().body(service.getPlayer(playerId));
+    return ResponseEntity.ok().body(footballService.getPlayer(playerId));
   }
 
   /**
@@ -384,9 +389,9 @@ public class FootballController {
       @RequestParam @Positive int leagueId,
       @PathVariable @Positive int clubId)
       throws ResourceNotFoundException, ResourceConflictException {
-    service.updateClubLeague(clubId, leagueId);
+    footballService.updateClubLeague(clubId, leagueId);
 
-    return ResponseEntity.ok().body(service.getClub(clubId));
+    return ResponseEntity.ok().body(footballService.getClub(clubId));
   }
 
 

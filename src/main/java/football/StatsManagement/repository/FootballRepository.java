@@ -279,6 +279,12 @@ public interface FootballRepository {
   @Select("SELECT * FROM seasons WHERE id = #{id}")
   Optional<Season> selectSeason(int id);
 
+  @Select(("SELECT DISTINCT pgs.club_id AS clubId" +
+      " FROM player_game_stats pgs" +
+      " JOIN game_results gr ON pgs.game_id = gr.id" +
+      " WHERE gr.season_id = #{seasonId} AND pgs.player_id = #{playerId}"))
+  List<Integer> selectClubIdsByPlayerAndSeason(int playerId, int seasonId);
+
 //  update
   /**
    * Update a player
