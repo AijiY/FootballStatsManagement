@@ -505,6 +505,17 @@ class FootballRepositoryTest {
   }
 
   @Test
+  @DisplayName("選手IDとシーズンIDを指定してクラブIDリストを検索できること_情報が適切であること")
+  void selectClubIdsByPlayerAndSeason() {
+    int playerId = 1;
+    int seasonId = 201920;
+    List<Integer> actual = sut.selectClubIdsByPlayerAndSeason(playerId, seasonId);
+    List<Integer> expected = List.of(1);
+    assertThat(actual.size()).isEqualTo(expected.size());
+    assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+  }
+
+  @Test
   @DisplayName("選手情報を更新できること_更新後の情報が適切であること")
   void updatePlayer() {
     Player player = sut.selectPlayer(1).get();

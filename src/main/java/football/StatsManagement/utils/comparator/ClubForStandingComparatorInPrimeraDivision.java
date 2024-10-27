@@ -1,7 +1,7 @@
 package football.StatsManagement.utils.comparator;
 
 import football.StatsManagement.utils.comparator.calculator.DifferenceCalculatorBetweenTwoClubs;
-import football.StatsManagement.domain.ClubForStanding;
+import football.StatsManagement.model.domain.ClubForStanding;
 import java.util.Comparator;
 
 public class ClubForStandingComparatorInPrimeraDivision implements Comparator<ClubForStanding> {

@@ -11,8 +11,8 @@ import football.StatsManagement.model.data.Country;
 import football.StatsManagement.model.data.League;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
-import football.StatsManagement.domain.SeasonGameResult;
-import football.StatsManagement.domain.Standing;
+import football.StatsManagement.model.domain.SeasonGameResult;
+import football.StatsManagement.service.FactoryService;
 import football.StatsManagement.service.FootballService;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
@@ -21,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,14 +39,16 @@ class FootballControllerTest {
   private MockMvc mockMvc;
 
   @MockBean
-  private FootballService service;
+  private FootballService footballService;
+  @MockBean
+  private FactoryService factoryService;
 
   @Test
   @DisplayName("現在シーズンを取得できること")
   void getCurrentSeason() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/seasons/current"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getCurrentSeason();
+    verify(footballService, times(1)).getCurrentSeason();
   }
 
   @Test
@@ -53,7 +56,7 @@ class FootballControllerTest {
   void getSeasons() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/seasons"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getSeasons();
+    verify(footballService, times(1)).getSeasons();
   }
 
   @Test
@@ -62,7 +65,7 @@ class FootballControllerTest {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + id))
         .andExpect(status().isOk());
-    verify(service, times(1)).getCountry(id);
+    verify(footballService, times(1)).getCountry(id);
   }
 
   @Test
@@ -80,7 +83,7 @@ class FootballControllerTest {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + id))
         .andExpect(status().isOk());
-    verify(service, times(1)).getLeague(id);
+    verify(footballService, times(1)).getLeague(id);
   }
 
   @Test
@@ -98,7 +101,7 @@ class FootballControllerTest {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + id))
         .andExpect(status().isOk());
-    verify(service, times(1)).getClub(id);
+    verify(footballService, times(1)).getClub(id);
   }
 
   @Test
@@ -116,7 +119,7 @@ class FootballControllerTest {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + id))
         .andExpect(status().isOk());
-    verify(service, times(1)).getPlayer(id);
+    verify(footballService, times(1)).getPlayer(id);
   }
 
   @Test
@@ -133,7 +136,7 @@ class FootballControllerTest {
   void getCountries() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/countries"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getCountries();
+    verify(footballService, times(1)).getCountries();
   }
 
   @Test
@@ -142,7 +145,7 @@ class FootballControllerTest {
     int countryId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + countryId + "/leagues"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getLeaguesByCountry(countryId);
+    verify(footballService, times(1)).getLeaguesByCountry(countryId);
   }
 
   @Test
@@ -160,7 +163,7 @@ class FootballControllerTest {
     int leagueId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/clubs"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getClubsByLeague(leagueId);
+    verify(footballService, times(1)).getClubsByLeague(leagueId);
   }
 
   @Test
@@ -177,7 +180,7 @@ class FootballControllerTest {
   void getClubs() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getClubs();
+    verify(footballService, times(1)).getClubs();
   }
 
   @Test
@@ -185,11 +188,9 @@ class FootballControllerTest {
   void getStanding() throws Exception {
     int leagueId = 1;
     int seasonId = 100001;
-    try (MockedStatic<Standing> standing = mockStatic(Standing.class)) {
-      mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/standings/" + seasonId))
-          .andExpect(status().isOk());
-      standing.verify(() -> Standing.initialStanding(leagueId, seasonId, service));
-    }
+    mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/standings/" + seasonId))
+        .andExpect(status().isOk());
+    verify(factoryService, times(1)).createStanding(leagueId, seasonId);
   }
 
   @ParameterizedTest
@@ -210,7 +211,7 @@ class FootballControllerTest {
     int clubId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + clubId + "/players"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getPlayersByClub(clubId);
+    verify(footballService, times(1)).getPlayersByClub(clubId);
   }
 
   @Test
@@ -229,7 +230,7 @@ class FootballControllerTest {
     int seasonId = 100001;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-game-stats/" + seasonId))
         .andExpect(status().isOk());
-    verify(service, times(1)).getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
+    verify(footballService, times(1)).getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
   }
 
   @ParameterizedTest
@@ -246,12 +247,12 @@ class FootballControllerTest {
 
   @Test
   @DisplayName("クラブIDとシーズンIDに紐づく選手のシーズン成績を取得できること")
-  void getPlayerSeasonStatsByClubIdByClub() throws Exception {
+  void getPlayerSeasonStatsByClubIdByClubId() throws Exception {
     int clubId = 1;
     int seasonId = 100001;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + clubId + "/players-season-stats/" + seasonId))
         .andExpect(status().isOk());
-    verify(service, times(1)).getPlayerSeasonStatsByClubId(clubId, seasonId);
+    verify(factoryService, times(1)).createPlayerSeasonStatsByClub(clubId, seasonId);
   }
 
   @ParameterizedTest
@@ -273,7 +274,7 @@ class FootballControllerTest {
     int seasonId = 100001;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-season-stats/" + seasonId))
         .andExpect(status().isOk());
-    verify(service, times(1)).getPlayerSeasonStatByPlayerId(playerId, seasonId);
+    verify(factoryService, times(1)).createPlayerSeasonStats(playerId, seasonId);
   }
 
   @ParameterizedTest
@@ -290,11 +291,11 @@ class FootballControllerTest {
 
   @Test
   @DisplayName("選手IDに紐づく選手の通算成績を取得できること")
-  void getPlayerCareerStatsByPlayerIdByClub() throws Exception {
+  void getPlayerCareerStatsByPlayerId() throws Exception {
     int playerId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stats"))
         .andExpect(status().isOk());
-    verify(service, times(1)).getPlayerSeasonStatsByPlayerId(playerId);
+    verify(factoryService, times(1)).createPlayerCareerStats(playerId);
   }
 
   @Test
@@ -312,7 +313,7 @@ class FootballControllerTest {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
         .andExpect(status().isOk());
-    verify(service, times(1)).getGameResult(id);
+    verify(footballService, times(1)).getGameResult(id);
   }
 
   @Test
@@ -320,11 +321,9 @@ class FootballControllerTest {
   void getSeasonGameResult() throws Exception {
     int leagueId = 1;
     int seasonId = 100001;
-    try (MockedStatic<SeasonGameResult> seasonGameResult = mockStatic(SeasonGameResult.class)) {
-      mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/season-game-results/" + seasonId))
-          .andExpect(status().isOk());
-      seasonGameResult.verify(() -> SeasonGameResult.initialSeasonGameResult(leagueId, seasonId, service));
-    }
+    mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/season-game-results/" + seasonId))
+        .andExpect(status().isOk());
+    verify(factoryService, times(1)).createSeasonGameResult(leagueId, seasonId);
   }
 
   @ParameterizedTest
@@ -355,7 +354,7 @@ class FootballControllerTest {
     mockMvc.perform(MockMvcRequestBuilders.post("/country")
         .param("name", name))
         .andExpect(status().isOk());
-    verify(service, times(1)).registerCountry(any(Country.class));
+    verify(footballService, times(1)).registerCountry(any(Country.class));
   }
 
   @Test
@@ -381,7 +380,7 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
-    verify(service, times(1)).registerLeague(any(League.class));
+    verify(footballService, times(1)).registerLeague(any(League.class));
   }
 
   @Test
@@ -439,7 +438,7 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
-    verify(service, times(1)).registerClub(any());
+    verify(footballService, times(1)).registerClub(any());
   }
 
   @Test
@@ -497,7 +496,7 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
-    verify(service, times(1)).registerPlayer(any());
+    verify(footballService, times(1)).registerPlayer(any());
   }
 
   @Test
@@ -590,7 +589,7 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
-    verify(service, times(1)).registerGameResultAndPlayerGameStats(any(GameResultWithPlayerStats.class));
+    verify(footballService, times(1)).registerGameResultAndPlayerGameStats(any(GameResultWithPlayerStats.class));
   }
 
 
@@ -967,7 +966,7 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
-    verify(service, times(1)).registerSeason(any(Season.class));
+    verify(footballService, times(1)).registerSeason(any(Season.class));
   }
 
   @Test
@@ -1029,8 +1028,8 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
-    verify(service, times(1)).updatePlayerNumberAndName(playerId, 2, "Updated Player");
-    verify(service, times(1)).getPlayer(playerId);
+    verify(footballService, times(1)).updatePlayerNumberAndName(playerId, 2, "Updated Player");
+    verify(footballService, times(1)).getPlayer(playerId);
   }
 
   @Test
@@ -1106,8 +1105,8 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
-    verify(service, times(1)).updatePlayerClubAndNumber(playerId, 2, 2);
-    verify(service, times(1)).getPlayer(playerId);
+    verify(footballService, times(1)).updatePlayerClubAndNumber(playerId, 2, 2);
+    verify(footballService, times(1)).getPlayer(playerId);
   }
 
   @Test
@@ -1177,8 +1176,8 @@ class FootballControllerTest {
     mockMvc.perform(MockMvcRequestBuilders.patch("/club-promote-or-relegate/" + clubId)
         .param("leagueId", String.valueOf(leagueId)))
         .andExpect(status().isOk());
-    verify(service, times(1)).updateClubLeague(clubId, leagueId);
-    verify(service, times(1)).getClub(clubId);
+    verify(footballService, times(1)).updateClubLeague(clubId, leagueId);
+    verify(footballService, times(1)).getClub(clubId);
   }
 
   @Test

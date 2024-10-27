@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import football.StatsManagement.utils.comparator.ClubForStandingComparatorInCommon;
 import football.StatsManagement.utils.comparator.ClubForStandingComparatorInEnglishPremierLeague;
 import football.StatsManagement.utils.comparator.ClubForStandingComparatorInPrimeraDivision;
-import football.StatsManagement.domain.ClubForStanding;
+import football.StatsManagement.model.domain.ClubForStanding;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

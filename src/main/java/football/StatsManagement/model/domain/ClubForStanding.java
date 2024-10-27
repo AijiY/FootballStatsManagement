@@ -1,4 +1,4 @@
-package football.StatsManagement.domain;
+package football.StatsManagement.model.domain;
 
 import football.StatsManagement.service.FootballService;
 import football.StatsManagement.model.data.Club;
@@ -41,58 +41,6 @@ public class ClubForStanding {
     this.goalsFor = goalsFor;
     this.goalsAgainst = goalsAgainst;
     this.goalDifference = goalDifference;
-  }
-
-  public static ClubForStanding initialClubForStanding (int seasonId, Club club, FootballService service) {
-    List<GameResult> gameResults = service.getGameResultsByClubAndSeason(seasonId, club.getId());
-    int gamesPlayed = gameResults.size();
-    int wins = getWins(gameResults, club.getId());
-    int draws = getDraws(gameResults);
-    int losses = gamesPlayed - wins - draws;
-    int points = wins * 3 + draws;
-    int goalsFor = getGoalsFor(gameResults, club.getId());
-    int goalsAgainst = getGoalsAgainst(gameResults, club.getId());
-    int goalDifference = goalsFor - goalsAgainst;
-
-    return new ClubForStanding(gameResults, club, gamesPlayed, wins, draws, losses, points, goalsFor, goalsAgainst, goalDifference);
-  }
-
-  // コンストラクタ用の値を取得するメソッド
-  private static int getWins(List<GameResult> gameResults, int clubId) {
-    int wins = 0;
-    for (GameResult gameResult : gameResults) {
-      if (gameResult.getWinnerClubId() == null) {
-        continue;
-      }
-      wins += gameResult.getWinnerClubId() == clubId ? 1 : 0;
-    }
-    return wins;
-  }
-
-  private static int getDraws(List<GameResult> gameResults) {
-    int draws = 0;
-    for (GameResult gameResult : gameResults) {
-      draws += gameResult.getWinnerClubId() == null ? 1 : 0;
-    }
-    return draws;
-  }
-
-  private static int getGoalsFor(List<GameResult> gameResults, int clubId) {
-    int goalsFor = 0;
-    for (GameResult gameResult : gameResults) {
-      goalsFor += gameResult.getHomeClubId() == clubId ? gameResult.getHomeScore() : 0;
-      goalsFor += gameResult.getAwayClubId() == clubId ? gameResult.getAwayScore() : 0;
-    }
-    return goalsFor;
-  }
-
-  private static int getGoalsAgainst(List<GameResult> gameResults, int clubId) {
-    int goalsAgainst = 0;
-    for (GameResult gameResult : gameResults) {
-      goalsAgainst += gameResult.getHomeClubId() == clubId ? gameResult.getAwayScore() : 0;
-      goalsAgainst += gameResult.getAwayClubId() == clubId ? gameResult.getHomeScore() : 0;
-    }
-    return goalsAgainst;
   }
 
   // 2クラブ間の成績比較のためのメソッド
