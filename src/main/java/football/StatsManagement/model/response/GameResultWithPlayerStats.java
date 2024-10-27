@@ -5,6 +5,7 @@ import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.service.FootballService;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +18,24 @@ public class GameResultWithPlayerStats {
   private List<PlayerGameStat> homePlayerGameStats;
   private List<PlayerGameStat> awayPlayerGameStats;
 
-  public GameResultWithPlayerStats(GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson, FootballService service) {
-    this.gameResult = new GameResult(gameResultWithPlayerStatsForJson.getGameResult());
-    this.homePlayerGameStats = service.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.getHomeClubPlayerGameStats());
-    this.awayPlayerGameStats = service.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.getAwayClubPlayerGameStats());
+  // テスト用にequalsとhashCodeをオーバーライド
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    GameResultWithPlayerStats that = (GameResultWithPlayerStats) o;
+    return gameResult.equals(that.gameResult) &&
+        homePlayerGameStats.equals(that.homePlayerGameStats) &&
+        awayPlayerGameStats.equals(that.awayPlayerGameStats);
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(gameResult, homePlayerGameStats, awayPlayerGameStats);
+  }
+
 }
+
+

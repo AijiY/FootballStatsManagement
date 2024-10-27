@@ -9,12 +9,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GameResultWithPlayerStatsForJson {
   @Valid
-  private final GameResultForJson gameResult;
+  private final GameResultForJson gameResultForJson;
 
   @Valid
-  private final List<PlayerGameStatForJson> homeClubPlayerGameStats;
+  private final List<PlayerGameStatForJson> homeClubPlayerGameStatsForJson;
 
   @Valid
-  private final List<PlayerGameStatForJson> awayClubPlayerGameStats;
+  private final List<PlayerGameStatForJson> awayClubPlayerGameStatsForJson;
 
 }

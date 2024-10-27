@@ -12,6 +12,8 @@ import football.StatsManagement.model.data.GameResult;
 import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
+import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
+import football.StatsManagement.model.response.GameResultWithPlayerStats;
 import football.StatsManagement.utils.RankingUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Schema(description = "ドメインクラスとそのリストを初期化するためのクラス")
+@Schema(description = "ドメインクラスおよびレスポンスクラスとそのリストを初期化するためのクラス")
 @Service
 public class FactoryService {
   private final FootballService footballService;
@@ -181,6 +183,16 @@ public class FactoryService {
     String seasonName = footballService.getSeason(seasonId).getName();
 
     return new Standing(leagueId, seasonId, rankedClubForStandings, leagueName, seasonName);
+  }
+
+  public GameResultWithPlayerStats createGameResultWithPlayerStats(
+      GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson) {
+    GameResult gameResult = new GameResult(gameResultWithPlayerStatsForJson.getGameResultForJson());
+    List<PlayerGameStat> homePlayerGameStats
+        = footballService.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.getHomeClubPlayerGameStatsForJson());
+    List<PlayerGameStat> awayPlayerGameStats
+        = footballService.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.getAwayClubPlayerGameStatsForJson());
+    return new GameResultWithPlayerStats(gameResult, homePlayerGameStats, awayPlayerGameStats);
   }
 
 }
