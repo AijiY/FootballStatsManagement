@@ -104,7 +104,7 @@ public class FootballService {
   public void registerSeason(Season season) throws FootballException {
     // startDateからendDateが366日以内か確認
     if (season.getStartDate().plusDays(365).isBefore(season.getEndDate())) {
-      throw new FootballException("Season period is less than or equal to 366 days");
+      throw new FootballException("Season period should be less than or equal to 366 days");
     }
     // シーズン名が適正であるか確認（2024-25, 1999-00のような形式）
     if (!season.getName().matches("\\d{4}-\\d{2}")) {
@@ -304,6 +304,10 @@ public class FootballService {
     return repository.selectSeasons();
   }
 
+  public List<PlayerGameStat> getPlayerGameStatsByGameId(int gameId) {
+    return repository.selectPlayerGameStatsByGame(gameId);
+  }
+
   /**
    * Get current season
    * @return current season
@@ -460,22 +464,6 @@ public class FootballService {
   }
 
   /**
-   * Get winner club ID
-   * @param gameResult
-   * @return winner club ID
-   */
-  public int getWinnerClubId(GameResult gameResult) {
-    if (gameResult.getHomeScore() > gameResult.getAwayScore()) {
-      return gameResult.getHomeClubId();
-    } else if (gameResult.getHomeScore() < gameResult.getAwayScore()) {
-      return gameResult.getAwayClubId();
-    } else {
-      return 0;
-    }
-  }
-
-
-  /**
    * Register game result and player game stats
    * @param gameResultWithPlayerStats
    */
@@ -537,7 +525,7 @@ public class FootballService {
     }
     // リーグが存在するか確認（明示的に例外をスローするため、あえて内部メソッドではなくrepositoryを使用）
     repository.selectLeague(gameResult.getLeagueId())
-        .orElseThrow(() -> new FootballException("League not found"));
+        .orElseThrow(() -> new ResourceNotFoundException("League not found"));
     // リーグとクラブが紐づいているかを確認
     Club homeClub = getClub(gameResult.getHomeClubId());
     Club awayClub = getClub(gameResult.getAwayClubId());
@@ -609,20 +597,14 @@ public class FootballService {
     }
   }
 
-  public LocalDate convertStringToLocalDate(String dateString) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-    LocalDate gameDate = LocalDate.parse(dateString, formatter);
-    return gameDate;
-  }
-
   /**
    * Convert player game stats for insert to player game stats
-   * @param playerGameStatsForInsert
+   * @param playerGameStatsForJson
    * @return player game stats
    */
-  public List<PlayerGameStat> convertPlayerGameStatsForInsertToPlayerGameStats(List<PlayerGameStatForJson> playerGameStatsForInsert) {
+  public List<PlayerGameStat> convertPlayerGameStatsForInsertToPlayerGameStats(List<PlayerGameStatForJson> playerGameStatsForJson) {
     List<PlayerGameStat> playerGameStats = new ArrayList<>();
-    for (PlayerGameStatForJson playerGameStatForJson : playerGameStatsForInsert) {
+    for (PlayerGameStatForJson playerGameStatForJson : playerGameStatsForJson) {
       PlayerGameStat playerGameStat = new PlayerGameStat(playerGameStatForJson);
       playerGameStats.add(playerGameStat);
     }
@@ -631,7 +613,7 @@ public class FootballService {
 
   public GameResultWithPlayerStats getGameResultWithPlayerStats(int gameId) throws ResourceNotFoundException {
     GameResult gameResult = getGameResult(gameId);
-    List<PlayerGameStat> playerGameStats = repository.selectPlayerGameStatsByGame(gameId);
+    List<PlayerGameStat> playerGameStats = getPlayerGameStatsByGameId(gameId);
     List<PlayerGameStat> homeClubStats = playerGameStats.stream()
         .filter(playerGameStat -> playerGameStat.getClubId() == gameResult.getHomeClubId())
         .collect(Collectors.toList());

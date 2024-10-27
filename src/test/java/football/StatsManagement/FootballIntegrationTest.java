@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import football.StatsManagement.exception.FootballException;
 import football.StatsManagement.exception.ResourceConflictException;
+import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.data.Club;
 import football.StatsManagement.model.data.Country;
 import football.StatsManagement.model.data.GameResult;
@@ -698,7 +699,7 @@ class FootballIntegrationTest {
       "2020-08-01,  4, 9, 10,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Home club and player are not matched'",
       "2020-08-01,  4, 9,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Away club is not in the league'",
       "2020-08-01,  4, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Home club is not in the league'",
-      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",
+//      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",  ※ResouceNotFoundExceptionが発生するため、個別対応
       "2019-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Game date is not in the current season'"
   })
   @DisplayName("試合結果の登録_サービス内で例外処理を発生させるパターン")
@@ -752,6 +753,66 @@ class FootballIntegrationTest {
         .andExpect(status().isBadRequest())
         .andExpect(result -> assertThrows(FootballException.class, () -> {
           throw new FootballException(expectedMessage);
+        }));
+
+  }
+
+  @ParameterizedTest
+  // 例外種別がこれのみ異なる
+  @CsvSource({
+      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",
+  })
+  @DisplayName("試合結果の登録_サービス内で例外処理を発生させるパターン_リーグが存在しない場合")
+  void registerGameResultWithExceptionInService_404(
+      LocalDate gameDate, int leagueId, int homeClubId, int awayClubId,
+      int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists, int homeTriggerPlayerOwnGoals,
+      boolean homeTriggerPlayerStarter, int homeTriggerPlayerMinutes,
+      int awayTriggerPlayerId, int awayTriggerPlayerGoals, int awayTriggerPlayerAssists, int awayTriggerPlayerOwnGoals,
+      boolean awayTriggerPlayerStarter, int awayTriggerPlayerMinutes, String expectedMessage) throws Exception {
+    GameResultForJson gameResultForJson = new GameResultForJson(homeClubId, awayClubId, 3, 1, leagueId, gameDate, 202021);
+    List<PlayerGameStatForJson> homeClubPlayerGameStatsForJson = List.of(
+        new PlayerGameStatForJson(17, true, 1, 2, 0, 90, 0, 0),
+        new PlayerGameStatForJson(18, true, 1, 1, 0, 90, 0, 0),
+        new PlayerGameStatForJson(19, true, 1, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(20, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(21, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(22, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(23, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(24, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(25, true, 0, 0, 0, 80, 0, 0),
+        new PlayerGameStatForJson(26, true, 0, 0, 0, 70, 0, 0),
+        new PlayerGameStatForJson(27, true, 0, 0, 0, 60, 0, 0),
+        new PlayerGameStatForJson(28, false, 0, 0, 0, 10, 0, 0),
+        new PlayerGameStatForJson(29, false, 0, 0, 0, 20, 0, 0),
+        new PlayerGameStatForJson(homeTriggerPlayerId, homeTriggerPlayerStarter, homeTriggerPlayerGoals, homeTriggerPlayerAssists, homeTriggerPlayerOwnGoals, homeTriggerPlayerMinutes, 0, 0)
+    );
+    List<PlayerGameStatForJson> awayClubPlayerGameStatsForJson = List.of(
+        new PlayerGameStatForJson(32, true, 1, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(33, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(34, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(35, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(36, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(37, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(38, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(39, true, 0, 0, 0, 90, 0, 0),
+        new PlayerGameStatForJson(40, true, 0, 0, 0, 85, 0, 0),
+        new PlayerGameStatForJson(41, true, 0, 0, 0, 75, 0, 0),
+        new PlayerGameStatForJson(42, true, 0, 0, 0, 65, 0, 0),
+        new PlayerGameStatForJson(43, false, 0, 0, 0, 5, 0, 0),
+        new PlayerGameStatForJson(44, false, 0, 0, 0, 15, 0, 0),
+        new PlayerGameStatForJson(awayTriggerPlayerId, awayTriggerPlayerStarter, awayTriggerPlayerGoals, awayTriggerPlayerAssists, awayTriggerPlayerOwnGoals, awayTriggerPlayerMinutes, 0, 0)
+    );
+
+    GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson = new GameResultWithPlayerStatsForJson(
+        gameResultForJson, homeClubPlayerGameStatsForJson, awayClubPlayerGameStatsForJson);
+    String requestBody = objectMapper.writeValueAsString(gameResultWithPlayerStatsForJson);
+
+    mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
+            .contentType("application/json")
+            .content(requestBody))
+        .andExpect(status().isNotFound())
+        .andExpect(result -> assertThrows(ResourceNotFoundException.class, () -> {
+          throw new ResourceNotFoundException(expectedMessage);
         }));
 
   }

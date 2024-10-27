@@ -2,14 +2,17 @@ package football.StatsManagement.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import football.StatsManagement.model.data.Country;
 import football.StatsManagement.model.data.League;
 import football.StatsManagement.model.data.Season;
+import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
 import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.service.FactoryService;
@@ -552,7 +555,7 @@ class FootballControllerTest {
     // JSONリクエストボディの作成
     String requestBody = """
         {
-           "gameResult": {
+           "gameResultJson": {
              "homeClubId": 1,
              "awayClubId": 2,
              "homeScore": 3,
@@ -561,7 +564,7 @@ class FootballControllerTest {
              "gameDate": "2024-10-01",
              "seasonId": 202425
            },
-           "homeClubPlayerGameStats": [
+           "homeClubPlayerGameStatsJson": [
              {
                "playerId": 101,
                "starter": true,
@@ -572,7 +575,7 @@ class FootballControllerTest {
                "redCards": 0
              }
            ],
-           "awayClubPlayerGameStats": [
+           "awayClubPlayerGameStatsJson": [
              {
                "playerId": 201,
                "starter": true,
@@ -585,10 +588,15 @@ class FootballControllerTest {
            ]
          }
         """;
+    GameResultWithPlayerStats gameResultWithPlayerStats = mock(GameResultWithPlayerStats.class);
+    when(factoryService.createGameResultWithPlayerStats(any(GameResultWithPlayerStatsForJson.class)))
+        .thenReturn(gameResultWithPlayerStats);
+
     mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk());
+    verify(factoryService, times(1)).createGameResultWithPlayerStats(any(GameResultWithPlayerStatsForJson.class));
     verify(footballService, times(1)).registerGameResultAndPlayerGameStats(any(GameResultWithPlayerStats.class));
   }
 
@@ -599,7 +607,7 @@ class FootballControllerTest {
     // JSONリクエストボディの作成（GameResultのすべてのフィールドでバリデーションテスト無視）
     String requestBody = """
         {
-           "gameResult": {
+           "gameResultForJson": {
              "homeClubId": 0,
              "awayClubId": -1,
              "homeScore": -1,
@@ -608,7 +616,7 @@ class FootballControllerTest {
              "gameDate": null,
              "seasonId": 0
            },
-           "homeClubPlayerGameStats": [
+           "homeClubPlayerGameStatsForJson": [
              {
                "playerId": 101,
                "starter": true,
@@ -619,7 +627,7 @@ class FootballControllerTest {
                "redCards": 0
              }
            ],
-           "awayClubPlayerGameStats": [
+           "awayClubPlayerGameStatsForJson": [
              {
                "playerId": 201,
                "starter": true,
@@ -643,13 +651,13 @@ class FootballControllerTest {
 
           // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
           Map<String, String> expectedErrorMessages = Map.of(
-              "gameResult.homeClubId", "must be greater than 0",
-              "gameResult.awayClubId", "must be greater than 0",
-              "gameResult.homeScore", "must be greater than or equal to 0",
-              "gameResult.awayScore", "must be greater than or equal to 0",
-              "gameResult.leagueId", "must be greater than 0",
-              "gameResult.gameDate", "must not be null",
-              "gameResult.seasonId", "must be greater than or equal to 100000"
+              "gameResultForJson.homeClubId", "must be greater than 0",
+              "gameResultForJson.awayClubId", "must be greater than 0",
+              "gameResultForJson.homeScore", "must be greater than or equal to 0",
+              "gameResultForJson.awayScore", "must be greater than or equal to 0",
+              "gameResultForJson.leagueId", "must be greater than 0",
+              "gameResultForJson.gameDate", "must not be null",
+              "gameResultForJson.seasonId", "must be greater than or equal to 100000"
           );
 
           // エラーメッセージが予期したものか確認
@@ -672,7 +680,7 @@ class FootballControllerTest {
     // JSONリクエストボディの作成（homeClubIdとawayClubIdが同じ値）
     String requestBody = """
         {
-           "gameResult": {
+           "gameResultForJson": {
              "homeClubId": 1,
              "awayClubId": 1,
              "homeScore": 3,
@@ -681,7 +689,7 @@ class FootballControllerTest {
              "gameDate": "2024-10-01",
              "seasonId": 202425
            },
-           "homeClubPlayerGameStats": [
+           "homeClubPlayerGameStatsJson": [
              {
                "playerId": 101,
                "starter": true,
@@ -692,7 +700,7 @@ class FootballControllerTest {
                "redCards": 0
              }
            ],
-           "awayClubPlayerGameStats": [
+           "awayClubPlayerGameStatsJson": [
              {
                "playerId": 201,
                "starter": true,
@@ -716,7 +724,7 @@ class FootballControllerTest {
 
           // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
           Map<String, String> expectedErrorMessages = Map.of(
-              "gameResult.homeClubDifferentFromAwayClub", "Home club and away club must be different."
+              "gameResultForJson.homeClubDifferentFromAwayClub", "Home club and away club must be different."
           );
 
           // エラーメッセージが予期したものか確認
@@ -741,7 +749,7 @@ class FootballControllerTest {
     // JSONリクエストボディの作成（homeClubPlayerGameStatsのすべてのフィールドでバリデーションテスト無視）
     String requestBody = """
         {
-           "gameResult": {
+           "gameResultForJson": {
              "homeClubId": 1,
              "awayClubId": 2,
              "homeScore": 3,
@@ -750,7 +758,7 @@ class FootballControllerTest {
              "gameDate": "2024-10-01",
              "seasonId": 202425
            },
-           "homeClubPlayerGameStats": [
+           "homeClubPlayerGameStatsForJson": [
              {
                "playerId": 0,
                "starter": null,
@@ -761,7 +769,7 @@ class FootballControllerTest {
                "redCards": -1
              }
            ],
-           "awayClubPlayerGameStats": [
+           "awayClubPlayerGameStatsForJson": [
              {
                "playerId": 201,
                "starter": true,
@@ -785,12 +793,12 @@ class FootballControllerTest {
 
           // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
           Map<String, String> expectedErrorMessages = Map.of(
-              "homeClubPlayerGameStats[0].playerId", "must be greater than 0",
-              "homeClubPlayerGameStats[0].goals", "must be greater than or equal to 0",
-              "homeClubPlayerGameStats[0].assists", "must be greater than or equal to 0",
-              "homeClubPlayerGameStats[0].minutes", "must be greater than or equal to 0",
-              "homeClubPlayerGameStats[0].yellowCards", "must be greater than or equal to 0",
-              "homeClubPlayerGameStats[0].redCards", "must be greater than or equal to 0"
+              "homeClubPlayerGameStatsForJson[0].playerId", "must be greater than 0",
+              "homeClubPlayerGameStatsForJson[0].goals", "must be greater than or equal to 0",
+              "homeClubPlayerGameStatsForJson[0].assists", "must be greater than or equal to 0",
+              "homeClubPlayerGameStatsForJson[0].minutes", "must be greater than or equal to 0",
+              "homeClubPlayerGameStatsForJson[0].yellowCards", "must be greater than or equal to 0",
+              "homeClubPlayerGameStatsForJson[0].redCards", "must be greater than or equal to 0"
           );
 
           // エラーメッセージが予期したものか確認
@@ -813,7 +821,7 @@ class FootballControllerTest {
     // JSONリクエストボディの作成（homeClubPlayerGameStatsのすべてのフィールドでバリデーションテスト無視）
     String requestBody = """
         {
-           "gameResult": {
+           "gameResultForJson": {
              "homeClubId": 1,
              "awayClubId": 2,
              "homeScore": 3,
@@ -822,7 +830,7 @@ class FootballControllerTest {
              "gameDate": "2024-10-01",
              "seasonId": 202425
            },
-           "homeClubPlayerGameStats": [
+           "homeClubPlayerGameStatsForJson": [
              {
                "playerId": 1,
                "starter": true,
@@ -833,7 +841,7 @@ class FootballControllerTest {
                "redCards": 10
              }
            ],
-           "awayClubPlayerGameStats": [
+           "awayClubPlayerGameStatsForJson": [
              {
                "playerId": 201,
                "starter": true,
@@ -857,8 +865,8 @@ class FootballControllerTest {
 
           // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
           Map<String, String> expectedErrorMessages = Map.of(
-              "homeClubPlayerGameStats[0].yellowCards", "must be less than or equal to 2",
-              "homeClubPlayerGameStats[0].redCards", "must be less than or equal to 1"
+              "homeClubPlayerGameStatsForJson[0].yellowCards", "must be less than or equal to 2",
+              "homeClubPlayerGameStatsForJson[0].redCards", "must be less than or equal to 1"
           );
 
           // エラーメッセージが予期したものか確認
@@ -890,7 +898,7 @@ class FootballControllerTest {
     // JSONリクエストボディの作成（homeClubPlayerGameStatsのplayerIdとminutes以外がCsvSourceの値）
     String requestBody = String.format("""
         {
-           "gameResult": {
+           "gameResultForJson": {
              "homeClubId": 1,
              "awayClubId": 2,
              "homeScore": 3,
@@ -899,7 +907,7 @@ class FootballControllerTest {
              "gameDate": "2024-10-01",
              "seasonId": 202425
            },
-           "homeClubPlayerGameStats": [
+           "homeClubPlayerGameStatsForJson": [
              {
                "playerId": 1,
                "starter": %b,
@@ -910,7 +918,7 @@ class FootballControllerTest {
                "redCards": %d
              }
            ],
-           "awayClubPlayerGameStats": [
+           "awayClubPlayerGameStatsForJson": [
              {
                "playerId": 201,
                "starter": true,
@@ -934,7 +942,7 @@ class FootballControllerTest {
 
           // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
           Map<String, String> expectedErrorMessages = Map.of(
-              "homeClubPlayerGameStats[0].minutesZero", "If minutes is 0, stats must be 0, and the player must not be a starter."
+              "homeClubPlayerGameStatsForJson[0].minutesZero", "If minutes is 0, stats must be 0, and the player must not be a starter."
           );
 
           // エラーメッセージが予期したものか確認
