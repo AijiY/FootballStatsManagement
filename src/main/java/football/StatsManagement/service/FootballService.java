@@ -104,15 +104,15 @@ public class FootballService {
   public void registerSeason(Season season) throws FootballException {
     // startDateからendDateが366日以内か確認
     if (season.getStartDate().plusDays(365).isBefore(season.getEndDate())) {
-      throw new FootballException("Season period should be less than or equal to 366 days");
+      throw new FootballException("Season period must be less than or equal to 366 days");
     }
     // シーズン名が適正であるか確認（2024-25, 1999-00のような形式）
     if (!season.getName().matches("\\d{4}-\\d{2}")) {
-      throw new FootballException("Season name should be in the format of 'yyyy-yy'");
+      throw new FootballException("Season name must be in the format of 'yyyy-yy'");
     }
     // シーズン名の最初の4文字がstartDateの年と一致するか確認
     if (!season.getName().startsWith(String.valueOf(season.getStartDate().getYear()))) {
-      throw new FootballException("Season name should start with the year of start date");
+      throw new FootballException("Season name must start with the year of start date");
     }
     // シーズン名の数字が適切であるか（連続した2年を示しているか）確認
     confirmSeasonNameNumber(season.getName());
@@ -143,7 +143,7 @@ public class FootballService {
     } else if (startYear + 1 == endYear) {
       return;
     } else {
-      throw new FootballException("Year in season name is not correct");
+      throw new FootballException("Season name is not matched to the period");
     }
   }
 
@@ -369,7 +369,7 @@ public class FootballService {
     }
     // 現在の情報と変更がなければResourceConflictExceptionを投げる
     if (player.getNumber() == number && player.getName().equals(name)) {
-      throw new ResourceConflictException("Player number and name are not changed");
+      throw new ResourceConflictException("There is no change");
     }
     repository.updatePlayerNumberAndName(id, number, name);
   }
@@ -397,7 +397,7 @@ public class FootballService {
     Club club = getClub(id);
     // リーグが変更されているかを確認
     if (club.getLeagueId() == leagueId) {
-      throw new ResourceConflictException("Club league is not changed");
+      throw new ResourceConflictException("There is no change");
     }
     repository.updateClubLeague(id, leagueId);
   }
@@ -521,7 +521,7 @@ public class FootballService {
     // gameDateが今シーズンの範囲内か確認
     Season season = getCurrentSeason();
     if (gameResult.getGameDate().isBefore(season.getStartDate()) || gameResult.getGameDate().isAfter(season.getEndDate())) {
-      throw new FootballException("Game date is not in the current season");
+      throw new FootballException("Game date must be in the current season period");
     }
     // リーグが存在するか確認（明示的に例外をスローするため、あえて内部メソッドではなくrepositoryを使用）
     repository.selectLeague(gameResult.getLeagueId())
@@ -565,10 +565,10 @@ public class FootballService {
     int homeAssists = homeClubStats.stream().mapToInt(PlayerGameStat::getAssists).sum();
     int awayAssists = awayClubStats.stream().mapToInt(PlayerGameStat::getAssists).sum();
     if (homeScore != homeScoreCalculated) {
-      throw new FootballException("Home score is not correct");
+      throw new FootballException("There is contradiction in home score and home goals and away own goals");
     }
     if (awayScore != awayScoreCalculated) {
-      throw new FootballException("Away score is not correct");
+      throw new FootballException("There is contradiction in away score and away goals and home own goals");
     }
     // アシストがゴールより多くないか確認
     if (homeAssists > homeScore) {
@@ -581,19 +581,19 @@ public class FootballService {
     int homeStarterCount = (int) homeClubStats.stream().filter(PlayerGameStat::isStarter).count();
     int awayStarterCount = (int) awayClubStats.stream().filter(PlayerGameStat::isStarter).count();
     if (homeStarterCount != 11) {
-      throw new FootballException("Home starter count is not correct");
+      throw new FootballException("Home starter count must be 11");
     }
     if (awayStarterCount != 11) {
-      throw new FootballException("Away starter count is not correct");
+      throw new FootballException("Away starter count must be 11");
     }
     // 出場時間が合計990分以上になっているか確認
     int homeMinutes = homeClubStats.stream().mapToInt(PlayerGameStat::getMinutes).sum();
     int awayMinutes = awayClubStats.stream().mapToInt(PlayerGameStat::getMinutes).sum();
     if (homeMinutes < 990) {
-      throw new FootballException("Home minutes is not correct");
+      throw new FootballException("Home minutes is less than 990");
     }
     if (awayMinutes < 990) {
-      throw new FootballException("Away minutes is not correct");
+      throw new FootballException("Away minutes is less than 990");
     }
   }
 
