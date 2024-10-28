@@ -8,7 +8,7 @@ import java.util.Comparator;
  * 勝ち点のみでクラブの順位を決定するためのComparatorクラス
  */
 public class ClubForStandingComparatorInCommon implements Comparator<ClubForStanding> {
-  private DifferenceCalculatorBetweenTwoClubs calculator;
+  private final DifferenceCalculatorBetweenTwoClubs calculator;
 
   public ClubForStandingComparatorInCommon() {
     this.calculator = new DifferenceCalculatorBetweenTwoClubs();
@@ -26,11 +26,7 @@ public class ClubForStandingComparatorInCommon implements Comparator<ClubForStan
 
     // 勝ち点
     comparisonResult = calculator.pointsDifference(c1, c2);
-    if (comparisonResult != 0) {
-      return comparisonResult;
-    }
-
-    return 0;
+    return comparisonResult;
   }
 
 }

@@ -55,18 +55,6 @@ public class PlayerGameStat {
 
   /**
    * DBからデータを取得する際のコンストラクタ
-   * @param id
-   * @param playerId
-   * @param clubId
-   * @param number
-   * @param starter
-   * @param goals
-   * @param assists
-   * @param ownGoals
-   * @param minutes
-   * @param yellowCards
-   * @param redCards
-   * @param gameId
    */
   public PlayerGameStat(int id, int playerId, int clubId, int number, boolean starter, int goals, int assists, int ownGoals, int minutes, int yellowCards, int redCards, int gameId) {
     this.id = id;

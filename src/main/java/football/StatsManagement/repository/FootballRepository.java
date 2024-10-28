@@ -21,231 +21,232 @@ public interface FootballRepository {
 //  Insert
 
   /**
-   * Insert a country
-   * @param country
+   * 国の登録
+   * @param country 国
    */
   @Insert("INSERT INTO countries (name) VALUES (#{name})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertCountry(Country country);
 
   /**
-   * Insert a league
-   * @param league
+   * リーグの登録
+   * @param league リーグ
    */
   @Insert("INSERT INTO leagues (name, country_id) VALUES (#{name}, #{countryId})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertLeague(League league);
 
   /**
-   * Insert a club
-   * @param club
+   * クラブの登録
+   * @param club クラブ
    */
   @Insert("INSERT INTO clubs (name, league_id) VALUES (#{name}, #{leagueId})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertClub(Club club);
 
   /**
-   * Insert a player
-   * @param player
+   * 選手の登録
+   * @param player 選手
    */
   @Insert("INSERT INTO players (number, name, club_id) VALUES (#{number}, #{name}, #{clubId})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertPlayer(Player player);
 
   /**
-   * Insert a player game stat
-   * @param playerGameStats
+   * 選手の試合成績の登録
+   * @param playerGameStats 選手の試合成績
    */
   @Insert("INSERT INTO player_game_stats (player_id, club_id, number, starter, goals, assists, own_goals, minutes, yellow_cards, red_cards, game_id) VALUES (#{playerId}, #{clubId}, #{number}, #{starter}, #{goals}, #{assists}, #{ownGoals}, #{minutes}, #{yellowCards}, #{redCards}, #{gameId})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertPlayerGameStat(PlayerGameStat playerGameStats);
 
   /**
-   * Insert a game result
-   * @param gameResult
+   * 試合結果の登録
+   * @param gameResult 試合結果
    */
   @Insert("INSERT INTO game_results (home_club_id, away_club_id, home_score, away_score, winner_club_id, league_id, game_date, season_id) VALUES (#{homeClubId}, #{awayClubId}, #{homeScore}, #{awayScore}, #{winnerClubId}, #{leagueId}, #{gameDate}, #{seasonId})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertGameResult(GameResult gameResult);
 
   /**
-   * Insert a season
-   * @param season
+   * シーズンの登録
+   * @param season シーズン
    */
   @Insert("INSERT INTO seasons (id, name, start_date, end_date, current) VALUES (#{id}, #{name}, #{startDate}, #{endDate}, #{current})")
   @Options( keyProperty = "id")
   void insertSeason(Season season);
 
 //  Select
+
   /**
-   * Select a country
-   * @param id
-   * @return
+   * 国の取得
+   * @param id 国ID
+   * @return 国
    */
   @Select("SELECT * FROM countries WHERE id = #{id}")
   Optional<Country> selectCountry(int id);
 
   /**
-   * Select a league
-   * @param id
-   * @return
+   * リーグの取得
+   * @param id リーグID
+   * @return リーグ
    */
   @Select("SELECT * FROM leagues WHERE id = #{id}")
   Optional<League> selectLeague(int id);
 
   /**
-   * Select a club
-   * @param id
-   * @return
+   * クラブの取得
+   * @param id クラブID
+   * @return クラブ
    */
   @Select("SELECT * FROM clubs WHERE id = #{id}")
   Optional<Club> selectClub(int id);
 
   /**
-   * Select a player
-   * @param id
-   * @return
+   * 選手の取得
+   * @param id 選手ID
+   * @return 選手
    */
   @Select("SELECT * FROM players WHERE id = #{id}")
   Optional<Player> selectPlayer(int id);
 
   /**
-   * Select a player game stat
-   * @param id
-   * @return
+   * 選手の試合成績の取得
+   * @param id 選手の試合成績ID
+   * @return 選手の試合成績
    */
   @Select("SELECT * FROM player_game_stats WHERE id = #{id}")
   Optional<PlayerGameStat> selectPlayerGameStat(int id);
 
   /**
-   * Select game results by league and season
-   * @param seasonId
-   * @param clubId
-   * @return
+   * シーズンとクラブによる試合結果一覧の取得
+   * @param seasonId シーズンID
+   * @param clubId クラブID
+   * @return 試合結果一覧
    */
   @Select("SELECT * FROM game_results WHERE season_id = #{seasonId} AND (home_club_id = #{clubId} OR away_club_id = #{clubId})")
   List<GameResult> selectGameResultsByClubAndSeason(int seasonId, int clubId);
 
   /**
-   * Select game results by league and season
-   * @param seasonId
-   * @param leagueId
-   * @return
+   * シーズンとリーグによる試合結果一覧の取得
+   * @param seasonId シーズンID
+   * @param leagueId リーグID
+   * @return 試合結果一覧
    */
   @Select("SELECT * FROM game_results WHERE season_id = #{seasonId} AND league_id = #{leagueId}")
   List<GameResult> selectGameResultsByLeagueAndSeason(int seasonId, int leagueId);
 
   /**
-   * Select game dates by league and season
-   * @param seasonId
-   * @param leagueId
-   * @return
+   * シーズンとリーグによる試合日一覧の取得
+   * @param seasonId シーズンID
+   * @param leagueId リーグID
+   * @return 試合日一覧
    */
   @Select("SELECT DISTINCT game_date FROM game_results WHERE season_id = #{seasonId} AND league_id = #{leagueId} ORDER BY game_date")
   List<LocalDate> selectGameDatesByLeagueAndSeason(int seasonId, int leagueId);
 
   /**
-   * Select game result
-   * @param id
-   * @return
+   * 試合結果の取得
+   * @param id 試合結果ID
+   * @return 試合結果
    */
   @Select("SELECT * FROM game_results WHERE id = #{id}")
   Optional<GameResult> selectGameResult(int id);
 
   /**
-   * Select player game stats by player
-   * @param playerId
-   * @return
+   * 選手の試合成績一覧の取得
+   * @param playerId 選手ID
+   * @return 選手の試合成績一覧
    */
   @Select("SELECT * FROM player_game_stats WHERE player_id = #{playerId}")
   List<PlayerGameStat> selectPlayerGameStatsByPlayer(int playerId);
 
   /**
-   * Select players by club
-   * @param clubId
-   * @return
+   * クラブの選手一覧の取得
+   * @param clubId　クラブID
+   * @return 選手一覧
    */
   @Select("SELECT * FROM players WHERE club_id = #{clubId} ORDER BY number")
   List<Player> selectPlayersByClub(int clubId);
 
   /**
-   * Select clubForStandings by league
-   * @param leagueId
-   * @return
+   * リーグのクラブ一覧の取得
+   * @param leagueId リーグID
+   * @return クラブ一覧
    */
   @Select("SELECT * FROM clubs WHERE league_id = #{leagueId}")
   List<Club> selectClubsByLeague(int leagueId);
 
   /**
-   * Select leagues by country
-   * @param countryId
-   * @return
+   * 国のリーグ一覧の取得
+   * @param countryId 国ID
+   * @return リーグ一覧
    */
   @Select("SELECT * FROM leagues WHERE country_id = #{countryId}")
   List<League> selectLeaguesByCountry(int countryId);
 
   /**
-   * Select all countries
-   * @return
+   * 国一覧の取得
+   * @return 国一覧
    */
   @Select("SELECT * FROM countries")
   List<Country> selectCountries();
 
   /**
-   * Select all leagues
-   * @return
+   * リーグ一覧の取得
+   * @return リーグ一覧
    */
   @Select("SELECT * FROM leagues")
   List<League> selectLeagues();
 
   /**
-   * Select all clubForStandings
-   * @return
+   * クラブ一覧の取得
+   * @return クラブ一覧
    */
   @Select("SELECT * FROM clubs")
   List<Club> selectClubs();
 
   /**
-   * Select all players
-   * @return
+   * 選手一覧の取得
+   * @return 選手一覧
    */
   @Select("SELECT * FROM players")
   List<Player> selectPlayers();
 
   /**
-   * Select all game results
-   * @return
+   * 試合結果一覧の取得
+   * @return 試合結果一覧
    */
   @Select("SELECT * FROM game_results")
   List<GameResult> selectGameResults();
 
   /**
-   * Select all player game stats
-   * @return
+   * 選手の試合成績一覧の取得
+   * @return 選手の試合成績一覧
    */
   @Select("SELECT * FROM player_game_stats")
   List<PlayerGameStat> selectPlayerGameStats();
 
   /**
-   * Select all seasons
-   * @return
+   * シーズン一覧の取得
+   * @return シーズン一覧
    */
   @Select("SELECT * FROM seasons")
   List<Season> selectSeasons();
 
   /**
-   * Select player game stats by game
-   * @param gameId
-   * @return
+   * 試合IDによる選手の試合成績一覧の取得
+   * @param gameId 試合ID
+   * @return 選手の試合成績一覧
    */
   @Select("SELECT * FROM player_game_stats WHERE game_id = #{gameId}")
   List<PlayerGameStat> selectPlayerGameStatsByGame(int gameId);
 
   /**
-   * Select player game stats by player and season
-   * @param playerId
-   * @param seasonId
-   * @return
+   * 選手IDとシーズンIDによる選手の試合成績一覧の取得
+   * @param playerId 選手ID
+   * @param seasonId シーズンID
+   * @return 選手の試合成績一覧
    */
   @Select("SELECT pgs.id AS id, " +
       "pgs.player_id AS playerId, " +
@@ -265,20 +266,26 @@ public interface FootballRepository {
   List<PlayerGameStat> selectPlayerGameStatsByPlayerAndSeason(int playerId, int seasonId);
 
   /**
-   * Select current season
-   * @return
+   * 現在シーズンの取得
+   * @return 現在シーズン
    */
   @Select("SELECT * FROM seasons WHERE current = 1")
   Optional<Season> selectCurrentSeason();
 
   /**
-   * Select a season
-   * @param id
-   * @return
+   * シーズンの取得
+   * @param id シーズンID
+   * @return シーズン
    */
   @Select("SELECT * FROM seasons WHERE id = #{id}")
   Optional<Season> selectSeason(int id);
 
+  /**
+   * 選手とシーズンによるクラブID一覧の取得
+   * @param playerId 選手ID
+   * @param seasonId シーズンID
+   * @return クラブID一覧
+   */
   @Select(("SELECT DISTINCT pgs.club_id AS clubId" +
       " FROM player_game_stats pgs" +
       " JOIN game_results gr ON pgs.game_id = gr.id" +
@@ -286,9 +293,10 @@ public interface FootballRepository {
   List<Integer> selectClubIdsByPlayerAndSeason(int playerId, int seasonId);
 
 //  update
+
   /**
-   * Update a player
-   * @param player
+   * 選手の更新
+   * @param player 選手
    */
   @Update("UPDATE players SET club_id = #{clubId}, name = #{name} WHERE id = #{id}")
   void updatePlayer(Player player);
@@ -301,26 +309,26 @@ public interface FootballRepository {
 
   /**
    * 選手の背番号と名前を更新する
-   * @param id
-   * @param number
-   * @param name
+   * @param id 選手ID
+   * @param number 背番号
+   * @param name 名前
    */
   @Update("UPDATE players SET (number, name) = (#{number}, #{name}) WHERE id = #{id}")
   void updatePlayerNumberAndName(int id, int number, String name);
 
   /**
    * 選手のクラブと背番号を更新する
-   * @param id
-   * @param clubId
-   * @param number
+   * @param id 選手ID
+   * @param clubId クラブID
+   * @param number 背番号
    */
   @Update("UPDATE players SET (club_id, number) = (#{clubId}, #{number}) WHERE id = #{id}")
   void updatePlayerClubAndNumber(int id, int clubId, int number);
 
   /**
    * クラブのリーグを更新する
-   * @param id
-   * @param leagueId
+   * @param id クラブID
+   * @param leagueId リーグID
    */
   @Update("UPDATE clubs SET league_id = #{leagueId} WHERE id = #{id}")
   void updateClubLeague(int id, int leagueId);

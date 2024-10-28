@@ -29,15 +29,6 @@ public class GameResult {
 
   /**
    * DBからのデータ取得用のコンストラクタ
-   * @param id
-   * @param homeClubId
-   * @param awayClubId
-   * @param homeScore
-   * @param awayScore
-   * @param winnerClubId
-   * @param leagueId
-   * @param gameDate
-   * @param seasonId
    */
   public GameResult(int id, int homeClubId, int awayClubId, int homeScore, int awayScore, Integer winnerClubId, int leagueId, LocalDate gameDate, int seasonId) {
     this.id = id;
@@ -88,7 +79,7 @@ public class GameResult {
         && awayClubId == gameResult.awayClubId
         && homeScore == gameResult.homeScore
         && awayScore == gameResult.awayScore
-        && winnerClubId == gameResult.winnerClubId
+        && Objects.equals(winnerClubId, gameResult.winnerClubId)
         && leagueId == gameResult.leagueId
         && Objects.equals(gameDate, gameResult.gameDate)
         && seasonId == gameResult.seasonId

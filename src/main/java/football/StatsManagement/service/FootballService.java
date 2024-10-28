@@ -12,10 +12,8 @@ import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
 import football.StatsManagement.model.json.PlayerGameStatForJson;
-import football.StatsManagement.model.domain.PlayerSeasonStat;
 import football.StatsManagement.repository.FootballRepository;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -141,7 +139,7 @@ public class FootballService {
 
   /**
    * シーズン名の数字が適切であるか（連続した2年を示しているか）確認
-   * @param seasonName
+   * @param seasonName シーズン名
    * @throws FootballException 連続した2年を示していない場合
    */
   private void confirmSeasonNameNumber(String seasonName) throws FootballException {
@@ -296,7 +294,7 @@ public class FootballService {
 
   /**
    * 国所属リーグ一覧の取得
-   * @param countryId
+   * @param countryId 国ID
    * @return 国所属リーグ一覧
    */
   public List<League> getLeaguesByCountry(int countryId) {
@@ -321,7 +319,7 @@ public class FootballService {
 
   /**
    * 試合IDから選手試合成績一覧を取得
-   * @param gameId
+   * @param gameId　試合ID
    * @return 選手試合成績一覧
    */
   public List<PlayerGameStat> getPlayerGameStatsByGameId(int gameId) {
@@ -340,7 +338,7 @@ public class FootballService {
 
   /**
    * シーズンの取得
-   * @param id
+   * @param id シーズンID
    * @return シーズン
    * @throws ResourceNotFoundException シーズンが見つからない場合
    */
@@ -359,8 +357,8 @@ public class FootballService {
 
   /**
    * 選手IDとシーズンIDからプレーしたクラブID一覧を取得
-   * @param playerId
-   * @param seasonId
+   * @param playerId 選手ID
+   * @param seasonId シーズンID
    * @return クラブID一覧
    */
   public List<Integer> getClubIdsByPlayerAndSeason(int playerId, int seasonId) {
@@ -603,12 +601,12 @@ public class FootballService {
       }
     }
     // ホームとアウェイそれぞれで重複する選手がいないか確認
-    List<Integer> homePlayerIds = homeClubStats.stream().map(PlayerGameStat::getPlayerId).collect(Collectors.toList());
+    List<Integer> homePlayerIds = homeClubStats.stream().map(PlayerGameStat::getPlayerId).toList();
     Set<Integer> homePlayerIdsSet = new HashSet<>(homePlayerIds);
     if (homePlayerIds.size() != homePlayerIdsSet.size()) {
       throw new FootballException("Home club has duplicate players");
     }
-    List<Integer> awayPlayerIds = awayClubStats.stream().map(PlayerGameStat::getPlayerId).collect(Collectors.toList());
+    List<Integer> awayPlayerIds = awayClubStats.stream().map(PlayerGameStat::getPlayerId).toList();
     Set<Integer> awayPlayerIdsSet = new HashSet<>(awayPlayerIds);
     if (awayPlayerIds.size() != awayPlayerIdsSet.size()) {
       throw new FootballException("Away club has duplicate players");
