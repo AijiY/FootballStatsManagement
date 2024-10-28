@@ -139,11 +139,11 @@ class FootballServiceTest {
 
   @ParameterizedTest
   @CsvSource({
-      "1999-00, 1999-07-01, 2000-07-01, 'Season period should be less than or equal to 366 days'", // 閏年で問題なければ、平年も問題ない
-      "2000-2001, 2000-07-01, 2001-06-30, 'Season name should be in the format of ''yyyy-yy''",
-      "2001-02, 2000-07-01, 2001-06-30, 'Season name should start with the year of start date'",
-      "2000-02, 2000-07-01, 2001-06-30, 'Year in season name is not correct'",
-      "1999-01, 1999-07-01, 2000-06-30, 'Year in season name is not correct'",
+      "1999-00, 1999-07-01, 2000-07-01, 'Season period must be less than or equal to 366 days'", // 閏年で問題なければ、平年も問題ない
+      "2000-2001, 2000-07-01, 2001-06-30, 'Season name must be in the format of ''yyyy-yy''",
+      "2001-02, 2000-07-01, 2001-06-30, 'Season name must start with the year of start date'",
+      "2000-02, 2000-07-01, 2001-06-30, 'Season name is not matched to the period'",
+      "1999-01, 1999-07-01, 2000-06-30, 'Season name is not matched to the period'",
   })
   @DisplayName("シーズン登録_登録するシーズン単体での異常系")
   void registerSeason_withInvalidSeason(
@@ -708,7 +708,7 @@ class FootballServiceTest {
 
     // 例外が投げられることを確認、メッセージもチェック
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Game date is not in the current season", thrown.getMessage());
+    assertEquals("Game date must be in the current season period", thrown.getMessage());
   }
 
   @Test
@@ -971,7 +971,7 @@ class FootballServiceTest {
 
     // 例外が投げられることを確認、メッセージもチェック
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Home score is not correct", thrown.getMessage());
+    assertEquals("There is contradiction in home score and home goals and away own goals", thrown.getMessage());
   }
 
   @Test
@@ -1019,7 +1019,7 @@ class FootballServiceTest {
 
     // 例外が投げられることを確認、メッセージもチェック
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Away score is not correct", thrown.getMessage());
+    assertEquals("There is contradiction in away score and away goals and home own goals", thrown.getMessage());
   }
 
   @Test
@@ -1163,7 +1163,7 @@ class FootballServiceTest {
 
     // 例外が投げられることを確認、メッセージもチェック
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Home starter count is not correct", thrown.getMessage());
+    assertEquals("Home starter count must be 11", thrown.getMessage());
   }
 
 
@@ -1212,7 +1212,7 @@ class FootballServiceTest {
 
     // 例外が投げられることを確認、メッセージもチェック
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Away starter count is not correct", thrown.getMessage());
+    assertEquals("Away starter count must be 11", thrown.getMessage());
   }
 
   @Test
@@ -1260,7 +1260,7 @@ class FootballServiceTest {
 
     // 例外が投げられることを確認、メッセージもチェック
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Home minutes is not correct", thrown.getMessage());
+    assertEquals("Home minutes is less than 990", thrown.getMessage());
   }
 
   @Test
@@ -1308,7 +1308,7 @@ class FootballServiceTest {
 
     // 例外が投げられることを確認、メッセージもチェック
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Away minutes is not correct", thrown.getMessage());
+    assertEquals("Away minutes is less than 990", thrown.getMessage());
   }
 
   @Test

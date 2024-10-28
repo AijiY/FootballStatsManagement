@@ -3,6 +3,7 @@ package football.StatsManagement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -45,6 +46,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+
+// Controllerのバリデーションテストはここでは実施しない
 @SpringBootTest
 @AutoConfigureMockMvc
 // RepositoryTestで用いたH2データベースを利用する
@@ -683,16 +686,16 @@ class FootballIntegrationTest {
   @ParameterizedTest
   // テストケースのパラメータを指定（下から作成）
   @CsvSource({
-      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 30, 45, 0, 0, 0, false, 24, 'Away minutes is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0, false, 24, 'Home minutes is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0,  true, 24, 'Away starter count is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0, 0,  true, 29, 45, 0, 0, 0,  true, 24, 'Home starter count is not correct'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 30, 45, 0, 0, 0, false, 24, 'Away minutes is less than 990'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0, false, 24, 'Home minutes is less than 990'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0,  true, 24, 'Away starter count must be 11'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0,  true, 29, 45, 0, 0, 0,  true, 24, 'Home starter count must be 11'",
       "2020-08-01,  4, 9, 10, 30, 0, 0, 0,  true, 29, 45, 0, 2, 0,  true, 24, 'Away assists is more than away score'",
       "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 0, 2, 0,  true, 24, 'Home assists is more than home score'",
-      "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 1, 2, 0,  true, 24, 'Away score is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 1, 1,  true, 29, 45, 0, 2, 0,  true, 24, 'Away score is not correct'", // オウンゴールあり、後から追加したパターン
-      "2020-08-01,  4, 9, 10, 30, 1, 1, 0,  true, 29, 45, 1, 2, 0,  true, 24, 'Home score is not correct'",
-      "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 1, 2, 1,  true, 24, 'Home score is not correct'", // オウンゴールあり、後から追加したパターン
+      "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 1, 2, 0,  true, 24, 'There is contradiction in away score and away goals and home own goals'",
+      "2020-08-01,  4, 9, 10, 30, 0, 1, 1,  true, 29, 45, 0, 2, 0,  true, 24, 'There is contradiction in away score and away goals and home own goals'", // オウンゴールあり、後から追加したパターン
+      "2020-08-01,  4, 9, 10, 30, 1, 1, 0,  true, 29, 45, 1, 2, 0,  true, 24, 'There is contradiction in home score and home goals and away own goals'",
+      "2020-08-01,  4, 9, 10, 30, 0, 1, 0,  true, 29, 45, 1, 2, 1,  true, 24, 'There is contradiction in home score and home goals and away own goals'", // オウンゴールあり、後から追加したパターン
       "2020-08-01,  4, 9, 10, 30, 1, 1, 0,  true, 29, 44, 1, 2, 0,  true, 24, 'Away club has duplicate players'",
       "2020-08-01,  4, 9, 10, 29, 1, 1, 0,  true, 29, 44, 1, 2, 0,  true, 24, 'Home club has duplicate players'",
       "2020-08-01,  4, 9, 10, 29, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Away club and player are not matched'",
@@ -700,7 +703,7 @@ class FootballIntegrationTest {
       "2020-08-01,  4, 9,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Away club is not in the league'",
       "2020-08-01,  4, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Home club is not in the league'",
 //      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",  ※ResouceNotFoundExceptionが発生するため、個別対応
-      "2019-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Game date is not in the current season'"
+      "2019-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Game date must be in the current season period'"
   })
   @DisplayName("試合結果の登録_サービス内で例外処理を発生させるパターン")
   void registerGameResultWithExceptionInService(
@@ -751,10 +754,11 @@ class FootballIntegrationTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertThrows(FootballException.class, () -> {
-          throw new FootballException(expectedMessage);
-        }));
-
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof FootballException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
   }
 
   @ParameterizedTest
@@ -811,10 +815,11 @@ class FootballIntegrationTest {
             .contentType("application/json")
             .content(requestBody))
         .andExpect(status().isNotFound())
-        .andExpect(result -> assertThrows(ResourceNotFoundException.class, () -> {
-          throw new ResourceNotFoundException(expectedMessage);
-        }));
-
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof ResourceNotFoundException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
   }
 
 
@@ -844,17 +849,17 @@ class FootballIntegrationTest {
   @ParameterizedTest
   @CsvSource({
       // startDateからendDateが366日以内か確認
-      "2023-24, 2023-07-01, 2024-07-01,'Season period is less than or equal to 366 days'",
+      "2023-24, 2023-07-01, 2024-07-01,'Season period must be less than or equal to 366 days'",
       // シーズン名が適正であるか確認（2024-25, 1999-00のような形式）
-      "'202425', '2024-07-01', '2025-06-30', 'Season name should be in the format of ''yyyy-yy'''",
+      "'202425', '2024-07-01', '2025-06-30', 'Season name must be in the format of ''yyyy-yy'''",
       // シーズン名の最初の4文字がstartDateの年と一致するか確認
-      "2021-22, 2020-07-01, 2021-06-30, 'Season name should start with the year of start date'",
+      "2021-22, 2020-07-01, 2021-06-30, 'Season name must start with the year of start date'",
       // シーズン名の数字が適切であるか（連続した2年を示しているか）確認
-      "2021-23, 2021-07-01, 2022-06-30, 'Year in season name is not correct'",
+      "2021-23, 2021-07-01, 2022-06-30, 'Season name is not matched to the period'",
       // 既存のシーズンと名前が重複しないか確認
       "2020-21, 2020-07-01, 2021-06-30, 'Season name is already used'",
       // 既存のシーズンと期間が重複しないか確認
-      "2021-22, 2021-06-01, 2022-06-30, 'Season period is already used'"
+      "2021-22, 2021-06-01, 2022-05-30, 'Season period is already used'"
   })
   @DisplayName("シーズンの登録_サービス内で例外処理を発生させるパターン")
   void registerSeasonWithExceptionInService(String name, LocalDate startDate, LocalDate endDate, String errorMessage) throws Exception {
@@ -870,9 +875,11 @@ class FootballIntegrationTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertThrows(FootballException.class, () -> {
-          throw new FootballException(errorMessage);
-        }));
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof FootballException);
+          assertEquals(errorMessage, resolvedException.getMessage());
+        });
   }
 
   @ParameterizedTest
@@ -918,9 +925,11 @@ class FootballIntegrationTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertThrows(FootballException.class, () -> {
-          throw new FootballException(expectedMessage);
-        }));
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof FootballException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
   }
 
   @Test
@@ -934,15 +943,17 @@ class FootballIntegrationTest {
         }
         """;
 
-    String expectedMessage = "Player number and name are not changed";
+    String expectedMessage = "There is no change";
 
     mockMvc.perform(MockMvcRequestBuilders.patch("/player-patch/" + playerId)
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isConflict())
-        .andExpect(result -> assertThrows(ResourceConflictException.class, () -> {
-          throw new ResourceConflictException(expectedMessage);
-        }));
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof ResourceConflictException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
   }
 
 
@@ -983,9 +994,11 @@ class FootballIntegrationTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isConflict())
-        .andExpect(result -> assertThrows(ResourceConflictException.class, () -> {
-          throw new ResourceConflictException(expectedMessage);
-        }));
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof ResourceConflictException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
   }
 
   @Test
@@ -1005,9 +1018,11 @@ class FootballIntegrationTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertThrows(FootballException.class, () -> {
-          throw new FootballException(expectedMessage);
-        }));
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof FootballException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
   }
 
   @Test
@@ -1031,13 +1046,15 @@ class FootballIntegrationTest {
     int clubId = 1;
     int updatedLeagueId = 1;
 
-    String expectedMessage = "Club league is not changed";
+    String expectedMessage = "There is no change";
 
     mockMvc.perform(MockMvcRequestBuilders.patch("/club-promote-or-relegate/" + clubId)
         .param("leagueId", String.valueOf(updatedLeagueId)))
         .andExpect(status().isConflict())
-        .andExpect(result -> assertThrows(ResourceConflictException.class, () -> {
-          throw new ResourceConflictException(expectedMessage);
-        }));
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertTrue(resolvedException instanceof ResourceConflictException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
   }
 }
