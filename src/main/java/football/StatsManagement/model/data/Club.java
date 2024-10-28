@@ -1,11 +1,13 @@
 package football.StatsManagement.model.data;
 
 import football.StatsManagement.model.json.ClubForJson;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "クラブ情報を保持するクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用
@@ -14,7 +16,10 @@ public class Club {
   private int leagueId;
   private String name;
 
-  // @Insert用
+  /**
+   * 登録用に使用するコンストラクタ
+   * @param clubForJson 登録情報
+   */
   public Club(ClubForJson clubForJson) {
     this.id = 0;
     this.leagueId = clubForJson.getLeagueId();

@@ -1,12 +1,14 @@
 package football.StatsManagement.model.data;
 
 import football.StatsManagement.model.json.PlayerGameStatForJson;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "選手試合成績情報を保持するクラス ")
 @Getter
 @Setter
 @AllArgsConstructor // テスト用に追加
@@ -32,7 +34,10 @@ public class PlayerGameStat {
   private String opponentClubName;
   private String score;
 
-  // @Insert用
+  /**
+   * 登録用のコンストラクタ
+   * @param playerGameStatForJson 登録情報
+   */
   public PlayerGameStat(PlayerGameStatForJson playerGameStatForJson) {
     this.id = 0;
     this.gameId = 0; // この時点では不明
@@ -48,7 +53,21 @@ public class PlayerGameStat {
     this.redCards = playerGameStatForJson.getRedCards();
   }
 
-  // @Select用（DBに存在しないフィールドは除外）
+  /**
+   * DBからデータを取得する際のコンストラクタ
+   * @param id
+   * @param playerId
+   * @param clubId
+   * @param number
+   * @param starter
+   * @param goals
+   * @param assists
+   * @param ownGoals
+   * @param minutes
+   * @param yellowCards
+   * @param redCards
+   * @param gameId
+   */
   public PlayerGameStat(int id, int playerId, int clubId, int number, boolean starter, int goals, int assists, int ownGoals, int minutes, int yellowCards, int redCards, int gameId) {
     this.id = id;
     this.playerId = playerId;
@@ -64,6 +83,11 @@ public class PlayerGameStat {
     this.gameId = gameId;
   }
 
+  /**
+   * 登録時にクラブと背番号を設定する
+   * @param clubId クラブID
+   * @param number 背番号
+   */
   public void setPlayerInfo(int clubId, int number) {
     this.clubId = clubId;
     this.number = number;

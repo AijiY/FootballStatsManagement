@@ -1,12 +1,14 @@
 package football.StatsManagement.model.data;
 
 import football.StatsManagement.model.json.SeasonForJson;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "シーズン情報を保持するクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用
@@ -17,7 +19,10 @@ public class Season {
   private LocalDate endDate;
   private boolean current;
 
-  // @Insert用
+  /**
+   * 登録用のコンストラクタ
+   * @param seasonForJson 登録情報
+   */
   public Season(SeasonForJson seasonForJson) {
     String name = seasonForJson.getName();
     // idはnameから-を除いたもの

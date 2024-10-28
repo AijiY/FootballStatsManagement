@@ -3,12 +3,14 @@ package football.StatsManagement.model.domain;
 import football.StatsManagement.service.FootballService;
 import football.StatsManagement.model.data.Club;
 import football.StatsManagement.model.data.GameResult;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "順位表作成のためのクラブ情報を保持するクラス")
 @Getter
 @Setter
 @AllArgsConstructor // テスト用に追加
@@ -44,6 +46,11 @@ public class ClubForStanding {
   }
 
   // 2クラブ間の成績比較のためのメソッド
+  /**
+   * 対戦相手に対して得た勝ち点を返す
+   * @param idOfClubAgainst 対戦相手のクラブID
+   * @return 対戦相手に対して得た勝ち点
+   */
   public int getPointsAgainst(int idOfClubAgainst) {
     List<GameResult> gameResults = this.getGameResults().stream()
         .filter(gameResult -> gameResult.getHomeClubId() == idOfClubAgainst || gameResult.getAwayClubId() == idOfClubAgainst)
@@ -59,6 +66,11 @@ public class ClubForStanding {
     return pointsAgainst;
   }
 
+  /**
+   * 対戦相手に対して得た得失点差を返す
+   * @param idOfClubAgainst 対戦相手のクラブID
+   * @return 対戦相手に対して得た得失点差
+   */
   public int getGoalDifferencesAgainst(int idOfClubAgainst) {
     int differencesAgainst = 0;
     for (GameResult gameResult : this.getGameResults()) {
@@ -71,6 +83,11 @@ public class ClubForStanding {
     return differencesAgainst;
   }
 
+  /**
+   * 対戦相手に対して得たアウェーゴール数を返す
+   * @param idOfClubAgainst 対戦相手のクラブID
+   * @return 対戦相手に対して得たアウェーゴール数
+   */
   public int getAwayGoalsAgainst(int idOfClubAgainst) {
     int awayGoalsAgainst = this.getGameResults().stream()
         .filter(gameResult -> gameResult.getHomeClubId() == idOfClubAgainst)
@@ -78,6 +95,11 @@ public class ClubForStanding {
     return awayGoalsAgainst;
   }
 
+  /**
+   * 対戦数を返す
+   * @param idOfClubAgainst 対戦相手のクラブID
+   * @return 対戦数
+   */
   public int getGamesAgainst(int idOfClubAgainst) {
     return (int) this.getGameResults().stream()
         .filter(gameResult -> gameResult.getHomeClubId() == idOfClubAgainst || gameResult.getAwayClubId() == idOfClubAgainst)

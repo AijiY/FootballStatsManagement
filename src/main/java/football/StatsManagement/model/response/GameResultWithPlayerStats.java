@@ -4,12 +4,14 @@ import football.StatsManagement.model.data.GameResult;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.service.FootballService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "試合結果と選手スタッツをまとめた登録時のレスポンス用クラス")
 @Getter
 @Setter
 @AllArgsConstructor

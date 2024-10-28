@@ -1,11 +1,13 @@
 package football.StatsManagement.model.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "国情報を保持するクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用
@@ -15,7 +17,10 @@ public class Country {
   @NotBlank
   private String name;
 
-  // @Insert用
+  /**
+   * 登録用のコンストラクタ
+   * @param name 国名
+   */
   public Country(String name) {
     this.id = 0;
     this.name = name;

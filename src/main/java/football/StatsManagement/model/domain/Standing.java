@@ -4,9 +4,11 @@ import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.service.FootballService;
 import football.StatsManagement.model.data.Club;
 import football.StatsManagement.utils.RankingUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 
+@Schema(description = "リーグの順位表情報を保持するレコードクラス")
 public record Standing(
     int leagueId,
     int seasonId,

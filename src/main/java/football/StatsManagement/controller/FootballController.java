@@ -40,6 +40,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * サッカースタッツ管理システムのCRUD処理をRestAPIとして提供するControllerクラス
+ */
 @Validated
 @RestController
 public class FootballController {
@@ -74,7 +77,7 @@ public class FootballController {
 
   /**
    * 国IDに紐づく国の取得
-   * @param countryId
+   * @param countryId 国ID
    * @return 国
    */
   @Operation(summary = "国の取得", description = "国IDに紐づく国を取得します")
@@ -85,7 +88,7 @@ public class FootballController {
 
   /**
    * リーグIDに紐づくリーグの取得
-   * @param leagueId
+   * @param leagueId リーグID
    * @return リーグ
    */
   @Operation(summary = "リーグの取得", description = "リーグIDに紐づくリーグを取得します")
@@ -96,7 +99,7 @@ public class FootballController {
 
   /**
    * クラブIDに紐づくクラブの取得
-   * @param clubId
+   * @param clubId クラブID
    * @return クラブ
    */
   @Operation(summary = "クラブの取得", description = "クラブIDに紐づくクラブを取得します")
@@ -107,7 +110,7 @@ public class FootballController {
 
   /**
    * 選手IDに紐づく選手の取得
-   * @param playerId
+   * @param playerId 選手ID
    * @return 選手
    */
   @Operation(summary = "選手の取得", description = "選手IDに紐づく選手を取得します")
@@ -128,7 +131,7 @@ public class FootballController {
 
   /**
    * 国IDに紐づくリーグ一覧の取得
-   * @param countryId
+   * @param countryId 国ID
    * @return リーグ一覧
    */
   @Operation(summary = "リーグ一覧の取得", description = "国IDに紐づくリーグの一覧を取得します")
@@ -139,7 +142,7 @@ public class FootballController {
 
   /**
    * リーグIDに紐づくクラブ一覧の取得
-   * @param leagueId
+   * @param leagueId リーグID
    * @return クラブ一覧
    */
   @Operation(summary = "クラブ一覧の取得", description = "リーグIDに紐づくクラブの一覧を取得します")
@@ -160,8 +163,8 @@ public class FootballController {
 
   /**
    * リーグIDとシーズンIDに紐づく順位表の取得
-   * @param leagueId
-   * @param seasonId
+   * @param leagueId リーグID
+   * @param seasonId シーズンID
    * @return 順位表
    */
   @Operation(summary = "順位表の取得", description = "リーグIDとシーズンIDに紐づく順位表を取得します")
@@ -173,7 +176,7 @@ public class FootballController {
 
   /**
    * クラブIDに紐づく選手一覧の取得
-   * @param clubId
+   * @param clubId クラブID
    * @return 選手一覧
    */
   @Operation(summary = "選手一覧の取得", description = "クラブIDに紐づく選手の一覧を取得します")
@@ -184,8 +187,8 @@ public class FootballController {
 
   /**
    * 選手IDとシーズンIDに紐づく選手成績の取得
-   * @param playerId
-   * @param seasonId
+   * @param playerId 選手ID
+   * @param seasonId シーズンID
    * @return 選手の試合成績リスト
    */
   @Operation(summary = "選手試合成績の取得", description = "選手IDとシーズンIDに紐づく選手成績を取得します")
@@ -197,9 +200,9 @@ public class FootballController {
 
   /**
    * クラブIDとシーズンIDに紐づく選手成績の取得
-   * @param clubId
-   * @param seasonId
-   * @return 選手のシーズン成績リスト
+   * @param clubId クラブID
+   * @param seasonId シーズンID
+   * @return 選手のシーズン成績リスト（シーズン中移籍を考慮してListとしている）
    */
   @Operation(summary = "クラブ所属選手シーズン成績の取得", description = "クラブIDとシーズンIDに紐づく選手シーズン成績を取得します")
   @GetMapping("/clubs/{clubId}/players-season-stats/{seasonId}")
@@ -210,11 +213,11 @@ public class FootballController {
 
   /**
    * 選手IDとシーズンIDに紐づく選手成績の取得
-   * @param playerId
-   * @param seasonId
+   * @param playerId  選手ID
+   * @param seasonId シーズンID
    * @return 選手のシーズン成績
    */
-  @Operation(summary = "選手シーズン成績の取得", description = "選手IDとシーズンIDに紐づく選手成績を取得します")
+  @Operation(summary = "選手シーズン成績の取得", description = "選手IDとシーズンIDに紐づく選手シーズン成績を取得します")
   @GetMapping("/players/{playerId}/player-season-stats/{seasonId}")
   public List<PlayerSeasonStat> getPlayerSeasonStats(@PathVariable @Positive int playerId, @PathVariable @Min(100000) int seasonId)
       throws ResourceNotFoundException {
@@ -223,22 +226,22 @@ public class FootballController {
 
   /**
    * 選手IDに紐づく通算成績の取得
-   * @param playerId
-   * @return 選手のシーズン成績リスト
+   * @param playerId 選手ID
+   * @return 選手のシーズン成績リスト（通算成績）
    */
+  @Operation(summary = "選手通算成績の取得", description = "選手IDに紐づく選手通算成績を取得します")
   @GetMapping("/players/{playerId}/player-career-stats")
   public List<PlayerSeasonStat> getPlayerCareerStatsByPlayerId(@PathVariable @Positive int playerId)
       throws ResourceNotFoundException {
     return factoryService.createPlayerCareerStats(playerId);
   }
 
-
   /**
    * 試合IDに紐づく試合結果の取得（選手成績を含む）
-   * @param gameId
-   * @return 試合結果
+   * @param gameId 試合ID
+   * @return 試合結果（選手成績を含む）
    */
-  @Operation(summary = "試合結果の取得", description = "試合IDに紐づく試合結果を取得します")
+  @Operation(summary = "試合結果の取得", description = "試合IDに紐づく試合結果（選手成績を含む）を取得します")
   @GetMapping("/game-results/{gameId}")
   public GameResult getGameResult(@PathVariable @Positive int gameId) throws ResourceNotFoundException {
     return footballService.getGameResult(gameId);
@@ -246,10 +249,11 @@ public class FootballController {
 
   /**
    * リーグIDとシーズンIDに紐づく試合結果の取得
-   * @param leagueId
-   * @param seasonId
+   * @param leagueId リーグID
+   * @param seasonId シーズンID
    * @return 試合結果
    */
+  @Operation(summary = "シーズン試合結果一覧の取得", description = "リーグIDとシーズンIDに紐づく試合結果一覧を取得します")
   @GetMapping("/leagues/{leagueId}/season-game-results/{seasonId}")
   public SeasonGameResult getSeasonGameResult(@PathVariable @Positive int leagueId, @PathVariable @Min(100000) int seasonId)
       throws ResourceNotFoundException {
@@ -258,7 +262,7 @@ public class FootballController {
 
   /**
    * 国の登録
-   * @param name
+   * @param name 国名
    * @return 登録された国
    */
   @Operation(summary = "国の登録", description = "国を新規登録します")
@@ -272,7 +276,7 @@ public class FootballController {
 
   /**
    * リーグの登録
-   * @param leagueForJson
+   * @param leagueForJson リーグ情報
    * @return 登録されたリーグ
    */
   @Operation(summary = "リーグの登録", description = "リーグを新規登録します")
@@ -286,7 +290,7 @@ public class FootballController {
 
   /**
    * クラブの登録
-   * @param clubForJson
+   * @param clubForJson クラブ情報
    * @return 登録されたクラブ
    */
   @Operation(summary = "クラブの登録", description = "クラブを新規登録します")
@@ -300,7 +304,7 @@ public class FootballController {
 
   /**
    * 選手の登録
-   * @param playerForJson
+   * @param playerForJson 選手情報
    * @return 登録された選手
    */
   @Operation(summary = "選手の登録", description = "選手を新規登録します")
@@ -313,11 +317,11 @@ public class FootballController {
   }
 
   /**
-   * 試合結果の登録
-   * @param gameResultWithPlayerStatsForJson
+   * 試合結果（選手成績含む）の登録
+   * @param gameResultWithPlayerStatsForJson 試合結果
    * @return 登録された試合結果
    */
-  @Operation(summary = "試合結果の登録", description = "試合結果を新規登録します")
+  @Operation(summary = "試合結果の登録", description = "試合結果（選手成績含む）を新規登録します")
   @PostMapping("/game-result")
   public ResponseEntity<GameResultWithPlayerStats> registerGameResult(
       @RequestBody @Valid GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson)
@@ -331,7 +335,7 @@ public class FootballController {
 
   /**
    * シーズンの登録
-   * @param seasonForJson
+   * @param seasonForJson シーズン情報
    * @return 登録されたシーズン
    */
   @Operation(summary = "シーズンの登録", description = "シーズンを新規登録します")
@@ -345,8 +349,8 @@ public class FootballController {
 
   /**
    * 選手の更新
-   * @param playerForPatch
-   * @param playerId
+   * @param playerForPatch 選手名前および背番号
+   * @param playerId 選手ID
    * @return 更新された選手
    */
   @Operation(summary = "選手の更新", description = "選手の名前および番号を変更します")
@@ -362,8 +366,8 @@ public class FootballController {
 
   /**
    * 選手の移籍
-   * @param playerForTransfer
-   * @param playerId
+   * @param playerForTransfer 移籍先クラブIDと背番号
+   * @param playerId 選手ID
    * @return 移籍された選手
    */
   @Operation(summary = "選手の移籍", description = "選手を他のクラブに移籍させます")
