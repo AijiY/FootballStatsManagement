@@ -3,9 +3,11 @@ package football.StatsManagement.model.domain;
 import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.service.FootballService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 
+@Schema(description = "選手のシーズン成績情報を保持するレコードクラス")
 public record PlayerSeasonStat(
     int playerId,
     List<PlayerGameStat> playerGameStats,

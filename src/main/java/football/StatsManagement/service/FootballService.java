@@ -25,6 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * サッカースタッツ管理システムでビジネスロジックを担当するServiceクラス
+ */
 @Service
 public class FootballService {
   private final FootballRepository repository;
@@ -36,8 +39,8 @@ public class FootballService {
 
 //  register
   /**
-   * Register a country
-   * @param country
+   * 国の登録
+   * @param country 国
    */
   @Transactional
   public void registerCountry(Country country) {
@@ -45,8 +48,8 @@ public class FootballService {
   }
 
   /**
-   * Register a league
-   * @param league
+   * リーグの登録
+   * @param league リーグ
    */
   @Transactional
   public void registerLeague(League league) {
@@ -54,8 +57,8 @@ public class FootballService {
   }
 
   /**
-   * Register a club
-   * @param club
+   * クラブの登録
+   * @param club クラブ
    */
   @Transactional
   public void registerClub(Club club) {
@@ -63,8 +66,9 @@ public class FootballService {
   }
 
   /**
-   * Register a player
-   * @param player
+   * 選手の登録
+   * @param player 選手
+   * @throws FootballException クラブ内で選手番号が重複している場合
    */
   @Transactional
   public void registerPlayer(Player player) throws FootballException {
@@ -79,8 +83,8 @@ public class FootballService {
   }
 
   /**
-   * Register a player game stat
-   * @param playerGameStats
+   * 選手試合成績の登録
+   * @param playerGameStats 選手試合成績
    */
   @Transactional
   public void registerPlayerGameStat(PlayerGameStat playerGameStats) {
@@ -88,8 +92,8 @@ public class FootballService {
   }
 
   /**
-   * Register a game result
-   * @param gameResult
+   * 試合結果の登録
+   * @param gameResult 試合結果
    */
   @Transactional
   public void registerGameResult(GameResult gameResult) {
@@ -97,9 +101,10 @@ public class FootballService {
   }
 
   /**
-   * Register a season
-   * @param season
-   */
+    * シーズンの登録
+    * @param season シーズン
+    * @throws FootballException シーズン期間が366日を超える場合、シーズン名が適切でない場合、既存のシーズンと重複する場合
+    */
   @Transactional
   public void registerSeason(Season season) throws FootballException {
     // startDateからendDateが366日以内か確認
@@ -134,6 +139,11 @@ public class FootballService {
     repository.insertSeason(season);
   }
 
+  /**
+   * シーズン名の数字が適切であるか（連続した2年を示しているか）確認
+   * @param seasonName
+   * @throws FootballException 連続した2年を示していない場合
+   */
   private void confirmSeasonNameNumber(String seasonName) throws FootballException {
     String[] seasonNameArray = seasonName.split("-");
     int startYear = Integer.parseInt(seasonNameArray[0]) % 100;
@@ -149,9 +159,10 @@ public class FootballService {
 
 //  get
   /**
-   * Get a country
-   * @param id
-   * @return a country
+   * 国の取得
+   * @param id 国ID
+   * @return 国
+   * @throws ResourceNotFoundException 国が見つからない場合
    */
   public Country getCountry(int id) throws ResourceNotFoundException {
     return repository.selectCountry(id)
@@ -159,9 +170,10 @@ public class FootballService {
   }
 
   /**
-   * Get a league
-   * @param id
-   * @return a league
+   * リーグの取得
+   * @param id リーグID
+   * @return リーグ
+   * @throws ResourceNotFoundException リーグが見つからない場合
    */
   public League getLeague(int id) throws ResourceNotFoundException {
     return repository.selectLeague(id)
@@ -169,50 +181,53 @@ public class FootballService {
   }
 
   /**
-   * Get a club
-   * @param id
-   * @return a club
-   */
+    * クラブの取得
+    * @param id クラブID
+    * @return クラブ
+    * @throws ResourceNotFoundException クラブが見つからない場合
+    */
   public Club getClub(int id) throws ResourceNotFoundException {
     return repository.selectClub(id)
         .orElseThrow(() -> new ResourceNotFoundException("Club not found"));
   }
 
   /**
-   * Get a player
-   * @param id
-   * @return a player
-   */
+    * 選手の取得
+    * @param id 選手ID
+    * @return 選手
+    * @throws ResourceNotFoundException 選手が見つからない場合
+    */
   public Player getPlayer(int id) throws ResourceNotFoundException {
     return repository.selectPlayer(id)
         .orElseThrow(() -> new ResourceNotFoundException("Player not found"));
   }
 
   /**
-   * Get game results by league and season
-   * @param leagueId
-   * @param seasonId
-   * @return game results
-   */
+    * シーズン試合結果一覧の取得
+    * @param leagueId リーグID
+    * @param seasonId シーズンID
+    * @return 試合結果一覧
+    */
   public List<GameResult> getGameResultsByLeagueAndSeason(int leagueId, int seasonId) {
     return repository.selectGameResultsByLeagueAndSeason(seasonId, leagueId);
   }
 
   /**
-   * Get game dates by league and season
-   * @param leagueId
-   * @param seasonId
-   * @return game dates
-   */
+    * シーズン試合日一覧の取得
+    * @param leagueId リーグID
+    * @param seasonId シーズンID
+    * @return 試合日一覧
+    */
   public List<LocalDate> getGameDatesByLeagueAndSeason(int leagueId, int seasonId) {
     return repository.selectGameDatesByLeagueAndSeason(seasonId, leagueId);
   }
 
   /**
-   * Get a game result
-   * @param id
-   * @return a game result
-   */
+    * 試合結果の取得
+    * @param id 試合ID
+    * @return 試合結果
+    * @throws ResourceNotFoundException 試合結果が見つからない場合
+    */
   public GameResult getGameResult(int id) throws ResourceNotFoundException {
     GameResult gameResult = repository.selectGameResult(id)
         .orElseThrow(() -> new ResourceNotFoundException("Game result not found"));
@@ -221,9 +236,8 @@ public class FootballService {
   }
 
   /**
-   * Set club names to game result
-   * @param gameResult
-   * @throws ResourceNotFoundException
+   * 試合結果にクラブ名を設定
+   * @param gameResult 試合結果
    */
   public void setClubNamesToGameResult(GameResult gameResult) throws ResourceNotFoundException {
     Club homeClub = getClub(gameResult.getHomeClubId());
@@ -233,9 +247,10 @@ public class FootballService {
   }
 
   /**
-   * Get a player game stat
-   * @param id
-   * @return a player game stat
+   * 選手試合成績の取得
+   * @param id 選手試合成績ID
+   * @return 選手試合成績
+   * @throws ResourceNotFoundException 選手試合成績が見つからない場合
    */
   public PlayerGameStat getPlayerGameStat(int id) throws ResourceNotFoundException {
     return repository.selectPlayerGameStat(id)
@@ -243,74 +258,80 @@ public class FootballService {
   }
 
   /**
-   * Get player game stats by player
-   * @param playerId
-   * @return
+   * 選手試合成績一覧の取得
+   * @param playerId 選手ID
+   * @return 選手試合成績一覧
    */
   public List<PlayerGameStat> getPlayerGameStatsByPlayer(int playerId) {
     return repository.selectPlayerGameStatsByPlayer(playerId);
   }
 
   /**
-   * Get game results by league and season
-   * @param seasonId
-   * @param clubId
-   * @return
-   */
+    * シーズン試合結果一覧の取得
+    * @param seasonId シーズンID
+    * @param clubId クラブID
+    * @return 試合結果一覧
+    */
   public List<GameResult> getGameResultsByClubAndSeason(int seasonId, int clubId) {
     return repository.selectGameResultsByClubAndSeason(seasonId, clubId);
   }
 
   /**
-   * Get players by club
-   * @param clubId
-   * @return players
+   * クラブ所属選手一覧の取得
+   * @param clubId クラブID
+   * @return クラブ所属選手一覧
    */
   public List<Player> getPlayersByClub(int clubId) {
     return repository.selectPlayersByClub(clubId);
   }
 
   /**
-   * Get clubForStandings by league
-   * @param leagueId
-   * @return clubForStandings
+   * リーグ所属クラブ一覧の取得
+   * @param leagueId リーグID
+   * @return リーグ所属クラブ一覧
    */
   public List<Club> getClubsByLeague(int leagueId) {
     return repository.selectClubsByLeague(leagueId);
   }
 
   /**
-   * Get leagues by country
+   * 国所属リーグ一覧の取得
    * @param countryId
-   * @return leagues
+   * @return 国所属リーグ一覧
    */
   public List<League> getLeaguesByCountry(int countryId) {
     return repository.selectLeaguesByCountry(countryId);
   }
 
   /**
-   * Get countries
-   * @return countries
+   * 国一覧の取得
+   * @return 国一覧
    */
   public List<Country> getCountries() {
     return repository.selectCountries();
   }
 
   /**
-   * Get seasons
-   * @return seasons
+   * シーズン一覧の取得
+   * @return シーズン一覧
    */
   public List<Season> getSeasons() {
     return repository.selectSeasons();
   }
 
+  /**
+   * 試合IDから選手試合成績一覧を取得
+   * @param gameId
+   * @return 選手試合成績一覧
+   */
   public List<PlayerGameStat> getPlayerGameStatsByGameId(int gameId) {
     return repository.selectPlayerGameStatsByGame(gameId);
   }
 
   /**
-   * Get current season
-   * @return current season
+   * 現在シーズンの取得
+   * @return 現在シーズン
+   * @throws ResourceNotFoundException 現在シーズンが見つからない場合
    */
   public Season getCurrentSeason() throws ResourceNotFoundException {
     return repository.selectCurrentSeason()
@@ -318,9 +339,10 @@ public class FootballService {
   }
 
   /**
-   * Get season
+   * シーズンの取得
    * @param id
-   * @return season
+   * @return シーズン
+   * @throws ResourceNotFoundException シーズンが見つからない場合
    */
   public Season getSeason(int id) throws ResourceNotFoundException {
     return repository.selectSeason(id)
@@ -328,21 +350,27 @@ public class FootballService {
   }
 
   /**
-   * Get all clubs
-   * @return
+   * クラブ一覧の取得
+   * @return クラブ一覧
    */
   public List<Club> getClubs() {
     return repository.selectClubs();
   }
 
+  /**
+   * 選手IDとシーズンIDからプレーしたクラブID一覧を取得
+   * @param playerId
+   * @param seasonId
+   * @return クラブID一覧
+   */
   public List<Integer> getClubIdsByPlayerAndSeason(int playerId, int seasonId) {
     return repository.selectClubIdsByPlayerAndSeason(playerId, seasonId);
   }
 
 //  update
+
   /**
-   * Update seasons current false
-   * 新シーズン登録前に使用
+   * 登録されているシーズンすべてのcurrentをfalseに更新
    */
   @Transactional
   public void updateSeasonsCurrentFalse() {
@@ -350,11 +378,12 @@ public class FootballService {
   }
 
   /**
-   * Update player number and name
-   * @param id
-   * @param number
-   * @param name
-   * @throws ResourceNotFoundException
+   * 選手の背番号と名前の更新
+   * @param id 選手ID
+   * @param number 背番号
+   * @param name 名前
+   * @throws FootballException 背番号が重複している場合
+   * @throws ResourceConflictException 変更がない場合
    */
   @Transactional
   public void updatePlayerNumberAndName(int id, int number, String name)
@@ -374,6 +403,14 @@ public class FootballService {
     repository.updatePlayerNumberAndName(id, number, name);
   }
 
+  /**
+   * 選手のクラブと背番号の更新
+   * @param id 選手ID
+   * @param clubId クラブID
+   * @param number 背番号
+   * @throws FootballException 背番号が重複している場合
+   * @throws ResourceConflictException クラブが変更されていない場合
+   */
   @Transactional
   public void updatePlayerClubAndNumber(int id, int clubId, int number)
       throws ResourceNotFoundException, FootballException, ResourceConflictException {
@@ -392,6 +429,12 @@ public class FootballService {
     repository.updatePlayerClubAndNumber(id, clubId, number);
   }
 
+  /**
+   * クラブのリーグの更新
+   * @param id クラブID
+   * @param leagueId リーグID
+   * @throws ResourceConflictException 変更がない場合
+   */
   @Transactional
   public void updateClubLeague(int id, int leagueId) throws ResourceNotFoundException, ResourceConflictException {
     Club club = getClub(id);
@@ -402,8 +445,14 @@ public class FootballService {
     repository.updateClubLeague(id, leagueId);
   }
 
-
 //  other
+
+  /**
+   * 選手とシーズンに基づく選手試合成績一覧の取得
+   * @param playerId 選手ID
+   * @param seasonId シーズンID
+   * @return 選手試合成績一覧
+   */
   public List<PlayerGameStat> getPlayerGameStatsByPlayerAndSeason(int playerId, int seasonId) throws ResourceNotFoundException {
     List<PlayerGameStat> playerGameStats = repository.selectPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
     // @GetMapping用にgameDate, opponentClubName, scoreを追加
@@ -413,6 +462,10 @@ public class FootballService {
     return playerGameStats;
   }
 
+  /**
+   * 選手試合成績にgameDate, opponentClubName, scoreを設定
+   * @param playerGameStat 選手試合成績
+   */
   private void setFieldsToPlayerGameStat(PlayerGameStat playerGameStat) throws ResourceNotFoundException {
     GameResult gameResult = getGameResult(playerGameStat.getGameId());
     // gameDate
@@ -433,9 +486,9 @@ public class FootballService {
   }
 
   /**
-   * Get player game stats except absent players
-   * @param playerGameStats
-   * @return player game stats except absent players
+   * 選手試合成績一覧から欠場選手を除外したものを取得
+   * @param playerGameStats 選手試合成績一覧
+   * @return 欠場選手を除外した選手試合成績一覧
    */
   public List<PlayerGameStat> getPlayerGameStatsExceptAbsent(List<PlayerGameStat> playerGameStats) {
     List<PlayerGameStat> playerGameStatsExceptAbsent = new ArrayList<>();
@@ -448,9 +501,10 @@ public class FootballService {
   }
 
   /**
-   * Calculate score from player game stats
-   * @param allyPlayerGameStats
-   * @return score
+   * 選手試合成績からスコアを取得
+   * @param allyPlayerGameStats 自クラブの選手試合成績
+   * @param opponentPlayerGameStats 相手クラブの選手試合成績
+   * @return 各選手のゴールおよび相手選手のオウンゴールの合計
    */
   private int getScoreByPlayerGameStats(List<PlayerGameStat> allyPlayerGameStats, List<PlayerGameStat> opponentPlayerGameStats) {
     int score = 0;
@@ -464,8 +518,9 @@ public class FootballService {
   }
 
   /**
-   * Register game result and player game stats
-   * @param gameResultWithPlayerStats
+   * 試合結果と選手試合成績を登録
+   * @param gameResultWithPlayerStats 試合結果と選手試合成績
+   * @throws FootballException 試合結果及び選手試合成績の整合性に問題がある場合
    */
   @Transactional(rollbackFor = FootballException.class)
   public void registerGameResultAndPlayerGameStats(GameResultWithPlayerStats gameResultWithPlayerStats)
@@ -511,12 +566,13 @@ public class FootballService {
   }
 
   /**
-   * Confirm game result and player game stats
-   * @param gameResult
-   * @param homeClubStats
-   * @param awayClubStats
-   * @throws FootballException
-   */
+    * 試合結果と選手試合成績の整合性を確認
+    * @param gameResult 試合結果
+    * @param homeClubStats ホームクラブの選手試合成績
+    * @param awayClubStats アウェイクラブの選手試合成績
+    * @throws FootballException 試合結果及び選手試合成績の整合性に問題がある場合
+    * @throws ResourceNotFoundException リーグが見つからない場合
+    */
   private void confirmGameResultAndPlayerGameStats(GameResult gameResult, List<PlayerGameStat> homeClubStats, List<PlayerGameStat> awayClubStats) throws FootballException, ResourceNotFoundException {
     // gameDateが今シーズンの範囲内か確認
     Season season = getCurrentSeason();
@@ -598,9 +654,9 @@ public class FootballService {
   }
 
   /**
-   * Convert player game stats for insert to player game stats
-   * @param playerGameStatsForJson
-   * @return player game stats
+   * 選手試合成績一覧をリクエスト用形式から登録用形式に変換
+   * @param playerGameStatsForJson 選手試合成績一覧（リクエスト用）
+   * @return 選手試合成績一覧（登録用）
    */
   public List<PlayerGameStat> convertPlayerGameStatsForInsertToPlayerGameStats(List<PlayerGameStatForJson> playerGameStatsForJson) {
     List<PlayerGameStat> playerGameStats = new ArrayList<>();
@@ -611,6 +667,11 @@ public class FootballService {
     return playerGameStats;
   }
 
+  /**
+   * 試合結果を選手試合成績一覧と共に取得
+   * @param gameId 試合ID
+   * @return 試合結果と選手試合成績一覧
+   */
   public GameResultWithPlayerStats getGameResultWithPlayerStats(int gameId) throws ResourceNotFoundException {
     GameResult gameResult = getGameResult(gameId);
     List<PlayerGameStat> playerGameStats = getPlayerGameStatsByGameId(gameId);
@@ -622,6 +683,5 @@ public class FootballService {
         .collect(Collectors.toList());
     return new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
   }
-
 
 }

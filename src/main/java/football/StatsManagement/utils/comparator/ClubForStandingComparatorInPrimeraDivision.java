@@ -4,6 +4,9 @@ import football.StatsManagement.utils.comparator.calculator.DifferenceCalculator
 import football.StatsManagement.model.domain.ClubForStanding;
 import java.util.Comparator;
 
+/**
+ * プリメーラ・ディビシオンにおける順位表作成のためのクラブ情報のComparatorクラス
+ */
 public class ClubForStandingComparatorInPrimeraDivision implements Comparator<ClubForStanding> {
   private DifferenceCalculatorBetweenTwoClubs calculator;
 
@@ -11,6 +14,12 @@ public class ClubForStandingComparatorInPrimeraDivision implements Comparator<Cl
     this.calculator = new DifferenceCalculatorBetweenTwoClubs();
   }
 
+  /**
+   * 2つの順位表作成のためのクラブ情報を比較する
+   * @param c1 順位表作成のためのクラブ情報
+   * @param c2 順位表作成のためのクラブ情報
+   * @return 比較結果
+   */
   @Override
   public int compare(ClubForStanding c1, ClubForStanding c2) {
     int comparisonResult;

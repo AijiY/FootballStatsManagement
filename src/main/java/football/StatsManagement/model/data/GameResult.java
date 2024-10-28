@@ -1,12 +1,14 @@
 package football.StatsManagement.model.data;
 
 import football.StatsManagement.model.json.GameResultForJson;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "試合結果情報を保持するクラス")
 @Getter
 @Setter
 @AllArgsConstructor // テスト用
@@ -25,7 +27,18 @@ public class GameResult {
   private String homeClubName;
   private String awayClubName;
 
-  // @Select用
+  /**
+   * DBからのデータ取得用のコンストラクタ
+   * @param id
+   * @param homeClubId
+   * @param awayClubId
+   * @param homeScore
+   * @param awayScore
+   * @param winnerClubId
+   * @param leagueId
+   * @param gameDate
+   * @param seasonId
+   */
   public GameResult(int id, int homeClubId, int awayClubId, int homeScore, int awayScore, Integer winnerClubId, int leagueId, LocalDate gameDate, int seasonId) {
     this.id = id;
     this.homeClubId = homeClubId;
@@ -38,7 +51,10 @@ public class GameResult {
     this.seasonId = seasonId;
   }
 
-  // @Insert用
+  /**
+   * 登録用のコンストラクタ
+   * @param gameResultForJson 登録情報
+   */
   public GameResult(GameResultForJson gameResultForJson) {
     this.id = 0;
     this.homeClubId = gameResultForJson.getHomeClubId();

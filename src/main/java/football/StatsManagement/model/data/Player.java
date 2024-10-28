@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Schema(description = "選手")
+@Schema(description = "選手情報を保持するクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用
@@ -26,7 +26,10 @@ public class Player {
   @Positive
   private int number;
 
-  // @Insert用
+  /**
+   * 登録用のコンストラクタ
+   * @param playerForJson 登録情報
+   */
   public Player(PlayerForJson playerForJson) {
     this.id = 0;
     this.clubId = playerForJson.getClubId();

@@ -3,8 +3,16 @@ package football.StatsManagement.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * テスト用のユーティリティクラス
+ */
 public class TestUtils {
 
+  /**
+   * 2つのJSON文字列を比較するメソッド（AssertJのJSON比較機能でエラーが出る場合に使用）
+   * @param expectedJson
+   * @param actualJson
+   */
   public static void compareJson(String expectedJson, String actualJson) throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -24,6 +32,12 @@ public class TestUtils {
   }
 
   // 差異をログに出力するメソッド
+
+  /**
+   * 差異をログに出力するメソッド
+   * @param expectedNode
+   * @param actualNode
+   */
   private static void logDifferences(JsonNode expectedNode, JsonNode actualNode) {
     expectedNode.fieldNames().forEachRemaining(field -> {
       if (!actualNode.has(field)) {

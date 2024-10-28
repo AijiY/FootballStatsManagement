@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Schema(description = "ドメインクラスおよびレスポンスクラスとそのリストを初期化するためのクラス")
+/**
+ * サッカースタッツ管理システムでDB上にないデータクラスを作成するServiceクラス
+ */
 @Service
 public class FactoryService {
   private final FootballService footballService;
@@ -32,6 +34,13 @@ public class FactoryService {
   public FactoryService(FootballService footballService) {
     this.footballService = footballService;
   }
+
+  /**
+   * 順位表作成に用いるクラブ情報を作成する
+   * @param seasonId シーズンID
+   * @param club クラブ情報
+   * @return 順位表作成に用いるクラブ情報
+   */
   public ClubForStanding createClubForStanding (int seasonId, Club club) {
     List<GameResult> gameResults = footballService.getGameResultsByClubAndSeason(seasonId, club.getId());
     int gamesPlayed = gameResults.size();
@@ -47,6 +56,13 @@ public class FactoryService {
   }
 
   // createClubForStandingメソッドで使用するメソッド
+
+  /**
+   * クラブの勝利数を取得する
+   * @param gameResults クラブの試合結果一覧
+   * @param clubId クラブID
+   * @return クラブの勝利数
+   */
   private int getWins(List<GameResult> gameResults, int clubId) {
     int wins = 0;
     for (GameResult gameResult : gameResults) {
@@ -58,6 +74,11 @@ public class FactoryService {
     return wins;
   }
 
+  /**
+   * クラブの引き分け数を取得する
+   * @param gameResults クラブの試合結果一覧
+   * @return クラブの引き分け数
+   */
   private int getDraws(List<GameResult> gameResults) {
     int draws = 0;
     for (GameResult gameResult : gameResults) {
@@ -66,6 +87,12 @@ public class FactoryService {
     return draws;
   }
 
+  /**
+   * クラブの得点数を取得する
+   * @param gameResults クラブの試合結果一覧
+   * @param clubId クラブID
+   * @return クラブの得点数
+   */
   private int getGoalsFor(List<GameResult> gameResults, int clubId) {
     int goalsFor = 0;
     for (GameResult gameResult : gameResults) {
@@ -75,6 +102,12 @@ public class FactoryService {
     return goalsFor;
   }
 
+  /**
+   * クラブの失点数を取得する
+   * @param gameResults クラブの試合結果一覧
+   * @param clubId クラブID
+   * @return クラブの失点数
+   */
   private int getGoalsAgainst(List<GameResult> gameResults, int clubId) {
     int goalsAgainst = 0;
     for (GameResult gameResult : gameResults) {
@@ -84,6 +117,13 @@ public class FactoryService {
     return goalsAgainst;
   }
 
+  /**
+   * 選手のシーズン成績（1つのクラブに対応）を作成する
+   * @param playerId 選手ID
+   * @param seasonId シーズンID
+   * @param clubId クラブID
+   * @return 選手のシーズン成績
+   */
   public PlayerSeasonStat createPlayerSeasonStat(int playerId, int seasonId, int clubId) throws ResourceNotFoundException {
     List<PlayerGameStat> playerGameStats = footballService.getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
     List<PlayerGameStat> playerGameStatsByClub = playerGameStats.stream()
@@ -117,6 +157,12 @@ public class FactoryService {
         starterGames, substituteGames, goals, assists, minutes, yellowCards, redCards, playerName, clubName, seasonName);
   }
 
+  /**
+   * 選手のシーズン成績を作成する
+   * @param playerId 選手ID
+   * @param seasonId シーズンID
+   * @return 選手のシーズン成績一覧
+   */
   public List<PlayerSeasonStat> createPlayerSeasonStats(int playerId, int seasonId) throws ResourceNotFoundException {
     List<PlayerSeasonStat> playerSeasonStats = new ArrayList<>();
     List<Integer> clubIds = footballService.getClubIdsByPlayerAndSeason(playerId, seasonId);
@@ -126,6 +172,12 @@ public class FactoryService {
     return playerSeasonStats;
   }
 
+  /**
+   * クラブに所属する選手全員のシーズン成績を作成する
+   * @param clubId クラブID
+   * @param seasonId シーズンID
+   * @return 選手のシーズン成績一覧
+   */
   public List<PlayerSeasonStat> createPlayerSeasonStatsByClub(int clubId, int seasonId) throws ResourceNotFoundException {
     List<Player> players = footballService.getPlayersByClub(clubId);
     List<PlayerSeasonStat> playerSeasonStats = new ArrayList<>();
@@ -135,6 +187,11 @@ public class FactoryService {
     return playerSeasonStats;
   }
 
+  /**
+   * 選手の通算成績を作成する
+   * @param playerId 選手ID
+   * @return 選手の通算成績（シーズン成績一覧）
+   */
   public List<PlayerSeasonStat> createPlayerCareerStats(int playerId) throws ResourceNotFoundException {
     List<PlayerSeasonStat> playerCareerStats = new ArrayList<>();
     List<Season> seasons = footballService.getSeasons();
@@ -145,6 +202,12 @@ public class FactoryService {
     return playerCareerStats;
   }
 
+  /**
+   * シーズンの試合結果一覧を作成する
+   * @param leagueId リーグID
+   * @param seasonId シーズンID
+   * @return シーズンの試合結果一覧
+   */
   public SeasonGameResult createSeasonGameResult(int leagueId, int seasonId) throws ResourceNotFoundException {
     List<GameResult> gameResults = footballService.getGameResultsByLeagueAndSeason(leagueId, seasonId);
     List<LocalDate> gameDates = footballService.getGameDatesByLeagueAndSeason(leagueId, seasonId);
@@ -166,6 +229,12 @@ public class FactoryService {
     return new SeasonGameResult(leagueId, seasonId, dayGameResults);
   }
 
+  /**
+   * 順位表を作成する
+   * @param leagueId リーグID
+   * @param seasonId シーズンID
+   * @return 順位表
+   */
   public Standing createStanding(int leagueId, int seasonId) throws ResourceNotFoundException {
     List<Club> clubs = footballService.getClubsByLeague(leagueId);
     List<ClubForStanding> clubForStandings = clubs.stream()
@@ -185,6 +254,11 @@ public class FactoryService {
     return new Standing(leagueId, seasonId, rankedClubForStandings, leagueName, seasonName);
   }
 
+  /**
+   * リクエスト形式クラスから試合結果を作成する
+   * @param gameResultWithPlayerStatsForJson GameResultWithPlayerStatsのリクエスト形式クラス
+   * @return GameResultWithPlayerStats 試合結果と選手試合成績一覧
+   */
   public GameResultWithPlayerStats createGameResultWithPlayerStats(
       GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson) {
     GameResult gameResult = new GameResult(gameResultWithPlayerStatsForJson.getGameResultForJson());
