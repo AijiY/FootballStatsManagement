@@ -15,7 +15,6 @@ import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
 import football.StatsManagement.utils.RankingUtils;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -261,11 +260,11 @@ public class FactoryService {
    */
   public GameResultWithPlayerStats createGameResultWithPlayerStats(
       GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson) {
-    GameResult gameResult = new GameResult(gameResultWithPlayerStatsForJson.getGameResultForJson());
+    GameResult gameResult = new GameResult(gameResultWithPlayerStatsForJson.gameResultForJson());
     List<PlayerGameStat> homePlayerGameStats
-        = footballService.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.getHomeClubPlayerGameStatsForJson());
+        = footballService.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.homeClubPlayerGameStatsForJson());
     List<PlayerGameStat> awayPlayerGameStats
-        = footballService.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.getAwayClubPlayerGameStatsForJson());
+        = footballService.convertPlayerGameStatsForInsertToPlayerGameStats(gameResultWithPlayerStatsForJson.awayClubPlayerGameStatsForJson());
     return new GameResultWithPlayerStats(gameResult, homePlayerGameStats, awayPlayerGameStats);
   }
 

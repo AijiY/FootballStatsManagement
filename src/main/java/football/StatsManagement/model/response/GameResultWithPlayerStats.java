@@ -2,8 +2,6 @@ package football.StatsManagement.model.response;
 
 import football.StatsManagement.model.data.GameResult;
 import football.StatsManagement.model.data.PlayerGameStat;
-import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
-import football.StatsManagement.service.FootballService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;

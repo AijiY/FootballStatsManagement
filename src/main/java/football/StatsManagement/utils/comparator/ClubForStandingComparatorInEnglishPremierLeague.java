@@ -8,7 +8,7 @@ import java.util.Comparator;
  * イングランドプレミアリーグの順位表でのクラブの比較を行うComparatorクラス
  */
 public class ClubForStandingComparatorInEnglishPremierLeague implements Comparator<ClubForStanding> {
-  private DifferenceCalculatorBetweenTwoClubs calculator;
+  private final DifferenceCalculatorBetweenTwoClubs calculator;
 
   public ClubForStandingComparatorInEnglishPremierLeague() {
     this.calculator = new DifferenceCalculatorBetweenTwoClubs();

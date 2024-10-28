@@ -1,14 +1,8 @@
 package football.StatsManagement.model.domain;
 
-import football.StatsManagement.exception.ResourceNotFoundException;
-import football.StatsManagement.model.data.GameResult;
-import football.StatsManagement.service.FootballService;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Schema(description = "シーズンの試合結果一覧情報を保持するレコードクラス")
 public record SeasonGameResult(

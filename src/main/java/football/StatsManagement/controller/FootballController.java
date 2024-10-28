@@ -46,8 +46,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 public class FootballController {
-  private FootballService footballService;
-  private FactoryService factoryService;
+  private final FootballService footballService;
+  private final FactoryService factoryService;
 
   @Autowired
   public FootballController(FootballService footballService, FactoryService factoryService) {
@@ -383,8 +383,8 @@ public class FootballController {
 
   /**
    * クラブの昇格・降格
-   * @param leagueId
-   * @param clubId
+   * @param leagueId 昇格・降格先リーグID
+   * @param clubId クラブID
    * @return 昇格・降格されたクラブ
    */
   @PatchMapping("club-promote-or-relegate/{clubId}")

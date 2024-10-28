@@ -1,6 +1,5 @@
 package football.StatsManagement.model.domain;
 
-import football.StatsManagement.service.FootballService;
 import football.StatsManagement.model.data.Club;
 import football.StatsManagement.model.data.GameResult;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -89,10 +88,9 @@ public class ClubForStanding {
    * @return 対戦相手に対して得たアウェーゴール数
    */
   public int getAwayGoalsAgainst(int idOfClubAgainst) {
-    int awayGoalsAgainst = this.getGameResults().stream()
+    return this.getGameResults().stream()
         .filter(gameResult -> gameResult.getHomeClubId() == idOfClubAgainst)
         .mapToInt(GameResult::getAwayScore).sum();
-    return awayGoalsAgainst;
   }
 
   /**

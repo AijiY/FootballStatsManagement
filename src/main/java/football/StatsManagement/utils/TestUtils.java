@@ -10,8 +10,8 @@ public class TestUtils {
 
   /**
    * 2つのJSON文字列を比較するメソッド（AssertJのJSON比較機能でエラーが出る場合に使用）
-   * @param expectedJson
-   * @param actualJson
+   * @param expectedJson 期待値のJSON文字列
+   * @param actualJson 実際のJSON文字列
    */
   public static void compareJson(String expectedJson, String actualJson) throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();

@@ -7,6 +7,7 @@ import football.StatsManagement.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class FootballExceptionHandler {
 
   // @RequestParam、@PathVariableに対するValidationのExceptionのハンドリング処理を記述
-  // TODO:@AssertTrueで検証に失敗した場合の例外処理に対応しているか？
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
@@ -29,6 +29,7 @@ public class FootballExceptionHandler {
   // @RequestBodyに対するValidationのExceptionのハンドリング処理を記述（@NotBlankなど対象）
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    //noinspection DataFlowIssue
     Map<String, String> messages = e.getBindingResult().getFieldErrors().stream()
         .collect(
             java.util.stream.Collectors.toMap(
@@ -51,10 +52,9 @@ public class FootballExceptionHandler {
     String inputValue = "unknown";
 
     // エラーメッセージから詳細情報を抽出
-    if (e instanceof MethodArgumentTypeMismatchException) {
-      MethodArgumentTypeMismatchException typeMismatchException = (MethodArgumentTypeMismatchException) e;
+    if (e instanceof MethodArgumentTypeMismatchException typeMismatchException) {
       fieldName = typeMismatchException.getName();
-      requiredType = typeMismatchException.getRequiredType().getSimpleName();
+      requiredType = Objects.requireNonNull(typeMismatchException.getRequiredType()).getSimpleName();
       inputValue = typeMismatchException.getValue() != null ? typeMismatchException.getValue().toString() : "null";
     }
 
@@ -73,9 +73,8 @@ public class FootballExceptionHandler {
     String message = "入力形式が不正です。";
 
     // エラーメッセージの詳細を解析
-    if (e.getCause() instanceof InvalidFormatException) {
-      InvalidFormatException ife = (InvalidFormatException) e.getCause();
-      String fieldName = ife.getPath().get(0).getFieldName();
+    if (e.getCause() instanceof InvalidFormatException ife) {
+      String fieldName = ife.getPath().getFirst().getFieldName();
       String requiredType = ife.getTargetType().getSimpleName();
       String value = ife.getValue() != null ? ife.getValue().toString() : "null";
       message = String.format("フィールド '%s' の型は '%s' ですが、'%s' が入力されています。",
@@ -104,20 +103,4 @@ public class FootballExceptionHandler {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 
-//  // @AssertTrueで検証に失敗した場合の例外処理
-//  @ExceptionHandler(ConstraintViolationException.class)
-//  public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
-//    // ConstraintViolationException からエラー詳細を取得
-//    StringBuilder errorMessages = new StringBuilder("検証エラーが発生しました：\n");
-//
-//    Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-//    for (ConstraintViolation<?> violation : violations) {
-//      errorMessages.append("Property: ").append(violation.getPropertyPath())
-//          .append(", Invalid Value: ").append(violation.getInvalidValue())
-//          .append(", Message: ").append(violation.getMessage())
-//          .append("\n");
-//    }
-//
-//    return ResponseEntity.badRequest().body(errorMessages.toString());
-//  }
 }

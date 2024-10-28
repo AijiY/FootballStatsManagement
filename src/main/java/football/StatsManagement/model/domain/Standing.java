@@ -1,9 +1,5 @@
 package football.StatsManagement.model.domain;
 
-import football.StatsManagement.exception.ResourceNotFoundException;
-import football.StatsManagement.service.FootballService;
-import football.StatsManagement.model.data.Club;
-import football.StatsManagement.utils.RankingUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
