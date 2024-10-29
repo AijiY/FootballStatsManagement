@@ -431,12 +431,16 @@ class FootballIntegrationTest {
     PlayerGameStat playerGameStat21 = new PlayerGameStat(13, 1, 1, 1, false, 0, 0, 0, 90, 0, 0, 4, LocalDate.of(2020, 8, 3), "ClubAAB", "●1-2");
     List<PlayerGameStat> playerGameStats2 = List.of(playerGameStat21);
     List<PlayerSeasonStat> playerSeasonStats2 = List.of(
-        new PlayerSeasonStat(1, playerGameStats2, 202021, 1, 1, 0, 1, 0, 0, 90, 0, 0, "PlayerAAAA", "ClubAAA", "2020-21")
+        new PlayerSeasonStat(playerId, playerGameStats2, 202021, 1, 1, 0, 1, 0, 0, 90, 0, 0, "PlayerAAAA", "ClubAAA", "2020-21")
     );
+
+    // 通算成績を作成
+    PlayerSeasonStat playerSeasonStatTotal = new PlayerSeasonStat(playerId, new ArrayList<>(), 0, 0, 3, 2, 1, 1, 0, 270, 0, 0, "Total", "Total", "Total");
 
     List<PlayerSeasonStat> expected = new ArrayList<>();
     expected.addAll(playerSeasonStats1);
     expected.addAll(playerSeasonStats2);
+    expected.add(playerSeasonStatTotal);
 
     return expected;
   }

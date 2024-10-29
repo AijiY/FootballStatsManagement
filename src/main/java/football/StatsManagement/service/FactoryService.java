@@ -198,7 +198,45 @@ public class FactoryService {
       List<PlayerSeasonStat> playerSeasonStats = createPlayerSeasonStats(playerId, season.getId());
       playerCareerStats.addAll(playerSeasonStats);
     }
+    // 通算成績を作成（クラスの検討の余地あり）
+    int idForTotal = 0;
+    Season total = new Season(idForTotal, "Total", null, null, false);
+    playerCareerStats.add(createPlayerStatTotal(playerId, playerCareerStats, total));
+
     return playerCareerStats;
+  }
+
+  private PlayerSeasonStat createPlayerStatTotal(int playerId, List<PlayerSeasonStat> playerCareerStats, Season total) {
+    int games = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::games)
+        .sum();
+    int starterGames = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::starterGames)
+        .sum();
+    int substituteGames = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::substituteGames)
+        .sum();
+    int goals = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::goals)
+        .sum();
+    int assists = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::assists)
+        .sum();
+    int minutes = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::minutes)
+        .sum();
+    int yellowCards = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::yellowCards)
+        .sum();
+    int redCards = playerCareerStats.stream()
+        .mapToInt(PlayerSeasonStat::redCards)
+        .sum();
+    String playerName = "Total";
+    String clubName = "Total";
+    String seasonName = total.getName();
+
+    return new PlayerSeasonStat(playerId, new ArrayList<>(), total.getId(), 0, games,
+        starterGames, substituteGames, goals, assists, minutes, yellowCards, redCards, playerName, clubName, seasonName);
   }
 
   /**
