@@ -23,6 +23,7 @@ import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.utils.RankingUtils;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -249,6 +250,7 @@ class FactoryServiceTest {
     when(footballService.getClubsByLeague(leagueId)).thenReturn(List.of(club1, club2));
 
     ClubForStanding clubForStanding1 = mock(ClubForStanding.class);
+    when(clubForStanding1.getGamesPlayed()).thenReturn(1); // 後から設定
     when(spySut.createClubForStanding(seasonId, club1)).thenReturn(clubForStanding1);
     ClubForStanding clubForStanding2 = mock(ClubForStanding.class);
     when(spySut.createClubForStanding(seasonId, club2)).thenReturn(clubForStanding2);
@@ -280,6 +282,47 @@ class FactoryServiceTest {
       verify(footballService, times(1)).getSeason(seasonId);
       mockedRankingUtils.verify(() -> RankingUtils.sortedClubForStandings(leagueId, clubForStandings));
     }
+  }
 
+  @Test
+  @DisplayName("順位表の作成_試合が存在しない場合に空のclubForStandingsからなるオブジェクトを返すこと")
+  void createStandingWhenNoGameResults() throws ResourceNotFoundException {
+    int leagueId = 1;
+    int seasonId = 1;
+
+    // Arrange
+    FactoryService spySut = spy(sut);
+
+    Club club1 = mock(Club.class);
+    Club club2 = mock(Club.class);
+    when(footballService.getClubsByLeague(leagueId)).thenReturn(List.of(club1, club2));
+
+    ClubForStanding clubForStanding1 = mock(ClubForStanding.class);
+    when(clubForStanding1.getGamesPlayed()).thenReturn(0);
+    doReturn(clubForStanding1).when(spySut).createClubForStanding(seasonId, club1);
+    ClubForStanding clubForStanding2 = mock(ClubForStanding.class);
+    when(clubForStanding2.getGamesPlayed()).thenReturn(0);
+    doReturn(clubForStanding2).when(spySut).createClubForStanding(seasonId, club2);
+
+    League league = mock(League.class);
+    when(footballService.getLeague(leagueId)).thenReturn(league);
+    when(league.getName()).thenReturn("Sample League");
+
+    Season season = mock(Season.class);
+    when(footballService.getSeason(seasonId)).thenReturn(season);
+    when(season.getName()).thenReturn("Sample Season");
+
+    Standing expected = new Standing(leagueId, seasonId, new ArrayList<>(), "Sample League", "Sample Season");
+
+    // Act
+    Standing actual = spySut.createStanding(leagueId, seasonId);
+
+    // Assert
+    assertEquals(expected, actual);
+    verify(footballService, times(1)).getClubsByLeague(leagueId);
+    verify(spySut, times(1)).createClubForStanding(seasonId, club1);
+    verify(spySut, times(1)).createClubForStanding(seasonId, club2);
+    verify(footballService, times(1)).getLeague(leagueId);
+    verify(footballService, times(1)).getSeason(seasonId);
   }
 }

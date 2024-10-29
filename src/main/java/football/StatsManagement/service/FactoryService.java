@@ -239,8 +239,13 @@ public class FactoryService {
     List<ClubForStanding> clubForStandings = clubs.stream()
         .map(club -> createClubForStanding(seasonId, club))
         .collect(Collectors.toList());
-    List<ClubForStanding> rankedClubForStandings = RankingUtils.sortedClubForStandings(leagueId,
-        clubForStandings);
+
+    // 試合が存在しなければ順位表を作成しない（空のclubForStandingsからなるオブジェクトを返す）
+    if (clubForStandings.stream().allMatch(clubForStanding -> clubForStanding.getGamesPlayed() == 0)) {
+      return new Standing(leagueId, seasonId, new ArrayList<>(), footballService.getLeague(leagueId).getName(), footballService.getSeason(seasonId).getName());
+    }
+
+    List<ClubForStanding> rankedClubForStandings = RankingUtils.sortedClubForStandings(leagueId, clubForStandings);
 
     // 順位をセット
     for (int i = 0; i < rankedClubForStandings.size(); i++) {
