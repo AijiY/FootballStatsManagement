@@ -30,8 +30,7 @@ class ClubForStandingComparatorInCommonTest {
   @BeforeEach
   void setup() {
     sut = new ClubForStandingComparatorInCommon();
-    // テスト対象クラスのprivateフィールドをモックに差し替える（これでテスト用のコンストラクタ不要）
-    ReflectionTestUtils.setField(sut, "calculator", calculator);
+    ReflectionTestUtils.setField(sut, "calculator", calculator); // テスト対象クラスのprivateフィールドをモックに差し替える（これでテスト用のコンストラクタ不要）
     c1 = mock(ClubForStanding.class);
     c2 = mock(ClubForStanding.class);
   }
@@ -40,13 +39,14 @@ class ClubForStandingComparatorInCommonTest {
   @DisplayName("compareメソッド_勝ち点で比較終了")
   void compareFinishAtPoints() {
     // Arrange
-    when(calculator.pointsDifference(c1, c2)).thenReturn(1);
+    int expected = 1;
+    when(calculator.pointsDifference(c1, c2)).thenReturn(expected);
 
     // Act
     int actual = sut.compare(c1, c2);
 
     // Assert
-    assertEquals(1, actual);
+    assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
   }
 
@@ -55,12 +55,13 @@ class ClubForStandingComparatorInCommonTest {
   void compareDraw() {
     // Arrange
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
+    int expected = 0;
 
     // Act
     int actual = sut.compare(c1, c2);
 
     // Assert
-    assertEquals(0, actual);
+    assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
   }
 }

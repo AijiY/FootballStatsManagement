@@ -38,8 +38,8 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
   @Test
   @DisplayName("compareメソッド_勝ち点で比較終了")
   void compareFinishAtPoints() {
-    int expected = 1;
     // Arrange
+    int expected = 1;
     when(calculator.pointsDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -53,9 +53,9 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
   @Test
   @DisplayName("compareメソッド_得失点差で比較終了")
   void compareFinishAtGoalDifference() {
-    int expected = 1;
     // Arrange
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -70,10 +70,10 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
   @Test
   @DisplayName("compareメソッド_得点で比較終了")
   void compareFinishAtGoalsFor() {
-    int expected = 1;
     // Arrange
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.goalsForDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -89,11 +89,11 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
   @Test
   @DisplayName("compareメソッド_当該チーム間の勝ち点で比較終了")
   void compareFinishAtPointsAgainst() {
-    int expected = 1;
     // Arrange
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -110,12 +110,12 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
   @Test
   @DisplayName("compareメソッド_当該チーム間のアウェーゴールで比較終了")
   void compareFinishAtAwayGoals() {
-    int expected = 1;
     // Arrange
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.awayGoalsDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -139,12 +139,13 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
     when(calculator.awayGoalsDifference(c1, c2)).thenReturn(0);
+    int expected = 0;
 
     // Act
     int actual = sut.compare(c1, c2);
 
     // Assert
-    assertEquals(0, actual);
+    assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);

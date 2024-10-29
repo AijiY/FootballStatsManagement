@@ -11,8 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import football.StatsManagement.exception.FootballException;
 import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
@@ -24,11 +22,6 @@ import football.StatsManagement.model.data.Player;
 import football.StatsManagement.model.data.PlayerGameStat;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
-import football.StatsManagement.model.json.ClubForJson;
-import football.StatsManagement.model.json.GameResultForJson;
-import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
-import football.StatsManagement.model.json.LeagueForJson;
-import football.StatsManagement.model.json.PlayerForJson;
 import football.StatsManagement.model.json.PlayerGameStatForJson;
 import football.StatsManagement.model.json.SeasonForJson;
 import football.StatsManagement.repository.FootballRepository;
@@ -36,7 +29,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -93,13 +85,15 @@ class FootballServiceTest {
 
   @Test
   void registerPlayer_withDuplicatedNumber() {
+    // Arrange
     Player newPlayer = mock(Player.class);
     when(newPlayer.getNumber()).thenReturn(1);
     // 既に同じ背番号の選手が登録されている状態を作る
     Player existingPlayer = mock(Player.class);
     when(existingPlayer.getNumber()).thenReturn(1);
     when(sut.getPlayersByClub(anyInt())).thenReturn(List.of(existingPlayer));
-    // 例外が投げられることを確認し、メッセージもチェック
+
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sut.registerPlayer(newPlayer));
     assertEquals("Player number is already used in Club", thrown.getMessage());
   }
@@ -128,12 +122,17 @@ class FootballServiceTest {
   void registerSeason(
       String name, LocalDate startDate, LocalDate endDate
   ) throws FootballException {
+    // Arrange
     SeasonForJson seasonForJson = new SeasonForJson(name, startDate, endDate);
     Season season = new Season(seasonForJson);
     when(sut.getSeasons()).thenReturn(List.of(
         new Season(1, "2000-01", LocalDate.of(2000, 7, 1), LocalDate.of(2001, 6, 30), true)
     ));
+
+    // Act
     sut.registerSeason(season);
+
+    // Assert
     verify(repository, times(1)).insertSeason(season);
   }
 
@@ -149,11 +148,13 @@ class FootballServiceTest {
   void registerSeason_withInvalidSeason(
       String name, LocalDate startDate, LocalDate endDate, String expectedMessage
   ) {
+    // Arrange
     SeasonForJson seasonForJson = new SeasonForJson(name, startDate, endDate);
     Season season = new Season(seasonForJson);
-    // 例外が投げられることを確認し、メッセージもチェック
+
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sut.registerSeason(season));
-    assertEquals(expectedMessage.trim(), thrown.getMessage().trim()); // 'Season name should be in the format of ''yyyy-yy''に関して、原因不明のAssersionErrorが発生するため、trim()で空白を削除
+    assertEquals(expectedMessage.trim(), thrown.getMessage().trim()); // 'Season name should be in the format of ''yyyy-yy''に関して、原因不明のAssertionErrorが発生するため、trim()で空白を削除
   }
 
   @ParameterizedTest
@@ -166,13 +167,14 @@ class FootballServiceTest {
   void registerSeason_withConflictSeason(
       String name, LocalDate startDate, LocalDate endDate, String expectedMessage
   ) {
+    // Arrange
     SeasonForJson seasonForJson = new SeasonForJson(name, startDate, endDate);
     Season season = new Season(seasonForJson);
-    // 既に同じ名前のシーズンが登録されている状態を作る
     when(sut.getSeasons()).thenReturn(List.of(
         new Season(1, "2000-01", LocalDate.of(2000, 7, 1), LocalDate.of(2001, 6, 30), true)
     ));
-    // 例外が投げられることを確認し、メッセージもチェック
+
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sut.registerSeason(season));
     assertEquals(expectedMessage, thrown.getMessage());
   }
@@ -181,8 +183,10 @@ class FootballServiceTest {
   @DisplayName("IDによる国の検索_リポジトリが適切に処理されること")
   void getCountry() throws ResourceNotFoundException {
     int id = 1;
+    // Arrange
     Country country = mock(Country.class);
     when(repository.selectCountry(id)).thenReturn(Optional.of(country));
+    // Act & Assert
     Country actual = sut.getCountry(id);
     verify(repository, times(1)).selectCountry(id);
   }
@@ -191,9 +195,9 @@ class FootballServiceTest {
   @DisplayName("IDによる国の検索_IDが存在しない場合に適切に例外処理されること")
   void getCountry_withNotFound() {
     int id = 1;
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectCountry(id)).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getCountry(id));
   }
 
@@ -201,8 +205,10 @@ class FootballServiceTest {
   @DisplayName("IDによるリーグの検索_リポジトリが適切に処理されること")
   void getLeague() throws ResourceNotFoundException {
     int id = 1;
+    // Arrange
     League league = mock(League.class);
     when(repository.selectLeague(id)).thenReturn(Optional.of(league));
+    // Act & Assert
     League actual = sut.getLeague(id);
     verify(repository, times(1)).selectLeague(id);
   }
@@ -211,9 +217,9 @@ class FootballServiceTest {
   @DisplayName("IDによるリーグの検索_IDが存在しない場合に適切に例外処理されること")
   void getLeague_withNotFound() {
     int id = 1;
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectLeague(id)).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getLeague(id));
   }
 
@@ -221,8 +227,10 @@ class FootballServiceTest {
   @DisplayName("IDによるクラブの検索_リポジトリが適切に処理されること")
   void getClub() throws ResourceNotFoundException {
     int id = 1;
+    // Arrange
     Club club = mock(Club.class);
     when(repository.selectClub(id)).thenReturn(Optional.of(club));
+    // Act & Assert
     Club actual = sut.getClub(id);
     verify(repository, times(1)).selectClub(id);
   }
@@ -231,9 +239,9 @@ class FootballServiceTest {
   @DisplayName("IDによるクラブの検索_IDが存在しない場合に適切に例外処理されること")
   void getClub_withNotFound() {
     int id = 1;
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectClub(id)).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getClub(id));
   }
 
@@ -241,8 +249,10 @@ class FootballServiceTest {
   @DisplayName("IDによる選手の検索_リポジトリが適切に処理されること")
   void getPlayer() throws ResourceNotFoundException {
     int id = 1;
+    // Arrange
     Player player = mock(Player.class);
     when(repository.selectPlayer(id)).thenReturn(Optional.of(player));
+    // Act & Assert
     Player actual = sut.getPlayer(id);
     verify(repository, times(1)).selectPlayer(id);
   }
@@ -251,9 +261,9 @@ class FootballServiceTest {
   @DisplayName("IDによる選手の検索_IDが存在しない場合に適切に例外処理されること")
   void getPlayer_withNotFound() {
     int id = 1;
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectPlayer(id)).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getPlayer(id));
   }
 
@@ -262,7 +272,8 @@ class FootballServiceTest {
   void getGameResultsByLeagueAndSeason() {
     int leagueId = 1;
     int seasonId = 1;
-    List<GameResult> gameResults = sut.getGameResultsByLeagueAndSeason(leagueId, seasonId);
+
+    List<GameResult> actual = sut.getGameResultsByLeagueAndSeason(leagueId, seasonId);
     verify(repository, times(1)).selectGameResultsByLeagueAndSeason(leagueId, seasonId);
   }
 
@@ -271,7 +282,8 @@ class FootballServiceTest {
   void getGameDatesByLeagueAndSeason() {
     int leagueId = 1;
     int seasonId = 1;
-    List<LocalDate> gameDates = sut.getGameDatesByLeagueAndSeason(leagueId, seasonId);
+
+    List<LocalDate> actual = sut.getGameDatesByLeagueAndSeason(leagueId, seasonId);
     verify(repository, times(1)).selectGameDatesByLeagueAndSeason(leagueId, seasonId);
   }
 
@@ -279,14 +291,19 @@ class FootballServiceTest {
   @DisplayName("IDによる試合結果の検索_リポジトリが適切に処理されること")
   void getGameResult() throws ResourceNotFoundException {
     int id = 1;
+
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = mock(GameResult.class);
     when(repository.selectGameResult(id)).thenReturn(Optional.of(gameResult));
 
-    // モックのメソッドを呼び出すためにspyを使用
-    FootballService sutSpy = spy(sut);
     doNothing().when(sutSpy).setClubNamesToGameResult(gameResult);
 
+    // Act
     GameResult actual = sutSpy.getGameResult(id);
+
+    // Assert
     verify(repository, times(1)).selectGameResult(id);
     verify(sutSpy, times(1)).setClubNamesToGameResult(gameResult);
   }
@@ -295,29 +312,34 @@ class FootballServiceTest {
   @DisplayName("IDによる試合結果の検索_IDが存在しない場合に適切に例外処理されること")
   void getGameResult_withNotFound() {
     int id = 1;
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectGameResult(id)).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getGameResult(1));
   }
 
   @Test
   @DisplayName("試合結果にクラブ名をセット_リポジトリが適切に処理されること")
   void setClubNamesToGameResult() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = mock(GameResult.class);
     when(gameResult.getHomeClubId()).thenReturn(1);
     when(gameResult.getAwayClubId()).thenReturn(2);
+
     Club homeClub = mock(Club.class);
     Club awayClub = mock(Club.class);
     when(homeClub.getName()).thenReturn("homeClubName");
     when(awayClub.getName()).thenReturn("awayClubName");
 
-    // モックのメソッドを呼び出すためにspyを使用
-    FootballService sutSpy = spy(sut);
     doReturn(homeClub).when(sutSpy).getClub(1);
     doReturn(awayClub).when(sutSpy).getClub(2);
 
+    // Act
     sutSpy.setClubNamesToGameResult(gameResult);
+
+    // Assert
     verify(gameResult, times(1)).getHomeClubId();
     verify(gameResult, times(1)).getAwayClubId();
     verify(sutSpy, times(1)).getClub(1);
@@ -330,8 +352,10 @@ class FootballServiceTest {
   @DisplayName("IDによる選手試合成績の検索_リポジトリが適切に処理されること")
   void getPlayerGameStat() throws ResourceNotFoundException {
     int id = 1;
+    // Arrange
     PlayerGameStat playerGameStat = mock(PlayerGameStat.class);
     when(repository.selectPlayerGameStat(id)).thenReturn(Optional.of(playerGameStat));
+    // Act & Assert
     PlayerGameStat actual = sut.getPlayerGameStat(id);
     verify(repository, times(1)).selectPlayerGameStat(id);
   }
@@ -340,69 +364,76 @@ class FootballServiceTest {
   @DisplayName("IDによる選手試合成績の検索_IDが存在しない場合に適切に例外処理されること")
   void getPlayerGameStat_withNotFound() {
     int id = 1;
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectPlayerGameStat(id)).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getPlayerGameStat(id));
   }
 
   @Test
-  @DisplayName("選手IDによる選手試合成績の検索_リポジトリが適切に処理されること")
+  @DisplayName("選手IDによる選手試合成績一覧の検索_リポジトリが適切に処理されること")
   void getPlayerGameStatsByPlayer() {
     int playerId = 1;
+
     List<PlayerGameStat> actual = sut.getPlayerGameStatsByPlayer(playerId);
     verify(repository, times(1)).selectPlayerGameStatsByPlayer(playerId);
   }
 
   @Test
-  @DisplayName("クラブIDとシーズンIDによる選手試合成績の検索_リポジトリが適切に処理されること")
+  @DisplayName("クラブIDとシーズンIDによる選手試合成績一覧の検索_リポジトリが適切に処理されること")
   void getGameResultsByClubAndSeason() {
     int seasonId = 1;
     int clubId = 1;
+
     List<GameResult> actual = sut.getGameResultsByClubAndSeason(seasonId, clubId);
     verify(repository, times(1)).selectGameResultsByClubAndSeason(seasonId, clubId);
   }
 
   @Test
-  @DisplayName("クラブIDによる選手の検索_リポジトリが適切に処理されること")
+  @DisplayName("クラブIDによる選手一覧の検索_リポジトリが適切に処理されること")
   void getPlayersByClub() {
     int clubId = 1;
+
     List<Player> actual = sut.getPlayersByClub(clubId);
     verify(repository, times(1)).selectPlayersByClub(clubId);
   }
 
   @Test
-  @DisplayName("リーグIDによるクラブの検索_リポジトリが適切に処理されること")
+  @DisplayName("リーグIDによるクラブ一覧の検索_リポジトリが適切に処理されること")
   void getClubsByLeague() {
     int leagueId = 1;
+
     List<Club> actual = sut.getClubsByLeague(leagueId);
     verify(repository, times(1)).selectClubsByLeague(leagueId);
   }
 
   @Test
-  @DisplayName("国IDによるリーグの検索_リポジトリが適切に処理されること")
+  @DisplayName("国IDによるリーグ一覧の検索_リポジトリが適切に処理されること")
   void getLeaguesByCountry() {
     int countryId = 1;
+
     List<League> actual = sut.getLeaguesByCountry(countryId);
     verify(repository, times(1)).selectLeaguesByCountry(countryId);
   }
 
   @Test
-  @DisplayName("国すべての検索_リポジトリが適切に処理されること")
+  @DisplayName("国一覧の検索_リポジトリが適切に処理されること")
   void getCountries() {
     List<Country> actual = sut.getCountries();
     verify(repository, times(1)).selectCountries();
   }
 
   @Test
+  @DisplayName("試合IDによる選手試合成績一覧の検索_リポジトリが適切に処理されること")
   void getPlayerGameStatsByGameId() {
     int gameId = 1;
-    List<PlayerGameStat> playerGameStats = sut.getPlayerGameStatsByGameId(gameId);
+
+    List<PlayerGameStat> actual = sut.getPlayerGameStatsByGameId(gameId);
     verify(repository, times(1)).selectPlayerGameStatsByGame(gameId);
   }
 
   @Test
-  @DisplayName("シーズンすべての検索_リポジトリが適切に処理されること")
+  @DisplayName("シーズン一覧の検索_リポジトリが適切に処理されること")
   void getSeasons() {
     List<Season> actual = sut.getSeasons();
     verify(repository, times(1)).selectSeasons();
@@ -411,7 +442,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("現在のシーズンが取得できること")
   void getCurrentSeason() throws ResourceNotFoundException {
+    // Arrange
     when(repository.selectCurrentSeason()).thenReturn(Optional.of(new Season(1, "2000-01", LocalDate.of(2000, 7, 1), LocalDate.of(2001, 6, 30), true)));
+    // Act & Assert
     Season actual = sut.getCurrentSeason();
     verify(repository, times(1)).selectCurrentSeason();
   }
@@ -419,17 +452,19 @@ class FootballServiceTest {
   @Test
   @DisplayName("現在のシーズンが取得できること_存在しない場合に適切に例外処理されること")
   void getCurrentSeason_withNotFound() {
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectCurrentSeason()).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getCurrentSeason());
   }
 
   @Test
   @DisplayName("IDを指定してシーズンの取得ができること")
   void getSeason() throws ResourceNotFoundException {
+    // Arrange
     Season season = new Season(200001, "2000-01", LocalDate.of(2000, 7, 1), LocalDate.of(2001, 6, 30), true);
     when(repository.selectSeason(200001)).thenReturn(Optional.of(season));
+    // Act & Assert
     Season actual = sut.getSeason(200001);
     verify(repository, times(1)).selectSeason(200001);
   }
@@ -437,9 +472,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("IDを指定してシーズンの取得ができること_存在しない場合に適切に例外処理されること")
   void getSeason_withNotFound() {
-    // リポジトリが空の状態を作る
+    // Arrange
     when(repository.selectSeason(200001)).thenReturn(Optional.empty());
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(ResourceNotFoundException.class, () -> sut.getSeason(200001));
   }
 
@@ -455,6 +490,7 @@ class FootballServiceTest {
   void getClubIdsByPlayerAndSeason() {
     int playerId = 1;
     int seasonId = 1;
+
     List<Integer> actual = sut.getClubIdsByPlayerAndSeason(playerId, seasonId);
     verify(repository, times(1)).selectClubIdsByPlayerAndSeason(playerId, seasonId);
   }
@@ -478,6 +514,7 @@ class FootballServiceTest {
       String updatedName, int updatedNumber
   ) throws ResourceNotFoundException, FootballException, ResourceConflictException {
     int id = 1;
+
     when(repository.selectPlayer(id)).thenReturn(Optional.of(new Player(id, 1, "sampleName", 1)));
     sut.updatePlayerNumberAndName(id, updatedNumber, updatedName);
     verify(repository, times(1)).updatePlayerNumberAndName(id, updatedNumber, updatedName);
@@ -486,21 +523,23 @@ class FootballServiceTest {
   @Test
   @DisplayName("選手の背番号と名前の更新_背番号が重複している場合に適切に例外処理されること")
   void updatePlayerNumberAndName_withDuplicatedNumber() {
+    // Arrange
     when(repository.selectPlayer(1)).thenReturn(Optional.of(new Player(1, 1, "sampleName", 1)));
-    // 既に同じ背番号の選手が登録されている状態を作る
     when(sut.getPlayersByClub(1)).thenReturn(List.of(
         new Player(1, 1, "sampleName", 1),
         new Player(2, 1, "sampleName", 2)
     ));
-    // 例外が投げられることを確認
+
+    // Act & Assert
     assertThrows(FootballException.class, () -> sut.updatePlayerNumberAndName(1, 2, "sampleName"));
   }
 
   @Test
   @DisplayName("選手の背番号と名前の更新_変更がない場合に適切に例外処理されること")
   void updatePlayerNumberAndName_withNoChange() {
+    // Arrange
     when(repository.selectPlayer(1)).thenReturn(Optional.of(new Player(1, 1, "sampleName", 1)));
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(
         ResourceConflictException.class, () -> sut.updatePlayerNumberAndName(1, 1, "sampleName"));
   }
@@ -511,6 +550,7 @@ class FootballServiceTest {
     int id = 1;
     int clubId = 2;
     int number = 99;
+
     when(repository.selectPlayer(id)).thenReturn(Optional.of(new Player(id, 1, "sampleName", 1)));
     sut.updatePlayerClubAndNumber(id, clubId, number);
     verify(repository, times(1)).updatePlayerClubAndNumber(id, clubId, number);
@@ -519,8 +559,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("選手のクラブと背番号の更新_クラブに変更がない場合に適切に例外処理されること")
   void updatePlayerClubAndNumber_withNoChange() {
+    // Arrange
     when(repository.selectPlayer(1)).thenReturn(Optional.of(new Player(1, 1, "sampleName", 1)));
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(
         ResourceConflictException.class, () -> sut.updatePlayerClubAndNumber(1, 1, 1));
   }
@@ -528,12 +569,12 @@ class FootballServiceTest {
   @Test
   @DisplayName("選手のクラブと背番号の更新_背番号が重複している場合に適切に例外処理されること")
   void updatePlayerClubAndNumber_withDuplicatedNumber() {
+    // Arrange
     when(repository.selectPlayer(1)).thenReturn(Optional.of(new Player(1, 1, "sampleName", 1)));
-    // 既に同じ背番号の選手が登録されている状態を作る
     when(sut.getPlayersByClub(2)).thenReturn(List.of(
         new Player(2, 2, "sampleName", 1)
     ));
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(FootballException.class, () -> sut.updatePlayerClubAndNumber(1, 2, 1));
   }
 
@@ -542,6 +583,7 @@ class FootballServiceTest {
   void updateClubLeague() throws ResourceNotFoundException, ResourceConflictException {
     int id = 1;
     int leagueId = 2;
+
     when(repository.selectClub(id)).thenReturn(Optional.of(new Club(id, 1, "sampleName")));
     sut.updateClubLeague(id, leagueId);
     verify(repository, times(1)).updateClubLeague(id, leagueId);
@@ -550,8 +592,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("クラブのリーグの更新_リーグに変更がない場合に適切に例外処理されること")
   void updateClubLeague_withNoChange() {
+    // Arrange
     when(repository.selectClub(1)).thenReturn(Optional.of(new Club(1, 1, "sampleName")));
-    // 例外が投げられることを確認
+    // Act & Assert
     assertThrows(
         ResourceConflictException.class, () -> sut.updateClubLeague(1, 1));
   }
@@ -573,12 +616,14 @@ class FootballServiceTest {
 
     int playerId = 1;
     int seasonId = 1;
+
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     PlayerGameStat playerGameStat = new PlayerGameStat(1, playerId, clubId, 1, true, 0, 0, 0, 90, 0, 0, 1, null, null, null);
     when(repository.selectPlayerGameStatsByPlayerAndSeason(playerId, seasonId))
         .thenReturn(List.of(playerGameStat));
 
-    // spy
-    FootballService sutSpy = spy(sut);
     GameResult gameResult = new GameResult(1, homeClubId, awayClubId, homeScore, awayScore, winnerClubId, 1, gameDate, 1);
     doReturn(gameResult).when(sutSpy).getGameResult(1);
 
@@ -590,14 +635,8 @@ class FootballServiceTest {
         new PlayerGameStat(1, playerId, clubId, 1, true, 0, 0, 0, 90, 0, 0, 1, gameDate, "opponentClubName", score)
     );
 
+    // Act
     List<PlayerGameStat> actual = sutSpy.getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
-
-    System.out.println("expected: " + expected.getFirst().getGameDate());
-    System.out.println("actual: " + actual.getFirst().getGameDate());
-    System.out.println("expected: " + expected.getFirst().getOpponentClubName());
-    System.out.println("actual: " + actual.getFirst().getOpponentClubName());
-    System.out.println("expected: " + expected.getFirst().getScore());
-    System.out.println("actual: " + actual.getFirst().getScore());
 
     // Assert
     assertEquals(expected, actual);
@@ -610,6 +649,7 @@ class FootballServiceTest {
   @Test
   @DisplayName("出場選手のみの選手試合成績の検索_ブラックボックステスト")
   void getPlayerGameStatsExceptAbsent() {
+    // Arrange
     PlayerGameStat playerGameStat1 = mock(PlayerGameStat.class);
     when(playerGameStat1.getMinutes()).thenReturn(90);
     PlayerGameStat playerGameStat2 = mock(PlayerGameStat.class);
@@ -620,15 +660,21 @@ class FootballServiceTest {
     List<PlayerGameStat> playerGameStats = List.of(playerGameStat1, playerGameStat2, playerGameStat3);
 
     List<PlayerGameStat> expected = List.of(playerGameStat1, playerGameStat3);
+
+    // Act
     List<PlayerGameStat> actual = sut.getPlayerGameStatsExceptAbsent(playerGameStats);
 
+    // Assert
     assertEquals(expected, actual);
   }
 
-  // これを元に下から例外処理を追加していく
+  // 異常系のテストメソッドはこれを元に下から作成した
   @Test
   @DisplayName("試合結果と選手成績の登録_リポジトリが適切に処理されること")
   void registerGameResultAndPlayerGameStats() throws FootballException, ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -636,9 +682,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -649,44 +696,41 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
+    // Act
     sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats);
 
+    // Assert
     verify(sutSpy, times(1)).getCurrentSeason();
     verify(repository, times(1)).selectLeague(anyInt());
     verify(sutSpy, times(2)).getClub(anyInt());
     verify(sutSpy, times(23)).getPlayer(anyInt());
   }
 
-
-  private GameResultWithPlayerStats getResultWithPlayerStats() {
-    GameResult gameResult = mock(GameResult.class);
-    List<PlayerGameStat> homeClubStats = new ArrayList<>();
-    List<PlayerGameStat> awayClubStats = new ArrayList<>();
-    return new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
-  }
-
   @Test
   @DisplayName("試合結果と選手成績の登録_試合日が不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidDate() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     // 不正な試合日を設定
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(1000, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -699,14 +743,12 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     doReturn(new Player(1, 99, "sampleName", 1)).when(sutSpy).getPlayer(1);
     doReturn(new Player(13, 99, "sampleName", 1)).when(sutSpy).getPlayer(13);
 
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Game date must be in the current season period", thrown.getMessage());
   }
@@ -714,6 +756,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_リーグが存在しない場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withNoLeague() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         new PlayerGameStat(0, 1, 99, 0, false, 2, 1, 0, 80, 1, 0, 1, null, null, null)
@@ -725,15 +770,13 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     doReturn(new Player(1, 99, "sampleName", 1)).when(sutSpy).getPlayer(1);
     doReturn(new Player(13, 99, "sampleName", 1)).when(sutSpy).getPlayer(13);
 
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.empty());
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("League not found", thrown.getMessage());
   }
@@ -741,6 +784,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_ホームクラブがリーグに所属していない場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withHomeClubNotInLeague() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         new PlayerGameStat(0, 1, 99, 0, false, 2, 1, 0, 80, 1, 0, 1, null, null, null)
@@ -752,8 +798,6 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     doReturn(new Player(1, 99, "sampleName", 1)).when(sutSpy).getPlayer(1);
     doReturn(new Player(13, 99, "sampleName", 1)).when(sutSpy).getPlayer(13);
 
@@ -763,7 +807,7 @@ class FootballServiceTest {
     doReturn(new Club(1, 99, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 99, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Home club is not in the league", thrown.getMessage());
   }
@@ -771,6 +815,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_アウェイクラブがリーグに所属していない場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withAwayClubNotInLeague() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         new PlayerGameStat(0, 1, 99, 0, false, 2, 1, 0, 80, 1, 0, 1, null, null, null)
@@ -782,8 +829,6 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     doReturn(new Player(1, 99, "sampleName", 1)).when(sutSpy).getPlayer(1);
     doReturn(new Player(13, 99, "sampleName", 1)).when(sutSpy).getPlayer(13);
 
@@ -793,7 +838,7 @@ class FootballServiceTest {
     // 不正なリーグIDを設定
     doReturn(new Club(2, 99, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Away club is not in the league", thrown.getMessage());
   }
@@ -801,6 +846,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_ホームクラブスタッツにクラブに所属していない選手が含まれている場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withHomeClubStatsNotInClub() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         // 不正なクラブIDを設定
@@ -813,8 +861,6 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     doReturn(new Player(1, 99, "sampleName", 1)).when(sutSpy).getPlayer(1);
     doReturn(new Player(13, 99, "sampleName", 1)).when(sutSpy).getPlayer(13);
 
@@ -823,7 +869,7 @@ class FootballServiceTest {
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Home club and player are not matched", thrown.getMessage());
   }
@@ -831,6 +877,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_アウェイクラブスタッツにクラブに所属していない選手が含まれている場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withAwayClubStatsNotInClub() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         new PlayerGameStat(0, 1, 1, 0, false, 2, 1, 0, 80, 1, 0, 1, null, null, null),
@@ -844,8 +893,6 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     doReturn(new Player(1, 1, "sampleName", 1)).when(sutSpy).getPlayer(1);
     doReturn(new Player(13, 99, "sampleName", 1)).when(sutSpy).getPlayer(13);
 
@@ -854,7 +901,7 @@ class FootballServiceTest {
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Away club and player are not matched", thrown.getMessage());
   }
@@ -862,6 +909,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_ホームクラブスタッツに重複する選手が含まれている場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withDuplicateHomeClubStats() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         // playerId重複を発生させる
@@ -876,8 +926,6 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     doReturn(new Player(1, 1, "sampleName", 1)).when(sutSpy).getPlayer(1);
     doReturn(new Player(13, 2, "sampleName", 1)).when(sutSpy).getPlayer(13);
 
@@ -886,7 +934,7 @@ class FootballServiceTest {
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Home club has duplicate players", thrown.getMessage());
   }
@@ -894,6 +942,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_アウェイクラブスタッツに重複する選手が含まれている場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withDuplicateAwayClubStats() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         new PlayerGameStat(0, 1, 1, 0, false, 2, 1, 0, 80, 1, 0, 1, null, null, null),
@@ -908,8 +959,6 @@ class FootballServiceTest {
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
@@ -920,7 +969,7 @@ class FootballServiceTest {
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Away club has duplicate players", thrown.getMessage());
   }
@@ -929,6 +978,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_ホームクラブのスコアが不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidHomeScore() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -937,9 +989,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+                new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+                .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -950,26 +1003,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("There is contradiction in home score and home goals and away own goals", thrown.getMessage());
   }
@@ -977,6 +1030,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_アウェイクラブのスコアが不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidAwayScore() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -984,9 +1040,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -998,26 +1055,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("There is contradiction in away score and away goals and home own goals", thrown.getMessage());
   }
@@ -1025,6 +1082,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_ホームクラブのアシスト数が不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidHomeAssist() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -1033,9 +1093,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -1046,26 +1107,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Home assists is more than home score", thrown.getMessage());
   }
@@ -1073,6 +1134,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_アウェイクラブのアシスト数が不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidAwayAssist() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -1080,9 +1144,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -1094,26 +1159,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Away assists is more than away score", thrown.getMessage());
   }
@@ -1121,6 +1186,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_ホームクラブの先発選手数が不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidHomeStarting() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -1129,9 +1197,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -1142,26 +1211,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Home starter count must be 11", thrown.getMessage());
   }
@@ -1170,6 +1239,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_アウェイクラブの先発選手数が不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidAwayStarting() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -1177,9 +1249,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -1191,26 +1264,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Away starter count must be 11", thrown.getMessage());
   }
@@ -1218,6 +1291,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_ホームクラブの出場時間が不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidHomeMinutes() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -1226,9 +1302,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -1239,26 +1316,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Home minutes is less than 990", thrown.getMessage());
   }
@@ -1266,6 +1343,9 @@ class FootballServiceTest {
   @Test
   @DisplayName("試合結果と選手成績の登録_アウェイクラブの出場時間が不正な場合に例外処理が発生すること")
   void registerGameResultAndPlayerGameStats_withInvalidAwayMinutes() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
     GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
@@ -1273,9 +1353,10 @@ class FootballServiceTest {
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
-        // あとはgoal～redcardまで0の選手を9人
-        IntStream.range(3, 12).mapToObj(i -> new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+            new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
     // 交代選手を1人追加
     homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
@@ -1287,26 +1368,26 @@ class FootballServiceTest {
     ));
     awayClubStats.addAll(
         // あとはgoal～redCardまで0の選手を9人
-        IntStream.range(15, 24).mapToObj(i -> new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null)).collect(
-            Collectors.toList())
+        IntStream.range(15, 24).mapToObj(i ->
+            new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
     );
 
     GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
 
-    // Spy
-    FootballService sutSpy = spy(sut);
     for (PlayerGameStat playerGameStat : homeClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
     for (PlayerGameStat playerGameStat : awayClubStats) {
       doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
     }
+
     doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
     when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
     doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
     doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
 
-    // 例外が投げられることを確認、メッセージもチェック
+    // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
     assertEquals("Away minutes is less than 990", thrown.getMessage());
   }
@@ -1314,6 +1395,7 @@ class FootballServiceTest {
   @Test
   @DisplayName("選手試合成績の登録用に変換_ブラックボックステスト")
   void convertPlayerGameStatsForInsertToPlayerGameStats() {
+    // Arrange
     PlayerGameStatForJson playerGameStatForJson1 = mock(PlayerGameStatForJson.class);
     PlayerGameStatForJson playerGameStatForJson2 = mock(PlayerGameStatForJson.class);
     List<PlayerGameStatForJson> playerGameStatsForJson = List.of(playerGameStatForJson1, playerGameStatForJson2);
@@ -1322,8 +1404,10 @@ class FootballServiceTest {
     PlayerGameStat playerGameStat2 = new PlayerGameStat(playerGameStatForJson2);
     List<PlayerGameStat> expected = List.of(playerGameStat1, playerGameStat2);
 
+    // Act
     List<PlayerGameStat> actual = sut.convertPlayerGameStatsForInsertToPlayerGameStats(playerGameStatsForJson);
 
+    // Assert
     assertEquals(expected, actual);
   }
 
@@ -1331,6 +1415,9 @@ class FootballServiceTest {
   @DisplayName("試合結果を選手成績とともに取得_リポジトリが適切に処理されること")
   void getGameResultWithPlayerStats() throws ResourceNotFoundException {
     int gameId = 1;
+
+    // Arrange
+    FootballService spySut = spy(sut);
 
     GameResult gameResult = mock(GameResult.class);
     when(gameResult.getHomeClubId()).thenReturn(1);
@@ -1342,9 +1429,6 @@ class FootballServiceTest {
     when(playerGameStat2.getClubId()).thenReturn(2);
     List<PlayerGameStat> playerGameStats = List.of(playerGameStat1, playerGameStat2);
 
-
-    // spy
-    FootballService spySut = spy(sut);
     doReturn(gameResult).when(spySut).getGameResult(gameId);
     doReturn(playerGameStats).when(spySut).getPlayerGameStatsByGameId(gameId);
 
@@ -1352,10 +1436,11 @@ class FootballServiceTest {
         gameResult, List.of(playerGameStat1), List.of(playerGameStat2)
     );
 
+    // Act
     GameResultWithPlayerStats actual = spySut.getGameResultWithPlayerStats(gameId);
 
+    // Assert
     assertEquals(expected, actual);
   }
-
 
 }

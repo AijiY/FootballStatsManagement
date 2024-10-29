@@ -17,7 +17,6 @@ public class PlayerGameStatForJson {
   private int playerId;
 
   // 試合成績
-  @NotNull
   private boolean starter;
 
   @PositiveOrZero

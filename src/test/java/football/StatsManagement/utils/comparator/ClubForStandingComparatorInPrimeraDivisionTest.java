@@ -27,7 +27,6 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
 
   private ClubForStanding c1;
   private ClubForStanding c2;
-  private Club club1;
   private Club club2;
 
   @BeforeEach
@@ -36,15 +35,14 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
     ReflectionTestUtils.setField(sut, "calculator", calculator);
     c1 = mock(ClubForStanding.class);
     c2 = mock(ClubForStanding.class);
-    club1 = mock(Club.class);
     club2 = mock(Club.class);
   }
 
   @Test
   @DisplayName("compareメソッド_勝ち点で比較終了")
   void compareFinishAtPoints() {
-    int expected = 1;
     // Arrange
+    int expected = 1;
     when(calculator.pointsDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -58,12 +56,11 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
   @Test
   @DisplayName("compareメソッド_当該チーム間の勝ち点で比較終了")
   void compareFinishAtPointsAgainst() {
-    setUpWhenHeadToHead(c2, club2);
-
-    int expected = 1;
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
+    int expected = 1;
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -74,19 +71,18 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(c1, times(1)).getGamesAgainst(2);
     verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
   @Test
   @DisplayName("compareメソッド_当該チーム間の得失点差で比較終了")
   void compareFinishAtGoalDifferencesAgainst() {
-    setUpWhenHeadToHead(c2, club2);
-
-    int expected = 1;
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.goalDifferencesAgainstDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -98,20 +94,19 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
     verify(c1, times(1)).getGamesAgainst(2);
     verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
     verify(calculator, times(1)).goalDifferencesAgainstDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
   @Test
   @DisplayName("compareメソッド_全試合の得失点差で比較終了_当該チーム間の勝ち点と得失点差が同じ")
   void compareFinishAtGoalDifferenceWhenPointsAndGoalDifferencesAgainstAreEqual() {
-    setUpWhenHeadToHead(c2, club2);
-
-    int expected = 1;
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferencesAgainstDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -124,18 +119,17 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
     verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
     verify(calculator, times(1)).goalDifferencesAgainstDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
   @Test
   @DisplayName("compareメソッド_全試合の得失点差で比較終了_当該チーム間の対戦が2試合未満")
   void compareFinishAtGoalDifferenceWhenUnder2Games() {
-    setUpWhenHeadToHead(c2, club2);
-
-    int expected = 1;
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(1);
+    int expected = 1;
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -146,21 +140,20 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(c1, times(1)).getGamesAgainst(2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
   @Test
   @DisplayName("compareメソッド_全試合の得点で比較終了_当該チーム間の勝ち点と得失点差が同じ")
   void compareFinishAtGoalsForWhenPointsAndGoalDifferencesAgainstAreEqual() {
-    setUpWhenHeadToHead(c2, club2);
-
-    int expected = 1;
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferencesAgainstDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.goalsForDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -174,19 +167,18 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
     verify(calculator, times(1)).goalDifferencesAgainstDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
   @Test
   @DisplayName("compareメソッド_全試合の得点差で比較終了_当該チーム間の対戦が2試合未満")
   void compareFinishAtGoalsForWhenUnder2Games() {
-    setUpWhenHeadToHead(c2, club2);
-
-    int expected = 1;
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(1);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
+    int expected = 1;
     when(calculator.goalsForDifference(c1, c2)).thenReturn(expected);
 
     // Act
@@ -198,66 +190,66 @@ class ClubForStandingComparatorInPrimeraDivisionTest {
     verify(c1, times(1)).getGamesAgainst(2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
   @Test
   @DisplayName("compareメソッド_全項目で同点_当該チーム間の勝ち点と得失点差が同じ")
   void compareDrawWhenPointsAndGoalDifferencesAgainstAreEqual() {
-    setUpWhenHeadToHead(c2, club2);
-
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferencesAgainstDifference(c1, c2)).thenReturn(0);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
+    int expected = 0;
 
     // Act
     int actual = sut.compare(c1, c2);
 
     // Assert
-    assertEquals(0, actual);
+    assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(c1, times(1)).getGamesAgainst(2);
     verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
     verify(calculator, times(1)).goalDifferencesAgainstDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
   @Test
   @DisplayName("compareメソッド_全項目で同点_当該チーム間の対戦が2試合未満")
   void compareDrawWhenUnder2Games() {
-    setUpWhenHeadToHead(c2, club2);
-
     // Arrange
+    commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(1);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
+    int expected = 0;
 
     // Act
     int actual = sut.compare(c1, c2);
 
     // Assert
-    assertEquals(0, actual);
+    assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(c1, times(1)).getGamesAgainst(2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
-    tearDownWhenHeadToHead(c2, club2);
+    commonAssertWhenHeadToHead(c2, club2);
   }
 
 
-  private void setUpWhenHeadToHead(ClubForStanding c2, Club club2) {
+  private void commonArrangeWhenHeadToHead(ClubForStanding c2, Club club2) {
     when(c2.getClub()).thenReturn(club2);
     when(club2.getId()).thenReturn(2);
   }
 
-  private void tearDownWhenHeadToHead(ClubForStanding c2, Club club2) {
+  private void commonAssertWhenHeadToHead(ClubForStanding c2, Club club2) {
     verify(c2, times(1)).getClub();
     verify(club2, times(1)).getId();
   }
