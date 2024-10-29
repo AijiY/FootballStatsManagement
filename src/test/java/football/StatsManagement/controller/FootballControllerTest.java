@@ -3,7 +3,6 @@ package football.StatsManagement.controller;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,22 +13,21 @@ import football.StatsManagement.model.data.League;
 import football.StatsManagement.model.data.Season;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
-import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.service.FactoryService;
 import football.StatsManagement.service.FootballService;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -77,7 +75,8 @@ class FootballControllerTest {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + id))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -95,7 +94,8 @@ class FootballControllerTest {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + id))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -113,7 +113,8 @@ class FootballControllerTest {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + id))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -131,7 +132,8 @@ class FootballControllerTest {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + id))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -157,7 +159,8 @@ class FootballControllerTest {
     int countryId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + countryId + "/leagues"))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -175,7 +178,8 @@ class FootballControllerTest {
     int leagueId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/clubs"))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -205,7 +209,8 @@ class FootballControllerTest {
   void getStandingWithInvalidId(int leagueId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/standings/" + seasonId))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -223,7 +228,8 @@ class FootballControllerTest {
     int clubId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + clubId + "/players"))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -245,7 +251,8 @@ class FootballControllerTest {
   void getPlayerGameStatsBySeasonWithInvalidId(int playerId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-game-stats/" + seasonId))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -267,7 +274,8 @@ class FootballControllerTest {
   void getPlayerSeasonStatsByClubIdWithInvalidIdByClub(int clubId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + clubId + "/players-season-stats/" + seasonId))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -289,7 +297,8 @@ class FootballControllerTest {
   void getPlayerSeasonStatsWithInvalidId(int playerId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-season-stats/" + seasonId))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -307,7 +316,8 @@ class FootballControllerTest {
     int playerId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stats"))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -338,7 +348,8 @@ class FootballControllerTest {
   void getSeasonGameResultWithInvalidId(int leagueId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/season-game-results/" + seasonId))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -347,7 +358,8 @@ class FootballControllerTest {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -367,7 +379,8 @@ class FootballControllerTest {
     mockMvc.perform(MockMvcRequestBuilders.post("/country")
         .param("name", name))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -389,44 +402,26 @@ class FootballControllerTest {
   @Test
   @DisplayName("リーグの登録の際にバリデーションエラーが発生すること")
   void registerLeagueWithInvalidRequest() throws Exception {
+    // Arrange
     String requestBody = """
         {
           "name": "",
           "countryId": 0
         }
         """;
+
+    Map<String, String> expectedErrorMessages = Map.of(
+        "name", "must not be blank",
+        "countryId", "must be greater than 0"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/league")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          assertEquals(2, fieldErrors.size());
-
-          // エラーメッセージの順序がどちらになるかわからないため、どちらが来ても検証する
-          boolean nameErrorPresent = false;
-          boolean countryIdErrorPresent = false;
-
-          for (FieldError fieldError : fieldErrors) {
-            if (fieldError.getField().equals("name")) {
-              nameErrorPresent = true;
-              assertEquals("must not be blank", fieldError.getDefaultMessage());
-            } else if (fieldError.getField().equals("countryId")) {
-              countryIdErrorPresent = true;
-              assertEquals("must be greater than 0", fieldError.getDefaultMessage());
-            }
-          }
-
-          assertTrue(nameErrorPresent, "Expected validation error for 'name' field");
-          assertTrue(countryIdErrorPresent, "Expected validation error for 'countryId' field");
-
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
-
 
   @Test
   @DisplayName("クラブの登録ができること")
@@ -447,42 +442,25 @@ class FootballControllerTest {
   @Test
   @DisplayName("クラブの登録の際にバリデーションエラーが発生すること")
   void registerClubWithInvalidRequest() throws Exception {
+    // Arrange
     String requestBody = """
         {
           "name": "",
           "leagueId": 0
         }
         """;
+
+    Map<String, String> expectedErrorMessages = Map.of(
+        "name", "must not be blank",
+        "leagueId", "must be greater than 0"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/club")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          assertEquals(2, fieldErrors.size());
-
-          // エラーメッセージの順序がどちらになるかわからないため、どちらが来ても検証する
-          boolean nameErrorPresent = false;
-          boolean leagueIdErrorPresent = false;
-
-          for (FieldError fieldError : fieldErrors) {
-            if (fieldError.getField().equals("name")) {
-              nameErrorPresent = true;
-              assertEquals("must not be blank", fieldError.getDefaultMessage());
-            } else if (fieldError.getField().equals("leagueId")) {
-              leagueIdErrorPresent = true;
-              assertEquals("must be greater than 0", fieldError.getDefaultMessage());
-            }
-          }
-
-          assertTrue(nameErrorPresent, "Expected validation error for 'name' field");
-          assertTrue(leagueIdErrorPresent, "Expected validation error for 'leagueId' field");
-
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @Test
@@ -505,6 +483,7 @@ class FootballControllerTest {
   @Test
   @DisplayName("選手の登録の際にバリデーションエラーが発生すること")
   void registerPlayerWithInvalidRequest() throws Exception {
+    // Arrange
     String requestBody = """
         {
           "name": "",
@@ -512,47 +491,25 @@ class FootballControllerTest {
           "number": 0
         }
         """;
+
+    Map<String, String> expectedErrorMessages = Map.of(
+        "name", "must not be blank",
+        "clubId", "must be greater than 0",
+        "number", "must be greater than 0"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/player")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          assertEquals(3, fieldErrors.size());
-
-          // エラーメッセージの順序がどちらになるかわからないため、どちらが来ても検証する
-          boolean nameErrorPresent = false;
-          boolean clubIdErrorPresent = false;
-          boolean numberErrorPresent = false;
-
-          for (FieldError fieldError : fieldErrors) {
-            if (fieldError.getField().equals("name")) {
-              nameErrorPresent = true;
-              assertEquals("must not be blank", fieldError.getDefaultMessage());
-            } else if (fieldError.getField().equals("clubId")) {
-              clubIdErrorPresent = true;
-              assertEquals("must be greater than 0", fieldError.getDefaultMessage());
-            } else if (fieldError.getField().equals("number")) {
-              numberErrorPresent = true;
-              assertEquals("must be greater than 0", fieldError.getDefaultMessage());
-            }
-          }
-
-          assertTrue(nameErrorPresent, "Expected validation error for 'name' field");
-          assertTrue(clubIdErrorPresent, "Expected validation error for 'clubId' field");
-          assertTrue(numberErrorPresent, "Expected validation error for 'number' field");
-
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @Test
   @DisplayName("試合結果の登録ができること")
   void registerGameResult() throws Exception {
-    // JSONリクエストボディの作成
+    // Arrange
     String requestBody = """
         {
            "gameResultJson": {
@@ -592,6 +549,7 @@ class FootballControllerTest {
     when(factoryService.createGameResultWithPlayerStats(any(GameResultWithPlayerStatsForJson.class)))
         .thenReturn(gameResultWithPlayerStats);
 
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
         .contentType("application/json")
         .content(requestBody))
@@ -602,9 +560,9 @@ class FootballControllerTest {
 
 
   @Test
-  @DisplayName("試合結果の登録の際にGameResult個別フィールドのバリデーションエラーが発生すること")
+  @DisplayName("試合結果の登録の際にGameResultForJson個別フィールドのバリデーションエラーが発生すること")
   void registerGameResultWithInvalidGameResultFields() throws Exception {
-    // JSONリクエストボディの作成（GameResultのすべてのフィールドでバリデーションテスト無視）
+    // Arrange
     String requestBody = """
         {
            "gameResultForJson": {
@@ -640,43 +598,29 @@ class FootballControllerTest {
            ]
          }
         """;
+
+    Map<String, String> expectedErrorMessages = Map.of(
+        "gameResultForJson.homeClubId", "must be greater than 0",
+        "gameResultForJson.awayClubId", "must be greater than 0",
+        "gameResultForJson.homeScore", "must be greater than or equal to 0",
+        "gameResultForJson.awayScore", "must be greater than or equal to 0",
+        "gameResultForJson.leagueId", "must be greater than 0",
+        "gameResultForJson.gameDate", "must not be null",
+        "gameResultForJson.seasonId", "must be greater than or equal to 100000"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
-          Map<String, String> expectedErrorMessages = Map.of(
-              "gameResultForJson.homeClubId", "must be greater than 0",
-              "gameResultForJson.awayClubId", "must be greater than 0",
-              "gameResultForJson.homeScore", "must be greater than or equal to 0",
-              "gameResultForJson.awayScore", "must be greater than or equal to 0",
-              "gameResultForJson.leagueId", "must be greater than 0",
-              "gameResultForJson.gameDate", "must not be null",
-              "gameResultForJson.seasonId", "must be greater than or equal to 100000"
-          );
-
-          // エラーメッセージが予期したものか確認
-          assertEquals(expectedErrorMessages.size(), fieldErrors.size());
-
-          // フィールドエラーを検証
-          fieldErrors.forEach(fieldError -> {
-            String fieldName = fieldError.getField();
-            String expectedErrorMessage = expectedErrorMessages.get(fieldName);
-            assertNotNull(expectedErrorMessage, "Expected error message for field '" + fieldName + "' is null");
-            assertEquals(expectedErrorMessage, fieldError.getDefaultMessage());
-          });
-
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @Test
   @DisplayName("試合結果の登録の際にGameResultのAssertTrueバリデーションエラーが発生すること")
   void registerGameResultWithInvalidGameResultAssertTrue() throws Exception {
+    // Arrange
     // JSONリクエストボディの作成（homeClubIdとawayClubIdが同じ値）
     String requestBody = """
         {
@@ -713,40 +657,28 @@ class FootballControllerTest {
            ]
          }
         """;
+
+    // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
+    Map<String, String> expectedErrorMessages = Map.of(
+        "gameResultForJson.homeClubDifferentFromAwayClub", "Home club and away club must be different."
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
-          Map<String, String> expectedErrorMessages = Map.of(
-              "gameResultForJson.homeClubDifferentFromAwayClub", "Home club and away club must be different."
-          );
-
-          // エラーメッセージが予期したものか確認
-          assertEquals(expectedErrorMessages.size(), fieldErrors.size());
-
-          // フィールドエラーを検証
-          fieldErrors.forEach(fieldError -> {
-            String fieldName = fieldError.getField();
-            String expectedErrorMessage = expectedErrorMessages.get(fieldName);
-            assertNotNull(expectedErrorMessage,
-                "Expected error message for field '" + fieldName + "' is null");
-            assertEquals(expectedErrorMessage, fieldError.getDefaultMessage());
-          });
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
 
 
   @Test
-  @DisplayName("試合結果の登録の際にPlayerGameStat個別フィールドのバリデーションエラーが発生すること")
+  @DisplayName("試合結果の登録の際にPlayerGameStatForJson個別フィールドのバリデーションエラーが発生すること")
   void registerGameResultWithInvalidPlayerGameStatFieldsExceptMax() throws Exception {
-    // JSONリクエストボディの作成（homeClubPlayerGameStatsのすべてのフィールドでバリデーションテスト無視）
+    // Arrange
+    // JSONリクエストボディの作成：homeClubPlayerGameStatsForJsonでバリデーションエラーを発生させる
+    // 対象バリデーション：@Positive, @PositiveOrZero
     String requestBody = """
         {
            "gameResultForJson": {
@@ -761,7 +693,7 @@ class FootballControllerTest {
            "homeClubPlayerGameStatsForJson": [
              {
                "playerId": 0,
-               "starter": null,
+               "starter": true,
                "goals": -1,
                "assists": -1,
                "minutes": -1,
@@ -782,43 +714,32 @@ class FootballControllerTest {
            ]
          }
         """;
+
+    // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
+    Map<String, String> expectedErrorMessages = Map.of(
+        "homeClubPlayerGameStatsForJson[0].playerId", "must be greater than 0",
+        "homeClubPlayerGameStatsForJson[0].goals", "must be greater than or equal to 0",
+        "homeClubPlayerGameStatsForJson[0].assists", "must be greater than or equal to 0",
+        "homeClubPlayerGameStatsForJson[0].minutes", "must be greater than or equal to 0",
+        "homeClubPlayerGameStatsForJson[0].yellowCards", "must be greater than or equal to 0",
+        "homeClubPlayerGameStatsForJson[0].redCards", "must be greater than or equal to 0"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
-          Map<String, String> expectedErrorMessages = Map.of(
-              "homeClubPlayerGameStatsForJson[0].playerId", "must be greater than 0",
-              "homeClubPlayerGameStatsForJson[0].goals", "must be greater than or equal to 0",
-              "homeClubPlayerGameStatsForJson[0].assists", "must be greater than or equal to 0",
-              "homeClubPlayerGameStatsForJson[0].minutes", "must be greater than or equal to 0",
-              "homeClubPlayerGameStatsForJson[0].yellowCards", "must be greater than or equal to 0",
-              "homeClubPlayerGameStatsForJson[0].redCards", "must be greater than or equal to 0"
-          );
-
-          // エラーメッセージが予期したものか確認
-          assertEquals(expectedErrorMessages.size(), fieldErrors.size());
-
-          // フィールドエラーを検証
-          fieldErrors.forEach(fieldError -> {
-            String fieldName = fieldError.getField();
-            String expectedErrorMessage = expectedErrorMessages.get(fieldName);
-            assertNotNull(expectedErrorMessage,
-                "Expected error message for field '" + fieldName + "' is null");
-            assertEquals(expectedErrorMessage, fieldError.getDefaultMessage());
-          });
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
+
+
 
   @Test
   @DisplayName("試合結果の登録の際にPlayerGameStatの最大値バリデーションエラーが発生すること")
   void registerGameResultWithInvalidPlayerGameStatFieldsMax() throws Exception {
-    // JSONリクエストボディの作成（homeClubPlayerGameStatsのすべてのフィールドでバリデーションテスト無視）
+    // Arrange
+    // JSONリクエストボディの作成：homeClubPlayerGameStatsの@Maxバリデーションエラーを発生させる
     String requestBody = """
         {
            "gameResultForJson": {
@@ -854,33 +775,19 @@ class FootballControllerTest {
            ]
          }
         """;
+
+    // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
+    Map<String, String> expectedErrorMessages = Map.of(
+        "homeClubPlayerGameStatsForJson[0].yellowCards", "must be less than or equal to 2",
+        "homeClubPlayerGameStatsForJson[0].redCards", "must be less than or equal to 1"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
-          Map<String, String> expectedErrorMessages = Map.of(
-              "homeClubPlayerGameStatsForJson[0].yellowCards", "must be less than or equal to 2",
-              "homeClubPlayerGameStatsForJson[0].redCards", "must be less than or equal to 1"
-          );
-
-          // エラーメッセージが予期したものか確認
-          assertEquals(expectedErrorMessages.size(), fieldErrors.size());
-
-          // フィールドエラーを検証
-          fieldErrors.forEach(fieldError -> {
-            String fieldName = fieldError.getField();
-            String expectedErrorMessage = expectedErrorMessages.get(fieldName);
-            assertNotNull(expectedErrorMessage,
-                "Expected error message for field '" + fieldName + "' is null");
-            assertEquals(expectedErrorMessage, fieldError.getDefaultMessage());
-          });
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @ParameterizedTest
@@ -895,6 +802,7 @@ class FootballControllerTest {
   void registerGameResultWithInvalidPlayerGameStatAssertTrue(
       boolean starter, int goals, int assists, int yellowCards, int redCards
   ) throws Exception {
+    // Arrange
     // JSONリクエストボディの作成（homeClubPlayerGameStatsのplayerIdとminutes以外がCsvSourceの値）
     String requestBody = String.format("""
         {
@@ -931,32 +839,18 @@ class FootballControllerTest {
            ]
          }
         """, starter, goals, assists, yellowCards, redCards);
+
+    // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
+    Map<String, String> expectedErrorMessages = Map.of(
+        "homeClubPlayerGameStatsForJson[0].minutesZero", "If minutes is 0, stats must be 0, and the player must not be a starter."
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.post("/game-result")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          // バリデーションエラーをフィールドごとに期待されるメッセージをマップで定義
-          Map<String, String> expectedErrorMessages = Map.of(
-              "homeClubPlayerGameStatsForJson[0].minutesZero", "If minutes is 0, stats must be 0, and the player must not be a starter."
-          );
-
-          // エラーメッセージが予期したものか確認
-          assertEquals(expectedErrorMessages.size(), fieldErrors.size());
-
-          // フィールドエラーを検証
-          fieldErrors.forEach(fieldError -> {
-            String fieldName = fieldError.getField();
-            String expectedErrorMessage = expectedErrorMessages.get(fieldName);
-            assertNotNull(expectedErrorMessage,
-                "Expected error message for field '" + fieldName + "' is null");
-            assertEquals(expectedErrorMessage, fieldError.getDefaultMessage());
-          });
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @Test
@@ -980,52 +874,34 @@ class FootballControllerTest {
   @Test
   @DisplayName("シーズンの登録の際にバリデーションエラーが発生すること")
   void registerSeasonWithInvalidRequest() throws Exception {
-    // JSONリクエストボディの作成（nameは形式通り、startDateとendDateはnull）
+    // Arrange
+    // JSONリクエストボディの作成（nameが空文字、startDateとendDateがnull）
     String requestBody = """
         {
           "name": "",
           "startDate": null,
-          "endDate": null 
+          "endDate": null
         }
         """;
+
+    Map<String, String> expectedErrorMessages = Map.of(
+        "name", "must not be blank",
+        "startDate", "must not be null",
+        "endDate", "must not be null"
+    );
 
     mockMvc.perform(MockMvcRequestBuilders.post("/season")
             .contentType("application/json")
             .content(requestBody))
         .andExpect(status().isBadRequest())  // ステータスが400であることを確認
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();  // キャスト
-          BindingResult bindingResult = ex.getBindingResult();  // バインディング結果を取得
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();  // フィールドエラーを取得
-          assertEquals(3, fieldErrors.size());  // フィールドエラーの数が3であることを確認
-
-          boolean nameErrorPresent = false;  // nameのエラーがあるかどうか
-          boolean startDateErrorPresent = false;  // startDateのエラーがあるかどうか
-          boolean endDateErrorPresent = false;  // endDateのエラーがあるかどうか
-
-          for (FieldError fieldError : fieldErrors) {
-            if (fieldError.getField().equals("name")) {  // nameのエラーの場合
-              nameErrorPresent = true;  // nameのエラーがあることを示す
-              assertEquals("must not be blank", fieldError.getDefaultMessage());  // エラーメッセージが"must not be blank"であることを確認
-            } else if (fieldError.getField().equals("startDate")) {  // startDateのエラーの場合
-              startDateErrorPresent = true;  // startDateのエラーがあることを示す
-              assertEquals("must not be null", fieldError.getDefaultMessage());  // エラーメッセージが"must not be null"であることを確認
-            } else if (fieldError.getField().equals("endDate")) {  // endDateのエラーの場合
-              endDateErrorPresent = true;  // endDateのエラーがあることを示す
-              assertEquals("must not be null", fieldError.getDefaultMessage());  // エラーメッセージが"must not be null"であることを確認
-            }
-          }
-
-          assertTrue(nameErrorPresent);  // nameのエラーがあることを確認
-          assertTrue(startDateErrorPresent);  // startDateのエラーがあることを確認
-          assertTrue(endDateErrorPresent);  // endDateのエラーがあることを確認
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @Test
   @DisplayName("選手の更新ができること")
   void patchPlayer() throws Exception {
     int playerId = 1;
+
     String requestBody = """
         {
           "name": "Updated Player",
@@ -1044,48 +920,33 @@ class FootballControllerTest {
   @DisplayName("選手の更新の際にリクエストボディのバリデーションエラーが発生すること")
   void patchPlayerWithInvalidRequest() throws Exception {
     int playerId = 1;
+
+    // Arrange
     String requestBody = """
         {
           "name": "",
           "number": 0
         }
         """;
+
+    Map<String, String> expectedErrorMessages = Map.of(
+        "name", "must not be blank",
+        "number", "must be greater than 0"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.patch("/player-patch/" + playerId)
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          assertEquals(2, fieldErrors.size());
-
-          // エラーメッセージの順序がどちらになるかわからないため、どちらが来ても検証する
-          boolean nameErrorPresent = false;
-          boolean numberErrorPresent = false;
-
-          for (FieldError fieldError : fieldErrors) {
-            if (fieldError.getField().equals("name")) {
-              nameErrorPresent = true;
-              assertEquals("must not be blank", fieldError.getDefaultMessage());
-            } else if (fieldError.getField().equals("number")) {
-              numberErrorPresent = true;
-              assertEquals("must be greater than 0", fieldError.getDefaultMessage());
-            }
-          }
-
-          assertTrue(nameErrorPresent, "Expected validation error for 'name' field");
-          assertTrue(numberErrorPresent, "Expected validation error for 'number' field");
-
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @Test
   @DisplayName("選手の更新の際にパスバリアブルのバリデーションエラーが発生すること")
   void patchPlayerWithInvalidPathVariable() throws Exception {
     int playerId = 0;
+
     String requestBody = """
         {
           "name": "Updated Player",
@@ -1096,19 +957,22 @@ class FootballControllerTest {
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
   @DisplayName("選手の移籍ができること")
   void transferPlayer() throws Exception {
     int playerId = 1;
+
     String requestBody = """
         {
           "clubId": 2,
           "number": 2
         }
         """;
+
     mockMvc.perform(MockMvcRequestBuilders.patch("/player-transfer/" + playerId)
         .contentType("application/json")
         .content(requestBody))
@@ -1121,59 +985,46 @@ class FootballControllerTest {
   @DisplayName("選手の移籍の際にリクエストボディのバリデーションエラーが発生すること")
   void transferPlayerWithInvalidRequest() throws Exception {
     int playerId = 1;
+
+    // Arrange
     String requestBody = """
         {
           "clubId": 0,
           "number": 0
         }
         """;
+
+    Map<String, String> expectedErrorMessages = Map.of(
+        "clubId", "must be greater than 0",
+        "number", "must be greater than 0"
+    );
+
+    // Act & Assert
     mockMvc.perform(MockMvcRequestBuilders.patch("/player-transfer/" + playerId)
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> {
-          MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
-
-          BindingResult bindingResult = ex.getBindingResult();
-          List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-          assertEquals(2, fieldErrors.size());
-
-          // エラーメッセージの順序がどちらになるかわからないため、どちらが来ても検証する
-          boolean clubIdErrorPresent = false;
-          boolean numberErrorPresent = false;
-
-          for (FieldError fieldError : fieldErrors) {
-            if (fieldError.getField().equals("clubId")) {
-              clubIdErrorPresent = true;
-              assertEquals("must be greater than 0", fieldError.getDefaultMessage());
-            } else if (fieldError.getField().equals("number")) {
-              numberErrorPresent = true;
-              assertEquals("must be greater than 0", fieldError.getDefaultMessage());
-            }
-          }
-
-          assertTrue(clubIdErrorPresent, "Expected validation error for 'clubId' field");
-          assertTrue(numberErrorPresent, "Expected validation error for 'number' field");
-
-        });
+        .andExpect(result -> assertMethodArgumentNotValidExceptions(expectedErrorMessages, result));
   }
 
   @Test
   @DisplayName("選手の移籍の際にパスバリアブルのバリデーションエラーが発生すること")
   void transferPlayerWithInvalidPathVariable() throws Exception {
     int playerId = 0;
+
     String requestBody = """
         {
           "clubId": 2,
           "number": 2
         }
         """;
+
     mockMvc.perform(MockMvcRequestBuilders.patch("/player-transfer/" + playerId)
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -1181,6 +1032,7 @@ class FootballControllerTest {
   void promoteOrRelegateClub() throws Exception {
     int leagueId = 1;
     int clubId = 1;
+
     mockMvc.perform(MockMvcRequestBuilders.patch("/club-promote-or-relegate/" + clubId)
         .param("leagueId", String.valueOf(leagueId)))
         .andExpect(status().isOk());
@@ -1193,10 +1045,12 @@ class FootballControllerTest {
   void promoteOrRelegateClubWithInvalidRequestParam() throws Exception {
     int leagueId = 0;
     int clubId = 1;
+
     mockMvc.perform(MockMvcRequestBuilders.patch("/club-promote-or-relegate/" + clubId)
         .param("leagueId", String.valueOf(leagueId)))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
   }
 
   @Test
@@ -1207,7 +1061,29 @@ class FootballControllerTest {
     mockMvc.perform(MockMvcRequestBuilders.patch("/club-promote-or-relegate/" + clubId)
         .param("leagueId", String.valueOf(leagueId)))
         .andExpect(status().isBadRequest())
-        .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException));
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
+  }
+
+
+  // 複数のフィールドのバリデーションエラーを検証するためのヘルパーメソッド
+  private void assertMethodArgumentNotValidExceptions(
+      Map<String, String> expectedErrorMessages, MvcResult result) {
+    MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
+    BindingResult bindingResult = Objects.requireNonNull(ex, "Exception must not be null").getBindingResult();
+    List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+
+    // エラーメッセージが予期したものか確認
+    assertEquals(expectedErrorMessages.size(), fieldErrors.size());
+
+    // フィールドエラーを検証
+    fieldErrors.forEach(fieldError -> {
+      String fieldName = fieldError.getField();
+      String expectedErrorMessage = expectedErrorMessages.get(fieldName);
+      assertNotNull(expectedErrorMessage,
+          "Expected error message for field '" + fieldName + "' is null");
+      assertEquals(expectedErrorMessage, fieldError.getDefaultMessage());
+    });
   }
 
 }

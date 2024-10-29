@@ -46,11 +46,14 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("順位表のためのクラブ情報を作成できること")
+  @DisplayName("順位表のためのクラブ情報を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
   void createClubForStanding() {
     int seasonId = 1;
+
+    // Arrange
     Club club = mock(Club.class);
     when(club.getId()).thenReturn(1);
+
     List<GameResult> gameResults = List.of(
       new GameResult(1, 1, 2, 2, 1, 1, 1, LocalDate.now(), seasonId, "null", "null"),
       new GameResult(2, 3, 1, 1, 1, null, 1, LocalDate.now(), seasonId, "null", "null")
@@ -59,30 +62,37 @@ class FactoryServiceTest {
 
     ClubForStanding expected = new ClubForStanding(gameResults, club, 2, 1, 1, 0, 4, 3, 2, 1);
 
+    // Act
     ClubForStanding actual = sut.createClubForStanding(seasonId, club);
 
+    // Assert
     assertEquals(expected, actual);
-    verify(footballService).getGameResultsByClubAndSeason(1, 1);
+    verify(footballService, times(1)).getGameResultsByClubAndSeason(1, 1);
   }
 
   @Test
-  @DisplayName("選手シーズン成績を作成できること_クラブが1つの場合")
+  @DisplayName("選手シーズン成績を作成できること_クラブが1つの場合_モックオブジェクトの呼び出しおよび結果の検証")
   void createPlayerSeasonStat() throws ResourceNotFoundException {
     int playerId = 1;
     int seasonId = 1;
     int clubId = 1;
+
+    // Arrange
     List<PlayerGameStat> playerGameStats = List.of(
         new PlayerGameStat(1, playerId, clubId, 1, true, 1, 1, 0, 30, 0, 1, 1, null, "null", "null"),
         new PlayerGameStat(2, playerId, clubId, 1, false, 1, 0, 0, 60, 1, 0, 2, null, "null", "null"),
         new PlayerGameStat(3, playerId, 99, 1, true, 1, 1, 1, 90, 1, 1, 3, null, "null", "null")
     );
     when(footballService.getPlayerGameStatsByPlayerAndSeason(playerId, seasonId)).thenReturn(playerGameStats);
+
     Player player = mock(Player.class);
     when(footballService.getPlayer(playerId)).thenReturn(player);
     when(player.getName()).thenReturn("Sample Player");
+
     Club club = mock(Club.class);
     when(footballService.getClub(clubId)).thenReturn(club);
     when(club.getName()).thenReturn("Sample Club");
+
     Season season = mock(Season.class);
     when(footballService.getSeason(seasonId)).thenReturn(season);
     when(season.getName()).thenReturn("Sample Season");
@@ -93,8 +103,10 @@ class FactoryServiceTest {
     );
     PlayerSeasonStat expected = new PlayerSeasonStat(playerId, playerGameStatsByClub, seasonId, clubId, 2, 1, 1, 2, 1, 90, 1, 1, "Sample Player", "Sample Club", "Sample Season");
 
+    // Act
     PlayerSeasonStat actual = sut.createPlayerSeasonStat(playerId, seasonId, clubId);
 
+    // Assert
     assertEquals(expected, actual);
     verify(footballService).getPlayerGameStatsByPlayerAndSeason(playerId, seasonId);
     verify(footballService).getPlayer(playerId);
@@ -103,34 +115,39 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("選手シーズン成績を作成できること_クラブが複数にまたがる可能性のある場合")
+  @DisplayName("選手シーズン成績を作成できること_クラブが複数にまたがる可能性のある場合_モックオブジェクトの呼び出しおよび結果の検証")
   void createPlayerSeasonStats() throws ResourceNotFoundException {
     int playerId = 1;
     int seasonId = 1;
 
+    // Arrange
+    FactoryService spySut = spy(sut);
+
     List<Integer> clubIds = List.of(1, 2);
     when(footballService.getClubIdsByPlayerAndSeason(playerId, seasonId)).thenReturn(clubIds);
 
-    // FactoryServiceをスパイ化
-    FactoryService spySut = spy(sut);
     PlayerSeasonStat playerSeasonStat1 = mock(PlayerSeasonStat.class);
     doReturn(playerSeasonStat1).when(spySut).createPlayerSeasonStat(playerId, seasonId, 1);
     PlayerSeasonStat playerSeasonStat2 = mock(PlayerSeasonStat.class);
     doReturn(playerSeasonStat2).when(spySut).createPlayerSeasonStat(playerId, seasonId, 2);
 
+    // Act
     List<PlayerSeasonStat> actual = spySut.createPlayerSeasonStats(playerId, seasonId);
 
+    // Assert
     verify(footballService, times(1)).getClubIdsByPlayerAndSeason(playerId, seasonId);
     verify(spySut, times(1)).createPlayerSeasonStat(playerId, seasonId, 1);
     verify(spySut, times(1)).createPlayerSeasonStat(playerId, seasonId, 2);
-
   }
 
   @Test
-  @DisplayName("クラブごとの選手シーズン成績を作成できること")
+  @DisplayName("クラブごとの選手シーズン成績を作成できること_モックオブジェクトの呼び出しの検証")
   void createPlayerSeasonStatsByClub() throws ResourceNotFoundException {
     int clubId = 1;
     int seasonId = 1;
+
+    // Arrange
+    FactoryService spySut = spy(sut);
 
     List<Player> players = List.of(
         new Player(1, clubId, "Sample Player1", 1),
@@ -138,57 +155,65 @@ class FactoryServiceTest {
     );
     when(footballService.getPlayersByClub(clubId)).thenReturn(players);
 
-    // FactoryServiceをスパイ化
-    FactoryService spySut = spy(sut);
     PlayerSeasonStat playerSeasonStat1 = mock(PlayerSeasonStat.class);
     doReturn(playerSeasonStat1).when(spySut).createPlayerSeasonStat(1, seasonId, clubId);
     PlayerSeasonStat playerSeasonStat2 = mock(PlayerSeasonStat.class);
     doReturn(playerSeasonStat2).when(spySut).createPlayerSeasonStat(2, seasonId, clubId);
 
+    // Act
     List<PlayerSeasonStat> actual = spySut.createPlayerSeasonStatsByClub(clubId, seasonId);
 
+    // Assert
     verify(footballService, times(1)).getPlayersByClub(clubId);
     verify(spySut, times(1)).createPlayerSeasonStat(1, seasonId, clubId);
     verify(spySut, times(1)).createPlayerSeasonStat(2, seasonId, clubId);
   }
 
   @Test
-  @DisplayName("選手通算成績を作成できること")
+  @DisplayName("選手通算成績を作成できること_モックオブジェクトの呼び出しの検証")
   void createPlayerCareerStats() throws ResourceNotFoundException {
     int playerId = 1;
+
+    // Arrange
+    FactoryService spySut = spy(sut);
+
     List<Season> seasons = List.of(
         new Season(1, "Sample Season1", null, null, false),
         new Season(2, "Sample Season2", null, null, true)
     );
     when(footballService.getSeasons()).thenReturn(seasons);
 
-    // FactoryServiceをスパイ化
-    FactoryService spySut = spy(sut);
     PlayerSeasonStat playerSeasonStat1 = mock(PlayerSeasonStat.class);
     doReturn(List.of(playerSeasonStat1)).when(spySut).createPlayerSeasonStats(playerId, 1);
     PlayerSeasonStat playerSeasonStat2 = mock(PlayerSeasonStat.class);
     doReturn(List.of(playerSeasonStat2)).when(spySut).createPlayerSeasonStats(playerId, 2);
 
+    // Act
     List<PlayerSeasonStat> actual = spySut.createPlayerCareerStats(playerId);
 
+    // Assert
     verify(footballService, times(1)).getSeasons();
     verify(spySut, times(1)).createPlayerSeasonStats(playerId, 1);
     verify(spySut, times(1)).createPlayerSeasonStats(playerId, 2);
   }
 
   @Test
-  @DisplayName("シーズンの試合結果一覧を作成できること")
+  @DisplayName("シーズンの試合結果一覧を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
   void createSeasonGameResult() throws ResourceNotFoundException {
     int leagueId = 1;
     int seasonId = 1;
+
+    // Arrange
     GameResult gameResult1 = mock(GameResult.class);
     GameResult gameResult2 = mock(GameResult.class);
     GameResult gameResult3 = mock(GameResult.class);
     List<GameResult> gameResults = List.of(gameResult1, gameResult2, gameResult3);
     when(footballService.getGameResultsByLeagueAndSeason(leagueId, seasonId)).thenReturn(gameResults);
+
     LocalDate gameDate1 = LocalDate.of(2021, 1, 1);
     LocalDate gameDate2 = LocalDate.of(2021, 1, 2);
     when(footballService.getGameDatesByLeagueAndSeason(leagueId, seasonId)).thenReturn(List.of(gameDate1, gameDate2));
+
     when(gameResult1.getGameDate()).thenReturn(gameDate1);
     when(gameResult2.getGameDate()).thenReturn(gameDate2);
     when(gameResult3.getGameDate()).thenReturn(gameDate1);
@@ -198,8 +223,10 @@ class FactoryServiceTest {
         new DayGameResult(gameDate2, List.of(gameResult2))
     ));
 
+    // Act
     SeasonGameResult actual = sut.createSeasonGameResult(leagueId, seasonId);
 
+    // Assert
     assertEquals(expected, actual);
     verify(footballService, times(1)).getGameResultsByLeagueAndSeason(leagueId, seasonId);
     verify(footballService, times(1)).getGameDatesByLeagueAndSeason(leagueId, seasonId);
@@ -209,37 +236,42 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("順位表を作成できること")
+  @DisplayName("順位表を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
   void createStanding() throws ResourceNotFoundException {
     int leagueId = 1;
     int seasonId = 1;
+
+    // Arrange
+    FactoryService spySut = spy(sut);
+
     Club club1 = mock(Club.class);
     Club club2 = mock(Club.class);
-    List<Club> clubs = List.of(club1, club2);
-    when(footballService.getClubsByLeague(leagueId)).thenReturn(clubs);
+    when(footballService.getClubsByLeague(leagueId)).thenReturn(List.of(club1, club2));
 
-    // FactoryServiceをスパイ化
-    FactoryService spySut = spy(sut);
     ClubForStanding clubForStanding1 = mock(ClubForStanding.class);
     when(spySut.createClubForStanding(seasonId, club1)).thenReturn(clubForStanding1);
     ClubForStanding clubForStanding2 = mock(ClubForStanding.class);
     when(spySut.createClubForStanding(seasonId, club2)).thenReturn(clubForStanding2);
 
-    List<ClubForStanding> clubForStandings = List.of(clubForStanding1, clubForStanding2);
     League league = mock(League.class);
     when(footballService.getLeague(leagueId)).thenReturn(league);
     when(league.getName()).thenReturn("Sample League");
+
     Season season = mock(Season.class);
     when(footballService.getSeason(seasonId)).thenReturn(season);
     when(season.getName()).thenReturn("Sample Season");
+
+    List<ClubForStanding> clubForStandings = List.of(clubForStanding1, clubForStanding2);
 
     try (MockedStatic<RankingUtils> mockedRankingUtils = mockStatic(RankingUtils.class)) {
       mockedRankingUtils.when(() -> RankingUtils.sortedClubForStandings(leagueId, clubForStandings)).thenReturn(clubForStandings);
 
       Standing expected = new Standing(leagueId, seasonId, clubForStandings, "Sample League", "Sample Season");
 
+      // Act
       Standing actual = spySut.createStanding(leagueId, seasonId);
 
+      // Assert
       assertEquals(expected, actual);
       verify(footballService, times(1)).getClubsByLeague(leagueId);
       verify(spySut, times(1)).createClubForStanding(seasonId, club1);
