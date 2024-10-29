@@ -435,7 +435,7 @@ class FootballIntegrationTest {
     );
 
     // 通算成績を作成
-    PlayerSeasonStat playerSeasonStatTotal = new PlayerSeasonStat(playerId, new ArrayList<>(), 0, 0, 3, 2, 1, 1, 0, 270, 0, 0, "PlayerAAAA", "Total", "Total");
+    PlayerSeasonStat playerSeasonStatTotal = new PlayerSeasonStat(playerId, new ArrayList<>(), 0, 0, 3, 2, 1, 1, 0, 270, 0, 0, "Total", "Total", "Total");
 
     List<PlayerSeasonStat> expected = new ArrayList<>();
     expected.addAll(playerSeasonStats1);
