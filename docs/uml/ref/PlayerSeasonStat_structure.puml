@@ -1,0 +1,173 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "football.StatsManagement.model.domain.PlayerSeasonStat",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_1158403618 { 
+   	label=StatsManagement
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_509993891 { 
+   	label=model
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   PlayerGameStat834053700[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PlayerGameStat</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   assists: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   clubId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameDate: LocalDate [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   goals: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   minutes: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   number: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   opponentClubName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ownGoals: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   redCards: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   score: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   starter: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   yellowCards: int [1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PlayerSeasonStat1646002774[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PlayerSeasonStat</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   assists: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   clubId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   clubName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   games: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   goals: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   minutes: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerGameStats: List&lt;PlayerGameStat&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   redCards: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   seasonId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   seasonName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   starterGames: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   substituteGames: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   yellowCards: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ assists(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ clubId(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ clubName(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ games(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ goals(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ minutes(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playerGameStats(): List&lt;PlayerGameStat&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playerId(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playerName(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ redCards(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ seasonId(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ seasonName(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ starterGames(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ substituteGames(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ yellowCards(): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+PlayerSeasonStat1646002774 -> PlayerGameStat834053700[label="playerGameStats
+[0..*]"];
+    
+}
+@enduml

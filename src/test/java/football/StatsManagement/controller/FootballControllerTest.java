@@ -8,9 +8,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import football.StatsManagement.model.data.Country;
-import football.StatsManagement.model.data.League;
-import football.StatsManagement.model.data.Season;
+import football.StatsManagement.model.entity.Country;
+import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.Season;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
 import football.StatsManagement.service.FactoryService;

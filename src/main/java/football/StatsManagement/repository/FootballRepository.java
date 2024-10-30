@@ -1,12 +1,12 @@
 package football.StatsManagement.repository;
 
-import football.StatsManagement.model.data.Club;
-import football.StatsManagement.model.data.Country;
-import football.StatsManagement.model.data.GameResult;
-import football.StatsManagement.model.data.League;
-import football.StatsManagement.model.data.Player;
-import football.StatsManagement.model.data.PlayerGameStat;
-import football.StatsManagement.model.data.Season;
+import football.StatsManagement.model.entity.Club;
+import football.StatsManagement.model.entity.Country;
+import football.StatsManagement.model.entity.GameResult;
+import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.Player;
+import football.StatsManagement.model.entity.PlayerGameStat;
+import football.StatsManagement.model.entity.Season;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

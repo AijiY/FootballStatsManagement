@@ -1,29 +1,29 @@
-package football.StatsManagement.model.data;
+package football.StatsManagement.model.entity;
 
+import football.StatsManagement.model.json.LeagueForJson;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Schema(description = "国情報を保持するクラス")
+@Schema(description = "リーグ情報を保持するクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用
-public class Country {
+public class League {
   private final int id;
-
-  @NotBlank
+  private int countryId;
   private String name;
 
   /**
    * 登録用のコンストラクタ
-   * @param name 国名
+   * @param leagueForJson 登録情報
    */
-  public Country(String name) {
+  public League(LeagueForJson leagueForJson) {
     this.id = 0;
-    this.name = name;
+    this.countryId = leagueForJson.getCountryId();
+    this.name = leagueForJson.getName();
   }
 
   // テスト用にequalsとhashCodeをオーバーライド
@@ -35,13 +35,14 @@ public class Country {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    Country country = (Country) obj;
-    return id == country.id &&
-        Objects.equals(name, country.name);
+    League league = (League) obj;
+    return id == league.id &&
+        countryId == league.countryId &&
+        Objects.equals(name, league.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(id, countryId, name);
   }
 }

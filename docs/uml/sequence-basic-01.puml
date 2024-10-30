@@ -1,0 +1,30 @@
+@startuml
+
+actor User
+
+participant FootballController
+participant FootballService
+participant FootballRepository
+
+database MySQL_DB as MySQL
+
+User -> FootballController : request
+FootballController -> FootballController : validate
+alt Validation Exception
+    FootballController -> User : message
+end
+FootballController -> FootballService : call
+FootballService --> FootballService : check & process
+FootballService -> FootballRepository : call
+FootballRepository -> MySQL : query
+MySQL --> FootballRepository : result
+FootballRepository --> FootballService : data
+FootballService --> FootballService : check & process
+FootballService --> FootballController : response
+FootballController --> User : response
+
+alt Biz Exception or Resource Exception
+    FootballService -> User : message
+end
+
+@enduml

@@ -1,0 +1,163 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "football.StatsManagement.model.domain.SeasonGameResult",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_1158403618 { 
+   	label=StatsManagement
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_509993891 { 
+   	label=model
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   DayGameResult1646002774[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)DayGameResult</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   gameDate: LocalDate [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameResults: List&lt;GameResult&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ gameDate(): LocalDate</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameResults(): List&lt;GameResult&gt;</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GameResult834053700[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameResult</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   awayClubId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   awayClubName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   awayScore: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameDate: LocalDate [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   homeClubId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   homeClubName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   homeScore: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   leagueId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   seasonId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   winnerClubId: Integer [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SeasonGameResult1646002774[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SeasonGameResult</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   dayGameResults: List&lt;DayGameResult&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   leagueId: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   seasonId: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ dayGameResults(): List&lt;DayGameResult&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ leagueId(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ seasonId(): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+DayGameResult1646002774 -> GameResult834053700[label="gameResults
+[0..*]"];
+SeasonGameResult1646002774 -> DayGameResult1646002774[label="dayGameResults
+[0..*]"];
+    
+}
+@enduml
