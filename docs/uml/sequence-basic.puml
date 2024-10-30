@@ -1,0 +1,57 @@
+@startuml
+
+actor User
+
+participant FootballController
+participant FactoryService
+participant FootballService
+participant FootballRepository
+
+database MySQL_DB as MySQL
+
+== 通常フロー ==
+User -> FootballController : request
+FootballController -> FootballController : validate
+alt Validation Exception
+    FootballController -> User : message
+end
+FootballController -> FootballService : call
+FootballService --> FootballService : check & process
+FootballService -> FootballRepository : call
+FootballRepository -> MySQL : query
+MySQL --> FootballRepository : result
+FootballRepository --> FootballService : data
+FootballService --> FootballService : check & process
+FootballService --> FootballController : response
+FootballController --> User : response
+
+alt Biz Exception or Resource Exception
+    FootballService -> User : message
+end
+
+
+== ドメインクラス生成が必要な場合 ==
+User -> FootballController : request
+FootballController -> FootballController : validate
+alt Validation Exception
+    FootballController -> User : message
+end
+FootballController -> FactoryService : call
+FactoryService --> FactoryService : process
+FactoryService -> FootballService : call
+FootballService --> FootballService : check & process
+FootballService -> FootballRepository : call
+FootballRepository -> MySQL : query
+MySQL --> FootballRepository : result
+FootballRepository --> FootballService : data
+FootballService --> FootballService : check & process
+FootballService --> FactoryService : response
+FactoryService --> FactoryService : process
+FactoryService --> FootballController : response
+FootballController --> User : response
+
+alt Biz Exception or Resource Exception
+    FootballService -> User : message
+end
+
+@enduml
