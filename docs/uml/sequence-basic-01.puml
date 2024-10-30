@@ -1,5 +1,7 @@
 @startuml
 
+!include styleForGithub.puml
+
 actor User
 
 participant FootballController
@@ -14,12 +16,12 @@ alt Validation Exception
     FootballController -> User : message
 end
 FootballController -> FootballService : call
-FootballService --> FootballService : check & process
+FootballService -> FootballService : check & process
 FootballService -> FootballRepository : call
 FootballRepository -> MySQL : query
 MySQL --> FootballRepository : result
 FootballRepository --> FootballService : data
-FootballService --> FootballService : check & process
+FootballService -> FootballService : check & process
 FootballService --> FootballController : response
 FootballController --> User : response
 
