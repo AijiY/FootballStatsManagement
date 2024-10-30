@@ -1,4 +1,4 @@
-package football.StatsManagement.model.data;
+package football.StatsManagement.model.entity;
 
 import football.StatsManagement.model.json.PlayerForJson;
 import io.swagger.v3.oas.annotations.media.Schema;

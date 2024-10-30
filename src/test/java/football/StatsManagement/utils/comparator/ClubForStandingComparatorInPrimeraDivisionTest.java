@@ -6,7 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import football.StatsManagement.model.data.Club;
+import football.StatsManagement.model.entity.Club;
 import football.StatsManagement.model.domain.ClubForStanding;
 import football.StatsManagement.utils.comparator.calculator.DifferenceCalculatorBetweenTwoClubs;
 import org.junit.jupiter.api.BeforeEach;

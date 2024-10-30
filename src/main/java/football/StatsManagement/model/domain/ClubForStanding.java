@@ -1,7 +1,7 @@
 package football.StatsManagement.model.domain;
 
-import football.StatsManagement.model.data.Club;
-import football.StatsManagement.model.data.GameResult;
+import football.StatsManagement.model.entity.Club;
+import football.StatsManagement.model.entity.GameResult;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
