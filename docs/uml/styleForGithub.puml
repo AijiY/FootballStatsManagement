@@ -1,0 +1,42 @@
+
+' 背景の透過
+skinparam backgroundColor transparent
+
+' 図の要素を白色に設定
+skinparam DefaultTextColor #FFFFFF
+skinparam RectangleBorderColor #FFFFFF
+skinparam ArrowColor #FFFFFF
+skinparam SequenceDividerBorderColor #FFFFFF
+skinparam SequenceBoxBorderColor #FFFFFF
+skinparam SequenceGroupBorderColor #FFFFFF
+skinparam SequenceGroupBackgroundColor transparent
+skinparam SequenceLifeLineBorderColor #FFFFFF
+skinparam SequenceLifeLineBackgroundColor transparent
+
+' 矢印の付属文字を白色に
+skinparam ArrowFontColor #FFFFFF
+
+' alt内の文字色を白に設定
+skinparam sequence {
+    GroupFontColor #FFFFFF
+    GroupHeader {
+    FontColor #FFFFFF
+  }
+}
+
+' 要素ごとの色指定
+skinparam actor {
+    BackgroundColor transparent
+    BorderColor #FFFFFF
+    FontColor #FFFFFF
+}
+skinparam participant {
+    BackgroundColor transparent
+    BorderColor #FFFFFF
+    FontColor #FFFFFF
+}
+skinparam database {
+    BackgroundColor transparent
+    BorderColor #FFFFFF
+    FontColor #FFFFFF
+}
