@@ -1,7 +1,9 @@
 # サッカースタッツ管理システム
 
 ## 作成背景（Background）
-　SpringBootを使用したWebアプリケーション開発の学習成果として、自分の好きな国やリーグのサッカーの試合成績を管理できるシステムを作成しました。
+　SpringBootを使用したWebアプリケーション開発の学習成果として、自分の好きな国やリーグのサッカーの試合成績を管理できるRestAPIを用いたシステムを作成しました。
+
+　RestAPIを使用するためのクライアントページは[こちら](https://github.com/AijiY/StatsManagement_react)で作成しています。
 
 ## 開発環境（Development Environment）
 ### 技術（Technologies）
@@ -18,7 +20,7 @@
 ![badge](https://img.shields.io/badge/GitHub_Actions-%232088FF?logo=githubactions&logoColor=white)
 ![badge](https://img.shields.io/badge/Swagger-%2385EA2D?logo=swagger&logoColor=white)
 ![badge](https://img.shields.io/badge/dbdiagram.io-007ACC?logo=appveyor&logoColor=white)
-![badge](https://img.shields.io/badge/draw.io-FB9D3A?logo=draw.io&logoColor=white)
+![badge](https://img.shields.io/badge/draw.io-FB9D3A?logo=diagramsdotnet&logoColor=white)
 ![badge](https://img.shields.io/badge/PlantUML-8A2BE2?logo=plantuml&logoColor=white)
 
 
