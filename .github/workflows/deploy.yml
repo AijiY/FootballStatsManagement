@@ -59,7 +59,7 @@ jobs:
         PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-        scp -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" -i private_key $EC2_USER@$PRIVATE_HOST
+        ssh -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" -i private_key $EC2_USER@$PRIVATE_HOST
 
 #    - name: SCP Copy Application to PRIVATE EC2 through Bastion
 #      env:
