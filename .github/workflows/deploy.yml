@@ -99,35 +99,37 @@ jobs:
         ssh -o StrictHostKeyChecking=no \
             -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" \
             -i private_key \
-            $EC2_USER@$PRIVATE_HOST "
-              sudo mv /tmp/StatsManagement /etc/sysconfig/StatsManagement
+            $EC2_USER@$PRIVATE_HOST << "EOF"
+        
+          sudo mv /tmp/StatsManagement /etc/sysconfig/StatsManagement
 
-              if [ ! -f /etc/systemd/system/StatsManagement.service ]; then
-                sudo tee /etc/systemd/system/StatsManagement.service << 'EOLS'
-                [ Unit ]
-                Description = StatsManagement App
+          if [ ! -f /etc/systemd/system/StatsManagement.service ]; then
+            sudo tee /etc/systemd/system/StatsManagement.service << 'EOLS'
+        [ Unit ]
+        Description = StatsManagement App
           
-                [ Service ]
-                ExecStart = java -jar ${DST_PATH}
-                EnvironmentFile = /etc/sysconfig/StatsManagement
-                Restart = no
-                Type = simple
-                User = ec2-user
-                Group = ec2-user
-                SuccessExitStatus = 143
+        [ Service ]
+        ExecStart = java -jar ${DST_PATH}
+        EnvironmentFile = /etc/sysconfig/StatsManagement
+        Restart = no
+        Type = simple
+        User = ec2-user
+        Group = ec2-user
+        SuccessExitStatus = 143
           
-                [ Install ]
-                WantedBy = multi-user.target
-                EOLS
-              fi
+        [ Install ]
+        WantedBy = multi-user.target
+        EOLS
+          fi
               
-              # サービスの再起動
-              sudo systemctl daemon-reload
-              if sudo systemctl is-active --quiet StatsManagement; then
-                sudo systemctl restart StatsManagement
-              else
-                sudo systemctl start StatsManagement
-              fi
+          # サービスの再起動
+          sudo systemctl daemon-reload
+          if sudo systemctl is-active --quiet StatsManagement; then
+            sudo systemctl restart StatsManagement
+          else
+            sudo systemctl start StatsManagement
+          fi
+        EOF
 
 #    - name: SCP Copy Application to PRIVATE EC2 through Bastion
 #      env:
