@@ -76,99 +76,116 @@ jobs:
 #
 #        ssh -F ssh_config private "echo 'Connected to private EC2'"
 
-    - name: Deploy to PRIVATE EC2 through Bastion
+    - name: SCP Copy Application to PRIVATE EC2 through Bastion
       env:
         PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        cat << EOF > ssh_config
+        Host bastion
+          HostName $BASTION_HOST
+          User $EC2_USER
+          IdentityFile $(pwd)/private_key
+          StrictHostKeyChecking no
 
-        cat << 'EOF' > statsmanagement.conf
-        JAVA_OPTS="-Xmx512m -Xms256m"
+        Host private
+          HostName $PRIVATE_HOST
+          User $EC2_USER
+          IdentityFile $(pwd)/private_key
+          ProxyCommand ssh -W %h:%p bastion
+          StrictHostKeyChecking no
         EOF
 
-        scp -o StrictHostKeyChecking=no \
-            -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" \
-            -i private_key \
-            statsmanagement.conf $EC2_USER@$PRIVATE_HOST:/tmp/StatsManagement
+        scp -F ssh_config $SRC_PATH private:$DST_PATH
+    
 
-        scp -o StrictHostKeyChecking=no \
-            -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" \
-            -i private_key \
-            $SRC_PATH $EC2_USER@$PRIVATE_HOST:$DST_PATH
+    - name: SSH Application Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.PRIVATE_HOST }}
+        username: ${{ env.EC2_USER }}
+        key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+        envs: DST_PATH
+        script: |
+          if [ -f /etc/system/StatsManagement.service ]; then
+            echo "Service already exists"
+          else
+          cat <<EOL | sudo tee -a /etc/systemd/system/StatsManagement.service
+          [Unit]
+          Description = StatsManagement App
+          [Service]
+          ExecStart = java -jar ${DST_PATH}
+          EnvironmentFile = /etc/sysconfig/StatsManagement
+          Restart = no
+          Type = simple
+          User = ec2-user
+          Group = ec2-user
+          SuccessExitStatus = 143
 
-        ssh -o StrictHostKeyChecking=no \
-            -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" \
-            -i private_key \
-            $EC2_USER@$PRIVATE_HOST << "EOF"
-        
-          sudo mv /tmp/StatsManagement /etc/sysconfig/StatsManagement
-
-          if [ ! -f /etc/systemd/system/StatsManagement.service ]; then
-            sudo tee /etc/systemd/system/StatsManagement.service << 'EOLS'
-        [Unit]
-        Description = StatsManagement App
-          
-        [Service]
-        ExecStart = java -jar ${DST_PATH}
-        EnvironmentFile = /etc/sysconfig/StatsManagement
-        Restart = no
-        Type = simple
-        User = ec2-user
-        Group = ec2-user
-        SuccessExitStatus = 143
-          
-        [Install]
-        WantedBy = multi-user.target
-        EOLS
+          [Install]
+          WantedBy = multi-user.target
+          EOL
           fi
-              
-          # サービスの再起動
+
           sudo systemctl daemon-reload
-          if sudo systemctl is-active --quiet StatsManagement; then
+          if sudo systemctl status StatsManagement 2>&1 | grep "Active: active (running)"; then
             sudo systemctl restart StatsManagement
           else
             sudo systemctl start StatsManagement
           fi
-        EOF
-        
-#    - name: SCP Copy Application to PRIVATE EC2 through Bastion
+
+# claudeの案
+#  - name: Deploy to PRIVATE EC2 through Bastion
 #      env:
 #        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
 #      run: |
 #        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-#        scp -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" -i private_key $SRC_PATH $EC2_USER@$PRIVATE_HOST:$DST_PATH
 #
-#    - name: SSH Application Deploy
-#      uses: appleboy/ssh-action@master
-#      with:
-#        host: ${{ env.PRIVATE_HOST }}
-#        username: ${{ env.EC2_USER }}
-#        key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-#        envs: DST_PATH
-#        script: |
-#          if [ -f /etc/system/StatsManagement.service ]; then
-#            echo "Service already exists"
-#          else
-#          cat <<EOL | sudo tee -a /etc/systemd/system/StatsManagement.service
-#          [Unit]
-#          Description = StatsManagement App
-#          [Service]
-#          ExecStart = java -jar ${DST_PATH}
-#          EnvironmentFile = /etc/sysconfig/StatsManagement
-#          Restart = no
-#          Type = simple
-#          User = ec2-user
-#          Group = ec2-user
-#          SuccessExitStatus = 143
+#        cat << 'EOF' > statsmanagement.conf
+#        JAVA_OPTS="-Xmx512m -Xms256m"
+#        EOF
 #
-#          [Install]
-#          WantedBy = multi-user.target
-#          EOL
+#        scp -o StrictHostKeyChecking=no \
+#            -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" \
+#            -i private_key \
+#            statsmanagement.conf $EC2_USER@$PRIVATE_HOST:/tmp/StatsManagement
+#
+#        scp -o StrictHostKeyChecking=no \
+#            -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" \
+#            -i private_key \
+#            $SRC_PATH $EC2_USER@$PRIVATE_HOST:$DST_PATH
+#
+#        ssh -o StrictHostKeyChecking=no \
+#            -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" \
+#            -i private_key \
+#            $EC2_USER@$PRIVATE_HOST << "EOF"
+#
+#          sudo mv /tmp/StatsManagement /etc/sysconfig/StatsManagement
+#
+#          if [ ! -f /etc/systemd/system/StatsManagement.service ]; then
+#            sudo tee /etc/systemd/system/StatsManagement.service << 'EOLS'
+#        [Unit]
+#        Description = StatsManagement App
+#
+#        [Service]
+#        ExecStart = java -jar ${DST_PATH}
+#        EnvironmentFile = /etc/sysconfig/StatsManagement
+#        Restart = no
+#        Type = simple
+#        User = ec2-user
+#        Group = ec2-user
+#        SuccessExitStatus = 143
+#
+#        [Install]
+#        WantedBy = multi-user.target
+#        EOLS
 #          fi
 #
+#          # サービスの再起動
 #          sudo systemctl daemon-reload
-#          if sudo systemctl status StatsManagement 2>&1 | grep "Active: active (running)"; then
+#          if sudo systemctl is-active --quiet StatsManagement; then
 #            sudo systemctl restart StatsManagement
 #          else
 #            sudo systemctl start StatsManagement
 #          fi
+#        EOF
