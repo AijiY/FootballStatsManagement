@@ -43,7 +43,7 @@
 ![SD-basic_02](https://github.com/user-attachments/assets/ad1e86f3-9b66-476f-bb88-20753458ea5e)
 
 ## API仕様（API Specification）
-※作成中
+[こちら](https://aijiy.github.io/FootballStatsManagement/)のページにてAPI仕様を確認できます。
 
 ## テスト
 下記テストをGithub Actionsで自動実行しています。
