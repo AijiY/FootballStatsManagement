@@ -59,7 +59,22 @@ jobs:
         PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-        ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no $EC2_USER@$BASTION_HOST"　-i private_key　$EC2_USER@$PRIVATE_HOST
+        cat << EOF > ssh_config
+        Host bastion
+          HostName $BASTION_HOST
+          User $EC2_USER
+          IdentityFile $(pwd)/private_key
+          StrictHostKeyChecking no
+    
+        Host private
+          HostName $PRIVATE_HOST
+          User $EC2_USER
+          IdentityFile $(pwd)/private_key
+          ProxyCommand ssh -W %h:%p bastion
+          StrictHostKeyChecking no
+          EOF
+        
+        ssh -F ssh_config private "echo 'Connected to private EC2'"
 
 #    - name: SCP Copy Application to PRIVATE EC2 through Bastion
 #      env:
