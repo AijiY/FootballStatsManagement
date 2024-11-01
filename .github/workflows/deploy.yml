@@ -1,0 +1,79 @@
+name: Java CI/CD with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  EC2_USER: 'ec2-user'
+  EC2_HOST: '54.248.65.84' # EC2再起動時は変更
+  SRC_PATH: 'build/libs/*.jar'
+  DST_PATH: '/home/ec2-user/app.jar'
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+    
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+    - name: Run tests
+      run: ./gradlew test
+
+    - name: Upload Test Report
+      if: failure()  # テストが失敗した場合のみ実行
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report  # アーティファクトの名前
+        path: build/reports/tests/test/  # アップロードするファイルやディレクトリ
+
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.CLASSIC_TOKEN }}
+        publish_dir: ./docs/api  # 公開するディレクトリ
+        publish_branch: gh-pages  # デプロイ先のブランチ
+
+
+    - name: Build with Gradle Wrapper
+      run: ./gradlew bootJar
+
+    - name: SCP Copy Application to EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        scp -o StrictHostKeyChecking=no -i private_key $SRC_PATH $EC2_USER@$EC2_HOST:$DST_PATH
+
+    - name: SSH Application Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ${{ env.EC2_USER }}
+        key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+        envs: DST_PATH
+        script: |
+          sudo yum update -y
+          
+          if sudo systemctl status StatsManagement 2>&1 | grep "Active: active (running)"; then
+            sudo systemctl restart StatsManagement
+          else
+            sudo systemctl start StatsManagement
+          fi
