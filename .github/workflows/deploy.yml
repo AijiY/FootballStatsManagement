@@ -50,6 +50,8 @@ jobs:
 #        publish_dir: ./docs/api  # 公開するディレクトリ
 #        publish_branch: gh-pages  # デプロイ先のブランチ
 
+    - name: Build with Gradle Wrapper
+      run: ./gradlew bootJar
 
     - name: SCP Copy Application to EC2
       env:
