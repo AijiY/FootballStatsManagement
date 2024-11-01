@@ -105,10 +105,10 @@ jobs:
 
           if [ ! -f /etc/systemd/system/StatsManagement.service ]; then
             sudo tee /etc/systemd/system/StatsManagement.service << 'EOLS'
-        [ Unit ]
+        [Unit]
         Description = StatsManagement App
           
-        [ Service ]
+        [Service]
         ExecStart = java -jar ${DST_PATH}
         EnvironmentFile = /etc/sysconfig/StatsManagement
         Restart = no
@@ -117,7 +117,7 @@ jobs:
         Group = ec2-user
         SuccessExitStatus = 143
           
-        [ Install ]
+        [Install]
         WantedBy = multi-user.target
         EOLS
           fi
