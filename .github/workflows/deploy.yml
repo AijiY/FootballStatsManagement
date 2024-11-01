@@ -130,6 +130,7 @@ jobs:
             sudo systemctl start StatsManagement
           fi
         EOF
+        
 
 #    - name: SCP Copy Application to PRIVATE EC2 through Bastion
 #      env:
