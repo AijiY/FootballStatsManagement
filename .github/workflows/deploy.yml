@@ -52,7 +52,7 @@ jobs:
         PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-        scp -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" -i private_key $SRC_PATH $EC2_USER@$PRIVATE_HOST:$DST_PATH
+        scp -vvv -o ProxyCommand="ssh -W %h:%p -i private_key -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" -i private_key $SRC_PATH $EC2_USER@$PRIVATE_HOST:$DST_PATH
 
     - name: SSH Application Deploy
       uses: appleboy/ssh-action@master
