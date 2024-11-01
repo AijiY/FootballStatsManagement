@@ -11,13 +11,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-  @Value("${REACT_APP_URL}")
+//  @Value("${REACT_APP_URL}")
   private String reactAppUrl;
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
-//    reactAppUrl = "http://localhost:3000";
+    reactAppUrl = "http://my-client-page-bucket.s3-website-ap-northeast-1.amazonaws.com";
 
     registry.addMapping("/**")
       .allowedOrigins(reactAppUrl)
