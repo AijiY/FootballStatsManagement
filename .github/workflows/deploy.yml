@@ -54,6 +54,7 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew bootJar
 
+# テスト用
 #    - name: SSH to Private EC2 Instance through Bastion
 #      env:
 #        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
@@ -96,7 +97,7 @@ jobs:
           StrictHostKeyChecking no
         EOF
 
-        scp -F ssh_config $SRC_PATH private:$DST_PATH
+        scp　-vvv -F ssh_config $SRC_PATH private:$DST_PATH
     
 
     - name: SSH Application Deploy
