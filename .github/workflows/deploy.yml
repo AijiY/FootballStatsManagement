@@ -54,28 +54,89 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew bootJar
 
+    #claudeの案にappleboyを併用
+    - name: Setup and Transfer Configuration and Application Files
+      uses: appleboy/scp-action@master
+      with:
+        source: statsmanagement.conf
+        target: /tmp/StatsManagement
+        host: ${{ secrets.PRIVATE_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+        proxy_jump: ${{ secrets.BASTION_HOST }}     # Proxy bastion host
+        proxy_key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+
+    - name: Transfer Application to Private EC2 through Bastion
+      uses: appleboy/scp-action@master
+      with:
+        source: ${{ secrets.SRC_PATH }}
+        target: ${{ secrets.DST_PATH }}
+        host: ${{ secrets.PRIVATE_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+        proxy_jump: ${{ secrets.BASTION_HOST }}
+        proxy_key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+
+    - name: Deploy and Manage StatsManagement Service on Private EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.PRIVATE_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+        proxy_jump: ${{ secrets.BASTION_HOST }}
+        proxy_key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+        script: |
+          sudo mv /tmp/StatsManagement /etc/sysconfig/StatsManagement
+          
+          if [ ! -f /etc/systemd/system/StatsManagement.service ]; then
+            sudo tee /etc/systemd/system/StatsManagement.service > /dev/null << 'EOL'
+            [Unit]
+            Description=StatsManagement App
+          
+            [Service]
+            ExecStart=java -jar ${DST_PATH}
+            EnvironmentFile=/etc/sysconfig/StatsManagement
+            Restart=no
+            Type=simple
+            User=ec2-user
+            Group=ec2-user
+            SuccessExitStatus=143
+          
+            [Install]
+            WantedBy=multi-user.target
+            EOL
+          fi
+          
+          sudo systemctl daemon-reload
+          if sudo systemctl is-active --quiet StatsManagement; then
+            sudo systemctl restart StatsManagement
+          else
+            sudo systemctl start StatsManagement
+          fi
+    
+
 # テスト用
-    - name: SSH to Private EC2 Instance through Bastion
-      env:
-        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-      run: |
-        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-        cat << EOF > ssh_config
-        Host bastion
-          HostName $BASTION_HOST
-          User $EC2_USER
-          IdentityFile $(pwd)/private_key
-          StrictHostKeyChecking no
-
-        Host private
-          HostName $PRIVATE_HOST
-          User $EC2_USER
-          IdentityFile $(pwd)/private_key
-          ProxyCommand ssh -W %h:%p bastion
-          StrictHostKeyChecking no
-        EOF
-
-        ssh -v -F ssh_config private "echo 'Connected to private EC2'"
+#    - name: SSH to Private EC2 Instance through Bastion
+#      env:
+#        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+#      run: |
+#        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+#        cat << EOF > ssh_config
+#        Host bastion
+#          HostName $BASTION_HOST
+#          User $EC2_USER
+#          IdentityFile $(pwd)/private_key
+#          StrictHostKeyChecking no
+#
+#        Host private
+#          HostName $PRIVATE_HOST
+#          User $EC2_USER
+#          IdentityFile $(pwd)/private_key
+#          ProxyCommand ssh -W %h:%p bastion
+#          StrictHostKeyChecking no
+#        EOF
+#
+#        ssh -v -F ssh_config private "echo 'Connected to private EC2'"
 
 #    - name: SCP Copy Application to PRIVATE EC2 through Bastion
 #      env:
@@ -136,7 +197,7 @@ jobs:
 #          fi
 
 # claudeの案
-#  - name: Deploy to PRIVATE EC2 through Bastion
+#    - name: Deploy to PRIVATE EC2 through Bastion
 #      env:
 #        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
 #      run: |
@@ -182,7 +243,6 @@ jobs:
 #        EOLS
 #          fi
 #
-#          # サービスの再起動
 #          sudo systemctl daemon-reload
 #          if sudo systemctl is-active --quiet StatsManagement; then
 #            sudo systemctl restart StatsManagement
