@@ -62,7 +62,6 @@ jobs:
         ey: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
         envs: DST_PATH
         script: |
-#          sudo yum update -y
           if [ -f /etc/system/StatsManagement.service ]; then
             echo "Service already exists"
           else
