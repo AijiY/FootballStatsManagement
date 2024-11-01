@@ -64,11 +64,10 @@ jobs:
     - name: SSH to Private EC2 Instance through Bastion
       env:
         PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-        PRIVATE_KEY_NAME: ${{ secrets.AWS_EC2_PRIVATE_KEY_NAME }}
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key $EC2_USER@$BASTION_HOST << 'EOF'
-          ssh -vvv -o StrictHostKeyChecking=no -i $PRIVATE_KEY_NAME $EC2_USER@$PRIVATE_HOST
+          ssh -vvv -o StrictHostKeyChecking=no -i AijiY.pem $EC2_USER@$PRIVATE_HOST
         EOF
 
 #    - name: SCP Copy Application to PRIVATE EC2 through Bastion
