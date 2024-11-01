@@ -97,7 +97,7 @@ jobs:
           StrictHostKeyChecking no
         EOF
 
-        scp　-vvv -F ssh_config $SRC_PATH private:$DST_PATH
+        scp -v -F ssh_config $SRC_PATH private:$DST_PATH
     
 
     - name: SSH Application Deploy
