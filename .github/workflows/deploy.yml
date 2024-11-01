@@ -44,6 +44,13 @@ jobs:
         name: test-report  # アーティファクトの名前
         path: build/reports/tests/test/  # アップロードするファイルやディレクトリ
 
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/api  # 公開するディレクトリ
+        publish_branch: gh-pages  # デプロイ先のブランチ
+
     - name: Build with Gradle Wrapper
       run: ./gradlew bootJar
 
