@@ -131,7 +131,6 @@ jobs:
           fi
         EOF
         
-
 #    - name: SCP Copy Application to PRIVATE EC2 through Bastion
 #      env:
 #        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
