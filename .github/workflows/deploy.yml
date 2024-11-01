@@ -8,7 +8,7 @@ on:
 
 env:
   EC2_USER: 'ec2-user'
-  EC2_HOST: '18.183.70.83' # EC2再起動時は変更
+  EC2_HOST: '54.248.65.84' # EC2再起動時は変更
   SRC_PATH: 'build/libs/*.jar'
   DST_PATH: '/home/ec2-user/app.jar'
 
@@ -43,12 +43,12 @@ jobs:
         name: test-report  # アーティファクトの名前
         path: build/reports/tests/test/  # アップロードするファイルやディレクトリ
 
-#    - name: Deploy to GitHub Pages
-#      uses: peaceiris/actions-gh-pages@v3
-#      with:
-#        github_token: ${{ secrets.CLASSIC_TOKEN }}
-#        publish_dir: ./docs/api  # 公開するディレクトリ
-#        publish_branch: gh-pages  # デプロイ先のブランチ
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.CLASSIC_TOKEN }}
+        publish_dir: ./docs/api  # 公開するディレクトリ
+        publish_branch: gh-pages  # デプロイ先のブランチ
 
     - name: Build with Gradle Wrapper
       run: ./gradlew bootJar
@@ -69,8 +69,6 @@ jobs:
         envs: DST_PATH
         script: |
           sudo yum update -y
-          
-          sudo systemctl daemon-reload
           
           if sudo systemctl status StatsManagement 2>&1 | grep "Active: active (running)"; then
             sudo systemctl restart StatsManagement
