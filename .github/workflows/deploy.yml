@@ -55,27 +55,27 @@ jobs:
       run: ./gradlew bootJar
 
 # テスト用
-#    - name: SSH to Private EC2 Instance through Bastion
-#      env:
-#        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-#      run: |
-#        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-#        cat << EOF > ssh_config
-#        Host bastion
-#          HostName $BASTION_HOST
-#          User $EC2_USER
-#          IdentityFile $(pwd)/private_key
-#          StrictHostKeyChecking no
-#
-#        Host private
-#          HostName $PRIVATE_HOST
-#          User $EC2_USER
-#          IdentityFile $(pwd)/private_key
-#          ProxyCommand ssh -W %h:%p bastion
-#          StrictHostKeyChecking no
-#          EOF
-#
-#        ssh -F ssh_config private "echo 'Connected to private EC2'"
+    - name: SSH to Private EC2 Instance through Bastion
+      env:
+        PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        cat << EOF > ssh_config
+        Host bastion
+          HostName $BASTION_HOST
+          User $EC2_USER
+          IdentityFile $(pwd)/private_key
+          StrictHostKeyChecking no
+
+        Host private
+          HostName $PRIVATE_HOST
+          User $EC2_USER
+          IdentityFile $(pwd)/private_key
+          ProxyCommand ssh -W %h:%p bastion
+          StrictHostKeyChecking no
+          EOF
+
+        ssh -v -F ssh_config private "echo 'Connected to private EC2'"
 
     - name: SCP Copy Application to PRIVATE EC2 through Bastion
       env:
