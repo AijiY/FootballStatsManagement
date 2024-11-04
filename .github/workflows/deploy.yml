@@ -56,6 +56,7 @@ jobs:
           sleep 2
         done
           
+        sleep 5
         curl http://localhost:8080/v3/api-docs -o docs/api/api-docs.json
           
         pkill -f 'java -jar build/libs/*.war'
