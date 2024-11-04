@@ -19,8 +19,8 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addMapping("/**")
       .allowedOrigins(reactAppUrl)
       .allowedMethods("GET", "POST", "PUT", "DELETE")
-      .allowedHeaders("*");
-//      .allowCredentials(true); // Cookieなどの送信を許可
+//      .allowedHeaders("*");
+      .allowCredentials(true); // Cookieなどの送信を許可
   }
 
 }
