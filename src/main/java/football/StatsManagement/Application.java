@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@OpenAPIDefinition(info = @Info(title = "サッカースタッツ管理システム"))
+@OpenAPIDefinition(info = @Info(title = "サッカースタッツ管理システム", description = "サッカーのスタッツを管理するためのAPI"))
 @SpringBootApplication
 public class Application {
 
