@@ -18,9 +18,9 @@ public class WebConfig implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
       .allowedOrigins(reactAppUrl)
-      .allowedMethods("GET", "POST", "PUT", "DELETE")
+      .allowedMethods("GET", "POST", "PUT", "DELETE");
 //      .allowedHeaders("*");
-      .allowCredentials(true); // Cookieなどの送信を許可
+//      .allowCredentials(true); // Cookieなどの送信を許可
   }
 
 }
