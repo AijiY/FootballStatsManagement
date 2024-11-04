@@ -390,6 +390,14 @@ class FootballServiceTest {
   }
 
   @Test
+  void getPlayersWithClubIdNull() {
+    // Act
+    List<Player> actual = sut.getPlayersWithClubIdNull();
+    // Assert
+    verify(repository, times(1)).selectPlayersWithClubIdNull();
+  }
+
+  @Test
   @DisplayName("クラブIDによる選手一覧の検索_リポジトリが適切に処理されること")
   void getPlayersByClub() {
     int clubId = 1;

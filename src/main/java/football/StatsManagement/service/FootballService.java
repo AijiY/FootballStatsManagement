@@ -275,6 +275,14 @@ public class FootballService {
   }
 
   /**
+   * クラブIDがnullの選手一覧の取得
+   * @return クラブIDがnullの選手一覧
+   */
+  public List<Player> getPlayersWithClubIdNull() {
+    return repository.selectPlayersWithClubIdNull();
+  }
+
+  /**
    * クラブ所属選手一覧の取得
    * @param clubId クラブID
    * @return クラブ所属選手一覧

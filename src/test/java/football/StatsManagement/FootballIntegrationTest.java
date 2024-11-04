@@ -319,6 +319,19 @@ class FootballIntegrationTest {
   }
 
   @Test
+  @DisplayName("クラブに無所属の選手一覧が取得できること")
+  void getPlayersWithNoClub() throws Exception {
+    List<Player> expected = List.of(
+        new Player(47, null, "PlayerNoClub", 1)
+    );
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/clubs/null/players"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
   @DisplayName("選手IDとシーズンIDに基づく選手試合成績一覧が取得できること")
   void getPlayerGameStatsBySeason() throws Exception {
 //    (player_id, club_id, number, starter, goals, assists, minutes, yellow_cards, red_cards, game_id)

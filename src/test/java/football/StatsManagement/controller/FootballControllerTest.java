@@ -223,6 +223,14 @@ class FootballControllerTest {
   }
 
   @Test
+  @DisplayName("クラブに無所属の選手一覧が取得できること")
+  void getPlayersWithNoClub() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.get("/clubs/null/players"))
+        .andExpect(status().isOk());
+    verify(footballService, times(1)).getPlayersWithClubIdNull();
+  }
+
+  @Test
   @DisplayName("クラブIDに紐づく選手一覧を取得する際にIDが0以下の場合、400エラーが返却されること")
   void getPlayersByClubWithInvalidClubId() throws Exception {
     int clubId = 0;

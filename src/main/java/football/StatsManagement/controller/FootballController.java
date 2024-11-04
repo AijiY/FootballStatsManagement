@@ -186,6 +186,16 @@ public class FootballController {
   }
 
   /**
+   * クラブに無所属選手一覧の取得
+   * @return 選手一覧
+   */
+  @GetMapping("/clubs/null/players")
+  @Operation(summary = "無所属選手一覧の取得", description = "クラブに所属していないの選手の一覧を取得します")
+  public List<Player> getPlayersWithNoClub() {
+    return footballService.getPlayersWithClubIdNull();
+  }
+
+  /**
    * 選手IDとシーズンIDに紐づく選手成績の取得
    * @param playerId 選手ID
    * @param seasonId シーズンID

@@ -524,6 +524,22 @@ class FootballRepositoryTest {
   }
 
   @Test
+  @DisplayName("クラブIDがnullの選手を検索できること_件数と情報が適切であること")
+  void selectPlayersWithClubIdNull() {
+    // Arrange
+    List<Player> expected = List.of(
+        new Player(47, null, "PlayerNoClub", 1)
+    );
+
+    // Act
+    List<Player> actual = sut.selectPlayersWithClubIdNull();
+
+    // Assert
+    assertThat(actual.size()).isEqualTo(expected.size());
+    assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+  }
+
+  @Test
   @DisplayName("試合結果を全件検索できること_件数と情報が適切であること")
   void selectGameResults() {
     /*
