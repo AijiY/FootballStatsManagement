@@ -640,14 +640,14 @@ public class FootballService {
     if (awayStarterCount != 11) {
       throw new FootballException("Away starter count must be 11");
     }
-    // 出場時間が合計990分以上になっているか確認
+    // 出場時間が合計990-1000分か確認（途中出場選手の出場時間計算ミスを防ぐため、上限を設けた）
     int homeMinutes = homeClubStats.stream().mapToInt(PlayerGameStat::getMinutes).sum();
     int awayMinutes = awayClubStats.stream().mapToInt(PlayerGameStat::getMinutes).sum();
-    if (homeMinutes < 990) {
-      throw new FootballException("Home minutes is less than 990");
+    if (homeMinutes < 990 || homeMinutes > 1000) {
+      throw new FootballException("Home minutes must be between 990 and 1000");
     }
-    if (awayMinutes < 990) {
-      throw new FootballException("Away minutes is less than 990");
+    if (awayMinutes < 990 || awayMinutes > 1000) {
+      throw new FootballException("Away minutes must be between 990 and 1000");
     }
   }
 
