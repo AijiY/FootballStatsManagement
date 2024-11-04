@@ -1289,8 +1289,8 @@ class FootballServiceTest {
   }
 
   @Test
-  @DisplayName("試合結果と選手成績の登録_ホームクラブの出場時間が不正な場合に例外処理が発生すること")
-  void registerGameResultAndPlayerGameStats_withInvalidHomeMinutes() throws ResourceNotFoundException {
+  @DisplayName("試合結果と選手成績の登録_ホームクラブの出場時間が過小な場合に例外処理が発生すること")
+  void registerGameResultAndPlayerGameStats_withTooFewHomeMinutes() throws ResourceNotFoundException {
     // Arrange
     FootballService sutSpy = spy(sut);
 
@@ -1298,7 +1298,7 @@ class FootballServiceTest {
     // ホームとアウェイの11人分の選手成績を作成
     List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
         // 先頭選手の出場時間を不正に変更
-        new PlayerGameStat(0, 1, 1, 0, true, 1, 0, 0, 80, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 1, 1, 0, true, 1, 0, 0, 89, 1, 0, 1, null, null, null),
         new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
     ));
     homeClubStats.addAll(
@@ -1337,12 +1337,64 @@ class FootballServiceTest {
 
     // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Home minutes is less than 990", thrown.getMessage());
+    assertEquals("Home minutes must be between 990 and 1000", thrown.getMessage());
   }
 
   @Test
-  @DisplayName("試合結果と選手成績の登録_アウェイクラブの出場時間が不正な場合に例外処理が発生すること")
-  void registerGameResultAndPlayerGameStats_withInvalidAwayMinutes() throws ResourceNotFoundException {
+  @DisplayName("試合結果と選手成績の登録_ホームクラブの出場時間が過大な場合に例外処理が発生すること")
+  void registerGameResultAndPlayerGameStats_withTooManyHomeMinutes() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
+    GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
+    // ホームとアウェイの11人分の選手成績を作成
+    List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
+        // 先頭選手の出場時間を不正に変更
+        new PlayerGameStat(0, 1, 1, 0, true, 1, 0, 0, 101, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
+    ));
+    homeClubStats.addAll(
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+                new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
+    );
+    // 交代選手を1人追加
+    homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
+
+    List<PlayerGameStat> awayClubStats = new ArrayList<>(List.of(
+        new PlayerGameStat(0, 13, 2, 0, true, 1, 0, 0, 80, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 14, 2, 0, true, 0, 1, 0, 90, 0, 0, 1, null, null, null)
+    ));
+    awayClubStats.addAll(
+        // あとはgoal～redCardまで0の選手を9人
+        IntStream.range(15, 24).mapToObj(i ->
+                new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
+    );
+
+    GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
+
+    for (PlayerGameStat playerGameStat : homeClubStats) {
+      doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
+    }
+    for (PlayerGameStat playerGameStat : awayClubStats) {
+      doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
+    }
+
+    doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
+    when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
+    doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
+    doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
+
+    // Act & Assert
+    FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
+    assertEquals("Home minutes must be between 990 and 1000", thrown.getMessage());
+  }
+
+  @Test
+  @DisplayName("試合結果と選手成績の登録_アウェイクラブの出場時間が過小な場合に例外処理が発生すること")
+  void registerGameResultAndPlayerGameStats_withTooFewAwayMinutes() throws ResourceNotFoundException {
     // Arrange
     FootballService sutSpy = spy(sut);
 
@@ -1363,7 +1415,7 @@ class FootballServiceTest {
 
     List<PlayerGameStat> awayClubStats = new ArrayList<>(List.of(
         // 先頭選手の出場時間を不正に変更
-        new PlayerGameStat(0, 13, 2, 0, true, 1, 0, 0, 80, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 13, 2, 0, true, 1, 0, 0, 89, 1, 0, 1, null, null, null),
         new PlayerGameStat(0, 14, 2, 0, true, 0, 1, 0, 90, 0, 0, 1, null, null, null)
     ));
     awayClubStats.addAll(
@@ -1389,7 +1441,59 @@ class FootballServiceTest {
 
     // Act & Assert
     FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
-    assertEquals("Away minutes is less than 990", thrown.getMessage());
+    assertEquals("Away minutes must be between 990 and 1000", thrown.getMessage());
+  }
+
+  @Test
+  @DisplayName("試合結果と選手成績の登録_アウェイクラブの出場時間が過大な場合に例外処理が発生すること")
+  void registerGameResultAndPlayerGameStats_withTooManyAwayMinutes() throws ResourceNotFoundException {
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
+    GameResult gameResult = new GameResult(1, 1, 2, 1, 1, null, 1, LocalDate.of(2024, 8, 1), 1);
+    // ホームとアウェイの11人分の選手成績を作成
+    List<PlayerGameStat> homeClubStats = new ArrayList<>(List.of(
+        new PlayerGameStat(0, 1, 1, 0, true, 1, 0, 0, 90, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 2, 1, 0, true, 0, 1, 0, 70, 0, 1, 1, null, null, null)
+    ));
+    homeClubStats.addAll(
+        // あとはgoal～red cardまで0の選手を9人
+        IntStream.range(3, 12).mapToObj(i ->
+                new PlayerGameStat(0, i, 0, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
+    );
+    // 交代選手を1人追加
+    homeClubStats.add(new PlayerGameStat(12, 12, 1, 0, false, 0, 0, 0, 20, 0, 0, 0, null, null, null));
+
+    List<PlayerGameStat> awayClubStats = new ArrayList<>(List.of(
+        // 先頭選手の出場時間を不正に変更
+        new PlayerGameStat(0, 13, 2, 0, true, 1, 0, 0, 101, 1, 0, 1, null, null, null),
+        new PlayerGameStat(0, 14, 2, 0, true, 0, 1, 0, 90, 0, 0, 1, null, null, null)
+    ));
+    awayClubStats.addAll(
+        // あとはgoal～redCardまで0の選手を9人
+        IntStream.range(15, 24).mapToObj(i ->
+                new PlayerGameStat(0, i, 2, 0, true, 0, 0, 0, 90, 0, 0, 0, null, null, null))
+            .toList()
+    );
+
+    GameResultWithPlayerStats gameResultWithPlayerStats = new GameResultWithPlayerStats(gameResult, homeClubStats, awayClubStats);
+
+    for (PlayerGameStat playerGameStat : homeClubStats) {
+      doReturn(new Player(playerGameStat.getPlayerId(), 1, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
+    }
+    for (PlayerGameStat playerGameStat : awayClubStats) {
+      doReturn(new Player(playerGameStat.getPlayerId(), 2, "sampleName", 1)).when(sutSpy).getPlayer(playerGameStat.getPlayerId());
+    }
+
+    doReturn(new Season(1, "2024-25", LocalDate.of(2024, 7, 1), LocalDate.of(2025, 6, 30), true)).when(sutSpy).getCurrentSeason();
+    when(repository.selectLeague(1)).thenReturn(Optional.of(new League(1, 1, "sampleName")));
+    doReturn(new Club(1, 1, "sampleName")).when(sutSpy).getClub(1);
+    doReturn(new Club(2, 1, "sampleName")).when(sutSpy).getClub(2);
+
+    // Act & Assert
+    FootballException thrown = assertThrows(FootballException.class, () -> sutSpy.registerGameResultAndPlayerGameStats(gameResultWithPlayerStats));
+    assertEquals("Away minutes must be between 990 and 1000", thrown.getMessage());
   }
 
   @Test

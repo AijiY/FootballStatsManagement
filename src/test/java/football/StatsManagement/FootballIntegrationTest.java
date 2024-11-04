@@ -690,8 +690,8 @@ class FootballIntegrationTest {
   @ParameterizedTest
   // テストケースのパラメータを指定（下から作成）
   @CsvSource({
-      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 30, 45, 0, 0, 0, false, 24, 'Away minutes is less than 990'",
-      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0, false, 24, 'Home minutes is less than 990'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 30, 45, 0, 0, 0, false, 24, 'Away minutes must be between 990 and 1000'",
+      "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0, false, 24, 'Home minutes must be between 990 and 1000'",
       "2020-08-01,  4, 9, 10, 30, 0, 0, 0, false, 29, 45, 0, 0, 0,  true, 24, 'Away starter count must be 11'",
       "2020-08-01,  4, 9, 10, 30, 0, 0, 0,  true, 29, 45, 0, 0, 0,  true, 24, 'Home starter count must be 11'",
       "2020-08-01,  4, 9, 10, 30, 0, 0, 0,  true, 29, 45, 0, 2, 0,  true, 24, 'Away assists is more than away score'",
