@@ -518,7 +518,8 @@ class FootballRepositoryTest {
         new Player(43, 10, "PlayerBBDL", 12),
         new Player(44, 10, "PlayerBBDM", 13),
         new Player(45, 10, "PlayerBBDN", 14),
-        new Player(46, 10, "PlayerBBDO", 15)
+        new Player(46, 10, "PlayerBBDO", 15),
+        new Player(47, null, "PlayerNoClub", 1)
     );
   }
 
@@ -765,9 +766,6 @@ class FootballRepositoryTest {
     String name = "UpdatedPlayer";
 
     // Arrange
-    Player player = sut.selectPlayer(id).orElseGet(() -> mock(Player.class));
-    player.setNumber(number);
-    player.setName(name);
     Player expected = new Player(id, 1, name, number);
 
     // Act
@@ -786,9 +784,6 @@ class FootballRepositoryTest {
     int number = 99;
 
     // Arrange
-    Player player = sut.selectPlayer(id).orElseGet(() -> mock(Player.class));
-    player.setClubId(clubId);
-    player.setNumber(number);
     Player expected = new Player(id, clubId, "PlayerAAAA", number);
 
     // Act
@@ -806,13 +801,27 @@ class FootballRepositoryTest {
     int leagueId = 2;
 
     // Arrange
-    Club club = sut.selectClub(id).orElseGet(() -> mock(Club.class));
-    club.setLeagueId(leagueId);
     Club expected = new Club(id, leagueId, "ClubAAA");
 
     // Act
     sut.updateClubLeague(id, leagueId);
     Club actual = sut.selectClub(id).orElseGet(() -> mock(Club.class));
+
+    // Assert
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  @DisplayName("選手のクラブIDをnullに更新できること_更新後の情報が適切であること")
+  void updatePlayerClubIdNull() {
+    int id = 1;
+
+    // Arrange
+    Player expected = new Player(id, null, "PlayerAAAA", 1);
+
+    // Act
+    sut.updatePlayerClubIdNull(id);
+    Player actual = sut.selectPlayer(id).orElseGet(() -> mock(Player.class));
 
     // Assert
     assertEquals(expected, actual);

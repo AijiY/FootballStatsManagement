@@ -332,4 +332,11 @@ public interface FootballRepository {
    */
   @Update("UPDATE clubs SET league_id = #{leagueId} WHERE id = #{id}")
   void updateClubLeague(int id, int leagueId);
+
+  /**
+   * 選手のクラブIDをnullにする
+   * @param id 選手ID
+   */
+  @Update("UPDATE players SET club_id = null WHERE id = #{id}")
+  void updatePlayerClubIdNull(int id);
 }

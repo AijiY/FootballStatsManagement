@@ -1,7 +1,6 @@
 package football.StatsManagement.model.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,9 +11,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor // @Select用
 public class Country {
-  private final int id;
 
-  @NotBlank
+  private final int id;
   private String name;
 
   /**

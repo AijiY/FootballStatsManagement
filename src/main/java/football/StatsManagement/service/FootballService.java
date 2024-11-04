@@ -443,6 +443,21 @@ public class FootballService {
     repository.updateClubLeague(id, leagueId);
   }
 
+  /**
+   * 選手のクラブIDをnullに更新
+   * @param id 選手ID
+   * @throws ResourceConflictException 元々clubIdがnullの場合
+   */
+  @Transactional
+  public void updatePlayerClubIdNull(int id) throws ResourceNotFoundException, ResourceConflictException {
+    Player player = getPlayer(id);
+    // 元々clubIdがnullの場合はResourceConflictExceptionを投げる
+    if (player.getClubId() == null) {
+      throw new ResourceConflictException("Player is already free");
+    }
+    repository.updatePlayerClubIdNull(id);
+  }
+
 //  other
 
   /**
