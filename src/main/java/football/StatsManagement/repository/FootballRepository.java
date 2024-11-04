@@ -214,6 +214,13 @@ public interface FootballRepository {
   List<Player> selectPlayers();
 
   /**
+   * クラブIDがnullの選手一覧の取得
+   * @return 選手一覧
+   */
+  @Select("SELECT * FROM players WHERE club_id IS NULL")
+  List<Player> selectPlayersWithClubIdNull();
+
+  /**
    * 試合結果一覧の取得
    * @return 試合結果一覧
    */
