@@ -556,7 +556,7 @@ class FootballIntegrationTest {
         }
         """;
 
-    Player expected = new Player(47, 1, "PlayerAAAC", 3);
+    Player expected = new Player(48, 1, "PlayerAAAC", 3);
     String expectedJson = objectMapper.writeValueAsString(expected);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/player")
