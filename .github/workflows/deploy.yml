@@ -54,7 +54,7 @@ jobs:
 
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew bootJar
+      run: ./gradlew bootJar -Pprod
 
     - name: SCP Copy Application to EC2
       env:
