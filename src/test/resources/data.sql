@@ -68,7 +68,9 @@ INSERT INTO players (name, club_id, number) VALUES
   ('PlayerBBDL', 10, 12),
   ('PlayerBBDM', 10, 13),
   ('PlayerBBDN', 10, 14),
-  ('PlayerBBDO', 10, 15);
+  ('PlayerBBDO', 10, 15),
+--  無所属選手を追加
+  ('PlayerNoClub', null, 1);
 
 
 INSERT INTO seasons (id, name, start_date, end_date, current) VALUES

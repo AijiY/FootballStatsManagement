@@ -1,9 +1,8 @@
 package football.StatsManagement;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -557,7 +556,7 @@ class FootballIntegrationTest {
         }
         """;
 
-    Player expected = new Player(47, 1, "PlayerAAAC", 3);
+    Player expected = new Player(48, 1, "PlayerAAAC", 3);
     String expectedJson = objectMapper.writeValueAsString(expected);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/player")
@@ -706,7 +705,7 @@ class FootballIntegrationTest {
       "2020-08-01,  4, 9, 10,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Home club and player are not matched'",
       "2020-08-01,  4, 9,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Away club is not in the league'",
       "2020-08-01,  4, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Home club is not in the league'",
-//      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",  ※ResouceNotFoundExceptionが発生するため、個別対応
+//      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",  ※ResourceNotFoundExceptionが発生するため、個別対応
       "2019-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Game date must be in the current season period'"
   })
   @DisplayName("試合結果の登録_サービス内で例外処理を発生させるパターン")
@@ -760,7 +759,7 @@ class FootballIntegrationTest {
         .andExpect(status().isBadRequest())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof FootballException);
+          assertInstanceOf(FootballException.class, resolvedException);
           assertEquals(expectedMessage, resolvedException.getMessage());
         });
   }
@@ -821,7 +820,7 @@ class FootballIntegrationTest {
         .andExpect(status().isNotFound())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof ResourceNotFoundException);
+          assertInstanceOf(ResourceNotFoundException.class, resolvedException);
           assertEquals(expectedMessage, resolvedException.getMessage());
         });
   }
@@ -881,7 +880,7 @@ class FootballIntegrationTest {
         .andExpect(status().isBadRequest())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof FootballException);
+          assertInstanceOf(FootballException.class, resolvedException);
           assertEquals(errorMessage, resolvedException.getMessage());
         });
   }
@@ -931,7 +930,7 @@ class FootballIntegrationTest {
         .andExpect(status().isBadRequest())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof FootballException);
+          assertInstanceOf(FootballException.class, resolvedException);
           assertEquals(expectedMessage, resolvedException.getMessage());
         });
   }
@@ -955,7 +954,7 @@ class FootballIntegrationTest {
         .andExpect(status().isConflict())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof ResourceConflictException);
+          assertInstanceOf(ResourceConflictException.class, resolvedException);
           assertEquals(expectedMessage, resolvedException.getMessage());
         });
   }
@@ -1000,7 +999,7 @@ class FootballIntegrationTest {
         .andExpect(status().isConflict())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof ResourceConflictException);
+          assertInstanceOf(ResourceConflictException.class, resolvedException);
           assertEquals(expectedMessage, resolvedException.getMessage());
         });
   }
@@ -1024,7 +1023,7 @@ class FootballIntegrationTest {
         .andExpect(status().isBadRequest())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof FootballException);
+          assertInstanceOf(FootballException.class, resolvedException);
           assertEquals(expectedMessage, resolvedException.getMessage());
         });
   }
@@ -1057,7 +1056,36 @@ class FootballIntegrationTest {
         .andExpect(status().isConflict())
         .andExpect(result -> {
           Exception resolvedException = result.getResolvedException();
-          assertTrue(resolvedException instanceof ResourceConflictException);
+          assertInstanceOf(ResourceConflictException.class, resolvedException);
+          assertEquals(expectedMessage, resolvedException.getMessage());
+        });
+  }
+
+  @Test
+  @DisplayName("選手を無所属状態にできること")
+  void makePlayerFree() throws Exception {
+    int playerId = 1;
+
+    Player expected = new Player(playerId, null, "PlayerAAAA", 1);
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-make-free/" + playerId))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  @DisplayName("選手を無所属状態にする_既に無所属の場合はResourceConflictExceptionが発生すること")
+  void makePlayerFreeWithNoClub() throws Exception {
+    int playerId = 47;
+
+    String expectedMessage = "Player is already free";
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-make-free/" + playerId))
+        .andExpect(status().isConflict())
+        .andExpect(result -> {
+          Exception resolvedException = result.getResolvedException();
+          assertInstanceOf(ResourceConflictException.class, resolvedException);
           assertEquals(expectedMessage, resolvedException.getMessage());
         });
   }

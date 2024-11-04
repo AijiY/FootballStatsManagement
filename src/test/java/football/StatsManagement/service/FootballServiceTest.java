@@ -599,6 +599,32 @@ class FootballServiceTest {
         ResourceConflictException.class, () -> sut.updateClubLeague(1, 1));
   }
 
+  @Test
+  @DisplayName("選手のクラブIDのnull更新_リポジトリが適切に処理されること")
+  void updatePlayerNClubIdNull() throws ResourceNotFoundException, ResourceConflictException {
+    int id = 1;
+
+    // Arrange
+    when(repository.selectPlayer(id)).thenReturn(Optional.of(new Player(id, 1, "sampleName", 1)));
+
+    // Act
+    sut.updatePlayerClubIdNull(id);
+
+    // Assert
+    verify(repository, times(1)).updatePlayerClubIdNull(id);
+  }
+
+  @Test
+  @DisplayName("選手のクラブIDのnull更新_クラブIDがnullの場合に適切に例外処理されること")
+  void updatePlayerClubIdNull_withNullClubId() {
+    int id = 1;
+
+    // Arrange
+    when(repository.selectPlayer(id)).thenReturn(Optional.of(new Player(id, null, "sampleName", 1)));
+    // Act & Assert
+    assertThrows(ResourceConflictException.class, () -> sut.updatePlayerClubIdNull(id));
+  }
+
   @ParameterizedTest
   @CsvSource({
       "2024-08-01, 1, 2, 2, 1, 1   , 1, 2, '○2-1'",

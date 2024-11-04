@@ -1065,6 +1065,25 @@ class FootballControllerTest {
             result.getResolvedException()));
   }
 
+  @Test
+  @DisplayName("選手を無所属状態ににすることができること")
+  void makePlayerFree() throws Exception {
+    int playerId = 1;
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-make-free/" + playerId))
+        .andExpect(status().isOk());
+    verify(footballService, times(1)).updatePlayerClubIdNull(playerId);
+  }
+
+  @Test
+  @DisplayName("選手を無所属状態にする際にパスバリアブルのバリデーションエラーが発生すること")
+  void makePlayerFreeWithInvalidPathVariable() throws Exception {
+    int playerId = 0;
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-make-free/" + playerId))
+        .andExpect(status().isBadRequest())
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
+  }
+
 
   // 複数のフィールドのバリデーションエラーを検証するためのヘルパーメソッド
   private void assertMethodArgumentNotValidExceptions(

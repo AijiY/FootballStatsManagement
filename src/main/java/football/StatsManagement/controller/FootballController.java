@@ -387,6 +387,7 @@ public class FootballController {
    * @param clubId クラブID
    * @return 昇格・降格されたクラブ
    */
+  @Operation(summary = "クラブの昇格・降格", description = "クラブを他のリーグに昇格・降格させます")
   @PatchMapping("club-promote-or-relegate/{clubId}")
   public ResponseEntity<Club> promoteOrRelegateClub(
       @RequestParam @Positive int leagueId,
@@ -395,6 +396,20 @@ public class FootballController {
     footballService.updateClubLeague(clubId, leagueId);
 
     return ResponseEntity.ok().body(footballService.getClub(clubId));
+  }
+
+  /**
+   * 選手の契約解除（無所属にする）
+   * @param playerId 選手ID
+   * @return 契約解除された選手
+   */
+  @Operation(summary = "選手の契約解除", description = "選手を契約解除（無所属状態に）します")
+  @PatchMapping("player-make-free/{playerId}")
+  public ResponseEntity<Player> makePlayerFree(@PathVariable @Positive int playerId)
+      throws ResourceNotFoundException, ResourceConflictException {
+    footballService.updatePlayerClubIdNull(playerId);
+
+    return ResponseEntity.ok().body(footballService.getPlayer(playerId));
   }
 
 

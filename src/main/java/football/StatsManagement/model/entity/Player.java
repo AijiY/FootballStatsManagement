@@ -14,16 +14,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor // @Select用
 public class Player {
-  @Positive
   private final int id;
-
-  @Positive
-  private int clubId;
-
-  @NotBlank
+  private Integer clubId; // 無所属をnullで表現するためInteger
   private String name;
-
-  @Positive
   private int number;
 
   /**
