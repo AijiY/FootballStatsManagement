@@ -43,10 +43,14 @@ jobs:
         name: test-report  # アーティファクトの名前
         path: build/reports/tests/test/  # アップロードするファイルやディレクトリ
 
+    # api-docs生成のためにwarファイルをビルド
+    - name: Build with Gradle Wrapper
+      run: ./gradlew bootWar
+
     # swaggerからapi-docsの生成
     - name: Generate and fetch Swagger API docs
       run: |
-        nohup java -jar build/libs/*.jar > app.log 2>&1 &
+        nohup java -jar build/libs/*.war > app.log 2>&1 &
           
         while ! grep -m 1 "Started" app.log; do
           sleep 2
