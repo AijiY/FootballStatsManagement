@@ -44,7 +44,7 @@ jobs:
         path: build/reports/tests/test/  # アップロードするファイルやディレクトリ
 
     # api-docs生成のためにwarファイルをビルド
-    - name: Build with Gradle Wrapper
+    - name: Build with Gradle Wrapper for Swagger
       run: ./gradlew bootWar
 
     # swaggerからapi-docsの生成
@@ -59,7 +59,7 @@ jobs:
         Sleep 5
         curl http://localhost:8080/v3/api-docs -o docs/api/api-docs.json
           
-        pkill -f 'java -jar build/libs/*.jar'
+        pkill -f 'java -jar build/libs/*.war'
 
 
     - name: Deploy to GitHub Pages
