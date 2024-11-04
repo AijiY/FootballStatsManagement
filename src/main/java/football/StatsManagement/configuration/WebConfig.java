@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
-    reactAppUrl = "http://my-client-page-bucket.s3-website-ap-northeast-1.amazonaws.com/countries";
+    reactAppUrl = "http://my-client-page-bucket.s3-website-ap-northeast-1.amazonaws.com";
 
     registry.addMapping("/**")
       .allowedOrigins(reactAppUrl)
