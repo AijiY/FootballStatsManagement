@@ -11,7 +11,7 @@ env:
   EC2_HOST: '54.248.65.84' # EC2再起動時は変更
   SRC_PATH: 'build/libs/*.jar'
   DST_PATH: '/home/ec2-user/app.jar'
-#  REACT_APP_URL: ${{ secrets.REACT_APP_URL }}
+  REACT_APP_URL: ${{ secrets.REACT_APP_URL }}
 
 jobs:
   deploy:
