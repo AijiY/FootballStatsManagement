@@ -320,7 +320,7 @@ public interface FootballRepository {
    * @param number 背番号
    * @param name 名前
    */
-  @Update("UPDATE players SET (number, name) = (#{number}, #{name}) WHERE id = #{id}")
+  @Update("UPDATE players SET number = #{number}, name = #{name} WHERE id = #{id}")
   void updatePlayerNumberAndName(int id, int number, String name);
 
   /**
@@ -329,7 +329,7 @@ public interface FootballRepository {
    * @param clubId クラブID
    * @param number 背番号
    */
-  @Update("UPDATE players SET (club_id, number) = (#{clubId}, #{number}) WHERE id = #{id}")
+  @Update("UPDATE players SET club_id = #{clubId}, number = #{number} WHERE id = #{id}")
   void updatePlayerClubAndNumber(int id, int clubId, int number);
 
   /**
