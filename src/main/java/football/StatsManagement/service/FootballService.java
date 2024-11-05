@@ -421,8 +421,8 @@ public class FootballService {
   public void updatePlayerClubAndNumber(int id, int clubId, int number)
       throws ResourceNotFoundException, FootballException, ResourceConflictException {
     Player player = getPlayer(id);
-    // クラブが変更されているかを確認
-    if (player.getClubId() == clubId) {
+    // クラブが変更されているかを確認（clubIdがnullの場合エラーになるので、先に処理）
+    if (player.getClubId() != null && player.getClubId().equals(clubId)) {
       throw new ResourceConflictException("Player club is not changed");
     }
     // numberが重複していないか確認
