@@ -65,7 +65,7 @@ class FootballIntegrationTest {
   private JdbcTemplate jdbcTemplate;
 
   @Test
-  @DisplayName("現在シーズンが取得できること")
+  @DisplayName("【正常系】現在シーズンが取得できること")
   void getCurrentSeason() throws Exception {
     // expected:(202021, '2020-21', '2020-07-01', '2021-06-30', 1)
     Season expected = new Season(202021, "2020-21", LocalDate.of(2020, 7, 1),
@@ -83,7 +83,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("全シーズンが取得できること")
+  @DisplayName("【正常系】全シーズンが取得できること")
   void getSeasons() throws Exception {
     /*(201920, '2019-20', '2019-07-01', '2020-06-30', 0),
     (202021, '2020-21', '2020-07-01', '2021-06-30', 1);*/
@@ -101,7 +101,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応する国が取得できること")
+  @DisplayName("【正常系】IDに対応する国が取得できること")
   void getCountry() throws Exception {
     int id = 1;
     Country expected = new Country(id, "CountryA");
@@ -113,7 +113,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応する国の取得で、存在しない場合は404エラーが返ること")
+  @DisplayName("【異常系】IDに対応する国の取得で、存在しない場合は404エラーが返ること")
   void getCountry_NotFound() throws Exception {
     int id = 999;
 
@@ -122,7 +122,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応するリーグが取得できること")
+  @DisplayName("【正常系】IDに対応するリーグが取得できること")
   void getLeague() throws Exception {
     int id = 1;
     League expected = new League(id, 1, "LeagueAA");
@@ -134,7 +134,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応するリーグの取得で、存在しない場合は404エラーが返ること")
+  @DisplayName("【異常系】IDに対応するリーグの取得で、存在しない場合は404エラーが返ること")
   void getLeague_NotFound() throws Exception {
     int id = 999;
 
@@ -143,7 +143,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応するクラブが取得できること")
+  @DisplayName("【正常系】IDに対応するクラブが取得できること")
   void getClub() throws Exception {
     int id = 1;
     Club expected = new Club(id, 1, "ClubAAA");
@@ -155,7 +155,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応するクラブの取得で、存在しない場合は404エラーが返ること")
+  @DisplayName("【異常系】IDに対応するクラブの取得で、存在しない場合は404エラーが返ること")
   void getClub_NotFound() throws Exception {
     int id = 999;
 
@@ -164,7 +164,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応する選手が取得できること")
+  @DisplayName("【正常系】IDに対応する選手が取得できること")
   void getPlayer() throws Exception {
     int id = 1;
     Player expected = new Player(id, 1, "PlayerAAAA", 1);
@@ -176,7 +176,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応する選手の取得で、存在しない場合は404エラーが返ること")
+  @DisplayName("【異常系】IDに対応する選手の取得で、存在しない場合は404エラーが返ること")
   void getPlayer_NotFound() throws Exception {
     int id = 999;
 
@@ -185,7 +185,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("国一覧が取得できること")
+  @DisplayName("【正常系】国一覧が取得できること")
   void getCountries() throws Exception {
     List<Country> expected = List.of(
         new Country(1, "CountryA"),
@@ -199,7 +199,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("国IDに紐づくリーグ一覧が取得できること")
+  @DisplayName("【正常系】国IDに紐づくリーグ一覧が取得できること")
   void getLeaguesByCountry() throws Exception {
     int countryId = 1;
     List<League> expected = List.of(
@@ -214,7 +214,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("リーグIDに紐づくクラブ一覧が取得できること")
+  @DisplayName("【正常系】リーグIDに紐づくクラブ一覧が取得できること")
   void getClubsByLeague() throws Exception {
     int leagueId = 1;
     List<Club> expected = List.of(
@@ -229,7 +229,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("クラブ一覧を取得できること")
+  @DisplayName("【正常系】クラブ一覧を取得できること")
   void getClubs() throws Exception {
     List<Club> expected = List.of(
         new Club(1, 1, "ClubAAA"),
@@ -251,7 +251,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("リーグIDとシーズンIDに基づく順位表が取得できること")
+  @DisplayName("【正常系】リーグIDとシーズンIDに基づく順位表が取得できること")
   void getStanding() throws Exception {
     int leagueId = 1;
     int seasonId = 201920;
@@ -297,14 +297,14 @@ class FootballIntegrationTest {
       "99, 201920",
       "1, 999999"
   })
-  @DisplayName("リーグIDまたはシーズンIDに対応する順位表が取得できない場合は404エラーが返ること")
+  @DisplayName("【異常系】リーグIDまたはシーズンIDに対応する順位表が取得できない場合は404エラーが返ること")
   void getStanding_NotFound(int leagueId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/standings/" + seasonId))
         .andExpect(status().isNotFound());
   }
 
   @Test
-  @DisplayName("クラブIDに基づく選手一覧が取得できること")
+  @DisplayName("【正常系】クラブIDに基づく選手一覧が取得できること")
   void getPlayersByClub() throws Exception {
     int clubId = 1;
     List<Player> expected = List.of(
@@ -319,7 +319,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("クラブに無所属の選手一覧が取得できること")
+  @DisplayName("【正常系】クラブに無所属の選手一覧が取得できること")
   void getPlayersWithNoClub() throws Exception {
     List<Player> expected = List.of(
         new Player(47, null, "PlayerNoClub", 1)
@@ -332,7 +332,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手IDとシーズンIDに基づく選手試合成績一覧が取得できること")
+  @DisplayName("【正常系】選手IDとシーズンIDに基づく選手試合成績一覧が取得できること")
   void getPlayerGameStatsBySeason() throws Exception {
 //    (player_id, club_id, number, starter, goals, assists, minutes, yellow_cards, red_cards, game_id)
 //    1:(1, 1, 1, 1, 1, 0, 90, 0, 0, 1),
@@ -352,7 +352,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("クラブIDに基づく選手シーズン成績一覧が取得できること")
+  @DisplayName("【正常系】クラブIDに基づく選手シーズン成績一覧が取得できること")
   void getPlayerSeasonStatsByClubId() throws Exception {
     int clubId = 1;
     int seasonId = 201920;
@@ -386,7 +386,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手IDに基づく選手シーズン成績が取得できること")
+  @DisplayName("【正常系】選手IDに基づく選手シーズン成績が取得できること")
   void getPlayerSeasonStats() throws Exception {
     int playerId = 1;
     int seasonId = 201920;
@@ -414,7 +414,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手IDに基づく選手通算成績が取得できること")
+  @DisplayName("【正常系】選手IDに基づく選手通算成績が取得できること")
   void getPlayerCareerStatsByPlayerId() throws Exception {
     int playerId = 1;
 
@@ -458,7 +458,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応する試合結果が取得できること")
+  @DisplayName("【正常系】IDに対応する試合結果が取得できること")
   void getGameResult() throws Exception {
     int id = 1;
     GameResult expected = new GameResult(id, 1, 2, 2, 1, 1, 1, LocalDate.of(2019, 8, 1), 201920, "ClubAAA", "ClubAAB");
@@ -470,7 +470,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("IDに対応する試合結果の取得で、存在しない場合は404エラーが返ること")
+  @DisplayName("【異常系】IDに対応する試合結果の取得で、存在しない場合は404エラーが返ること")
   void getGameResult_NotFound() throws Exception {
     int id = 999;
 
@@ -479,7 +479,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("リーグIDとシーズンIDに基づく試合結果一覧が取得できること")
+  @DisplayName("【正常系】リーグIDとシーズンIDに基づく試合結果一覧が取得できること")
   void getGameResultsByLeagueAndSeason() throws Exception {
     int leagueId = 1;
     int seasonId = 201920;
@@ -505,7 +505,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("国が登録できること")
+  @DisplayName("【正常系】国が登録できること")
   void registerCountry() throws Exception {
     String requestParam = "CountryC";
 
@@ -519,7 +519,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("リーグが登録できること")
+  @DisplayName("【正常系】リーグが登録できること")
   void registerLeague() throws Exception {
     String requestBody = """
         {
@@ -539,7 +539,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("クラブが登録できること")
+  @DisplayName("【正常系】クラブが登録できること")
   void registerClub() throws Exception {
     String requestBody = """
         {
@@ -559,7 +559,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手が登録できること")
+  @DisplayName("【正常系】選手が登録できること")
   void registerPlayer() throws Exception {
     String requestBody = """
         {
@@ -580,7 +580,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手の登録_重複する背番号の場合はFootballExceptionが発生すること")
+  @DisplayName("【異常系】選手の登録_重複する背番号の場合はFootballExceptionが発生すること")
   void registerPlayerWithDuplicateNumber() throws Exception {
     String requestBody = """
         {
@@ -605,7 +605,7 @@ class FootballIntegrationTest {
   @CsvSource({
       "2020-08-01,  4, 9, 10, 30, 0, 0, 1, false, 30, 45, 0, 0, 0, false, 25" // 後からhomeTriggerPlayerのオウンゴールを追加
   })
-  @DisplayName("試合結果が登録できること")
+  @DisplayName("【正常系】試合結果が登録できること")
   void registerGameResult(
       LocalDate gameDate, int leagueId, int homeClubId, int awayClubId,
       int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists, int homeTriggerPlayerOwnGoals,
@@ -721,7 +721,7 @@ class FootballIntegrationTest {
 //      "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",  ※ResourceNotFoundExceptionが発生するため、個別対応
       "2019-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'Game date must be in the current season period'"
   })
-  @DisplayName("試合結果の登録_サービス内で例外処理を発生させるパターン")
+  @DisplayName("【異常系】試合結果の登録_サービス内で例外処理を発生させるパターン")
   void registerGameResultWithExceptionInService(
       LocalDate gameDate, int leagueId, int homeClubId, int awayClubId,
       int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists, int homeTriggerPlayerOwnGoals,
@@ -782,7 +782,7 @@ class FootballIntegrationTest {
   @CsvSource({
       "2020-08-01, 99, 1,  2,  1, 1, 1, 0,  true, 29,  2, 1, 2, 0,  true, 24, 'League not found'",
   })
-  @DisplayName("試合結果の登録_サービス内で例外処理を発生させるパターン_リーグが存在しない場合")
+  @DisplayName("【異常系】試合結果の登録_サービス内で例外処理を発生させるパターン_リーグが存在しない場合")
   void registerGameResultWithExceptionInService_404(
       LocalDate gameDate, int leagueId, int homeClubId, int awayClubId,
       int homeTriggerPlayerId, int homeTriggerPlayerGoals, int homeTriggerPlayerAssists, int homeTriggerPlayerOwnGoals,
@@ -841,7 +841,7 @@ class FootballIntegrationTest {
 
 
   @Test
-  @DisplayName("シーズンが登録できること")
+  @DisplayName("【正常系】シーズンが登録できること")
   void registerSeason() throws Exception {
     String requestBody = """
         {
@@ -877,7 +877,7 @@ class FootballIntegrationTest {
       // 既存のシーズンと期間が重複しないか確認
       "2021-22, 2021-06-01, 2022-05-30, 'Season period is already used'"
   })
-  @DisplayName("シーズンの登録_サービス内で例外処理を発生させるパターン")
+  @DisplayName("【異常系】シーズンの登録_サービス内で例外処理を発生させるパターン")
   void registerSeasonWithExceptionInService(String name, LocalDate startDate, LocalDate endDate, String errorMessage) throws Exception {
     String requestBody = """
         {
@@ -904,7 +904,7 @@ class FootballIntegrationTest {
       "PlayerAAAA, 99", // numberのみ
       "PlayerA, 99" // nameとnumber
   })
-  @DisplayName("選手の更新（名前または背番号）ができること")
+  @DisplayName("【正常系】選手の更新（名前または背番号）ができること")
   void patchPlayer(String updatedName, int updatedNumber) throws Exception {
     int playerId = 1;
     String requestBody = """
@@ -925,7 +925,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手の更新_番号が重複する場合はFootballExceptionが発生すること")
+  @DisplayName("【異常系】選手の更新_番号が重複する場合はFootballExceptionが発生すること")
   void patchPlayerWithDuplicateNumber() throws Exception {
     int playerId = 1;
     String requestBody = """
@@ -949,7 +949,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手の更新_情報の変更がない場合はResourceConflictExceptionが発生すること")
+  @DisplayName("【異常系】選手の更新_情報の変更がない場合はResourceConflictExceptionが発生すること")
   void patchPlayerWithNoChange() throws Exception {
     int playerId = 1;
     String requestBody = """
@@ -974,7 +974,7 @@ class FootballIntegrationTest {
 
 
   @Test
-  @DisplayName("選手の移籍ができること")
+  @DisplayName("【正常系】選手の移籍ができること")
   void transferPlayer() throws Exception {
     int playerId = 1;
     String requestBody = """
@@ -994,7 +994,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手の移籍ができること_選手が元々無所属の場合")
+  @DisplayName("【正常系】選手の移籍ができること_選手が元々無所属の場合")
   void transferPlayerWhenPlayerIsFree() throws Exception {
     int playerId = 47;
     String requestBody = """
@@ -1014,7 +1014,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手の移籍_クラブが変更されていない場合はResourceConflictExceptionが発生すること")
+  @DisplayName("【異常系】選手の移籍_クラブが変更されていない場合はResourceConflictExceptionが発生すること")
   void transferPlayerWithNoClubChange() throws Exception {
     int playerId = 1;
     String requestBody = """
@@ -1038,7 +1038,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手の移籍_背番号が重複する場合はFootballExceptionが発生すること")
+  @DisplayName("【異常系】選手の移籍_背番号が重複する場合はFootballExceptionが発生すること")
   void transferPlayerWithDuplicateNumber() throws Exception {
     int playerId = 1;
     String requestBody = """
@@ -1062,7 +1062,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("クラブの昇格・降格ができること")
+  @DisplayName("【正常系】クラブの昇格・降格ができること")
   void promoteOrRelegateClub() throws Exception {
     int clubId = 1;
     int updatedLeagueId = 2;
@@ -1077,7 +1077,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("クラブの昇格・降格_リーグが変更されていない場合はResourceConflictExceptionが発生すること")
+  @DisplayName("【異常系】クラブの昇格・降格_リーグが変更されていない場合はResourceConflictExceptionが発生すること")
   void promoteOrRelegateClubWithNoLeagueChange() throws Exception {
     int clubId = 1;
     int updatedLeagueId = 1;
@@ -1095,7 +1095,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手を無所属状態にできること")
+  @DisplayName("【正常系】選手を無所属状態にできること")
   void makePlayerFree() throws Exception {
     int playerId = 1;
 
@@ -1108,7 +1108,7 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("選手を無所属状態にする_既に無所属の場合はResourceConflictExceptionが発生すること")
+  @DisplayName("【異常系】選手を無所属状態にする_既に無所属の場合はResourceConflictExceptionが発生すること")
   void makePlayerFreeWithNoClub() throws Exception {
     int playerId = 47;
 

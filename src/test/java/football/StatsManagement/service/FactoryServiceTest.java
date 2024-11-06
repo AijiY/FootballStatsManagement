@@ -1,6 +1,7 @@
 package football.StatsManagement.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -21,6 +22,9 @@ import football.StatsManagement.model.entity.League;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
+import football.StatsManagement.model.json.GameResultForJson;
+import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
+import football.StatsManagement.model.json.PlayerGameStatForJson;
 import football.StatsManagement.utils.RankingUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,7 +51,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("順位表のためのクラブ情報を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
+  @DisplayName("【正常系】順位表のためのクラブ情報を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
   void createClubForStanding() {
     int seasonId = 1;
 
@@ -72,7 +76,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("選手シーズン成績を作成できること_クラブが1つの場合_モックオブジェクトの呼び出しおよび結果の検証")
+  @DisplayName("【正常系】選手シーズン成績を作成できること_クラブが1つの場合_モックオブジェクトの呼び出しおよび結果の検証")
   void createPlayerSeasonStat() throws ResourceNotFoundException {
     int playerId = 1;
     int seasonId = 1;
@@ -116,7 +120,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("選手シーズン成績を作成できること_クラブが複数にまたがる可能性のある場合_モックオブジェクトの呼び出しおよび結果の検証")
+  @DisplayName("【正常系】選手シーズン成績を作成できること_クラブが複数にまたがる可能性のある場合_モックオブジェクトの呼び出しおよび結果の検証")
   void createPlayerSeasonStats() throws ResourceNotFoundException {
     int playerId = 1;
     int seasonId = 1;
@@ -142,7 +146,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("クラブごとの選手シーズン成績を作成できること_モックオブジェクトの呼び出しの検証")
+  @DisplayName("【正常系】クラブごとの選手シーズン成績を作成できること_モックオブジェクトの呼び出しの検証")
   void createPlayerSeasonStatsByClub() throws ResourceNotFoundException {
     int clubId = 1;
     int seasonId = 1;
@@ -171,7 +175,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("選手通算成績を作成できること_モックオブジェクトの呼び出しの検証")
+  @DisplayName("【正常系】選手通算成績を作成できること_モックオブジェクトの呼び出しの検証")
   void createPlayerCareerStats() throws ResourceNotFoundException {
     int playerId = 1;
 
@@ -199,7 +203,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("シーズンの試合結果一覧を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
+  @DisplayName("【正常系】シーズンの試合結果一覧を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
   void createSeasonGameResult() throws ResourceNotFoundException {
     int leagueId = 1;
     int seasonId = 1;
@@ -237,7 +241,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("順位表を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
+  @DisplayName("【正常系】順位表を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
   void createStanding() throws ResourceNotFoundException {
     int leagueId = 1;
     int seasonId = 1;
@@ -285,7 +289,7 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("順位表の作成_試合が存在しない場合に空のclubForStandingsからなるオブジェクトを返すこと")
+  @DisplayName("【正常系】順位表の作成_試合が存在しない場合に空のclubForStandingsからなるオブジェクトを返すこと")
   void createStandingWhenNoGameResults() throws ResourceNotFoundException {
     int leagueId = 1;
     int seasonId = 1;
@@ -325,4 +329,26 @@ class FactoryServiceTest {
     verify(footballService, times(1)).getLeague(leagueId);
     verify(footballService, times(1)).getSeason(seasonId);
   }
+
+  @Test
+  @DisplayName("【正常系】試合結果を作成できること_モックオブジェクトの呼び出しの検証")
+  void createGameResultWithPlayerStats() {
+    // Arrange
+    GameResultWithPlayerStatsForJson gameResultWithPlayerStatsForJson = mock(GameResultWithPlayerStatsForJson.class);
+    GameResultForJson gameResultForJson = mock(GameResultForJson.class);
+    List<PlayerGameStatForJson> homePlayerGameStatsForJson = mock(List.class);
+    List<PlayerGameStatForJson> awayPlayerGameStatsForJson = mock(List.class);
+
+    when(gameResultWithPlayerStatsForJson.gameResultForJson()).thenReturn(gameResultForJson);
+    when(gameResultWithPlayerStatsForJson.homeClubPlayerGameStatsForJson()).thenReturn(homePlayerGameStatsForJson);
+    when(gameResultWithPlayerStatsForJson.awayClubPlayerGameStatsForJson()).thenReturn(awayPlayerGameStatsForJson);
+
+    // Act
+    sut.createGameResultWithPlayerStats(gameResultWithPlayerStatsForJson);
+
+    // Assert
+    verify(footballService, times(1)).convertPlayerGameStatsForInsertToPlayerGameStats(homePlayerGameStatsForJson);
+    verify(footballService, times(1)).convertPlayerGameStatsForInsertToPlayerGameStats(awayPlayerGameStatsForJson);
+  }
+
 }
