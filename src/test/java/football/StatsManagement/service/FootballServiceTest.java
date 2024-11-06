@@ -565,6 +565,18 @@ class FootballServiceTest {
   }
 
   @Test
+  @DisplayName("選手のクラブと背番号の更新_選手のクラブIDがnullの場合_リポジトリが適切に処理されること")
+  void updatePlayerClubAndNumberWhenPlayerClubIdNull() throws ResourceNotFoundException, FootballException, ResourceConflictException {
+    int id = 1;
+    int clubId = 2;
+    int number = 99;
+
+    when(repository.selectPlayer(id)).thenReturn(Optional.of(new Player(id, null, "sampleName", 1)));
+    sut.updatePlayerClubAndNumber(id, clubId, number);
+    verify(repository, times(1)).updatePlayerClubAndNumber(id, clubId, number);
+  }
+
+  @Test
   @DisplayName("選手のクラブと背番号の更新_クラブに変更がない場合に適切に例外処理されること")
   void updatePlayerClubAndNumber_withNoChange() {
     // Arrange

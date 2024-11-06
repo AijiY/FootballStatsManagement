@@ -994,6 +994,26 @@ class FootballIntegrationTest {
   }
 
   @Test
+  @DisplayName("選手の移籍ができること_選手が元々無所属の場合")
+  void transferPlayerWhenPlayerIsFree() throws Exception {
+    int playerId = 47;
+    String requestBody = """
+        {
+          "clubId": 2,
+          "number": 99
+        }
+        """;
+    Player expected = new Player(playerId, 2, "PlayerNoClub", 99);
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    mockMvc.perform(MockMvcRequestBuilders.patch("/player-transfer/" + playerId)
+            .contentType("application/json")
+            .content(requestBody))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
   @DisplayName("選手の移籍_クラブが変更されていない場合はResourceConflictExceptionが発生すること")
   void transferPlayerWithNoClubChange() throws Exception {
     int playerId = 1;
