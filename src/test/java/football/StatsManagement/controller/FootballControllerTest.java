@@ -45,7 +45,7 @@ class FootballControllerTest {
   private FactoryService factoryService;
 
   @Test
-  @DisplayName("現在シーズンを取得できること")
+  @DisplayName("【正常系】現在シーズンを取得できること")
   void getCurrentSeason() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/seasons/current"))
         .andExpect(status().isOk());
@@ -53,7 +53,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("シーズン一覧を取得できること")
+  @DisplayName("【正常系】シーズン一覧を取得できること")
   void getSeasons() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/seasons"))
         .andExpect(status().isOk());
@@ -61,7 +61,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定して国を取得できること")
+  @DisplayName("【正常系】IDを指定して国を取得できること")
   void getCountry() throws Exception {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + id))
@@ -70,7 +70,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定して国を取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】IDを指定して国を取得する際にIDが0以下の場合、400エラーが返却されること")
   void getCountryWithInvalidId() throws Exception {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + id))
@@ -80,7 +80,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定してリーグを取得できること")
+  @DisplayName("【正常系】IDを指定してリーグを取得できること")
   void getLeague() throws Exception {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + id))
@@ -89,7 +89,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定してリーグを取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】IDを指定してリーグを取得する際にIDが0以下の場合、400エラーが返却されること")
   void getLeagueWithInvalidId() throws Exception {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + id))
@@ -99,7 +99,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定してクラブを取得できること")
+  @DisplayName("【正常系】IDを指定してクラブを取得できること")
   void getClub() throws Exception {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + id))
@@ -108,7 +108,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定してクラブを取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】IDを指定してクラブを取得する際にIDが0以下の場合、400エラーが返却されること")
   void getClubWithInvalidId() throws Exception {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + id))
@@ -118,7 +118,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定して選手を取得できること")
+  @DisplayName("【正常系】IDを指定して選手を取得できること")
   void getPlayer() throws Exception {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + id))
@@ -127,7 +127,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("IDを指定して選手を取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】IDを指定して選手を取得する際にIDが0以下の場合、400エラーが返却されること")
   void getPlayerWithInvalidId() throws Exception {
     int id = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + id))
@@ -137,7 +137,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("国一覧を取得できること")
+  @DisplayName("【正常系】国一覧を取得できること")
   void getCountries() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/countries"))
         .andExpect(status().isOk());
@@ -145,7 +145,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("国IDに紐づくリーグ一覧を取得できること")
+  @DisplayName("【正常系】国IDに紐づくリーグ一覧を取得できること")
   void getLeaguesByCountry() throws Exception {
     int countryId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + countryId + "/leagues"))
@@ -154,7 +154,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("国IDに紐づくリーグ一覧を取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】国IDに紐づくリーグ一覧を取得する際にIDが0以下の場合、400エラーが返却されること")
   void getLeaguesByCountryWithInvalidCountryId() throws Exception {
     int countryId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + countryId + "/leagues"))
@@ -164,7 +164,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("リーグIDに紐づくクラブ一覧を取得できること")
+  @DisplayName("【正常系】リーグIDに紐づくクラブ一覧を取得できること")
   void getClubsByLeague() throws Exception {
     int leagueId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/clubs"))
@@ -173,7 +173,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("リーグIDに紐づくクラブ一覧を取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】リーグIDに紐づくクラブ一覧を取得する際にIDが0以下の場合、400エラーが返却されること")
   void getClubsByLeagueWithInvalidLeagueId() throws Exception {
     int leagueId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/clubs"))
@@ -183,7 +183,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブ一覧を取得できること")
+  @DisplayName("【正常系】クラブ一覧を取得できること")
   void getClubs() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs"))
         .andExpect(status().isOk());
@@ -191,7 +191,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("リーグIDとシーズンIDに紐づく順位表を取得できること")
+  @DisplayName("【正常系】リーグIDとシーズンIDに紐づく順位表を取得できること")
   void getStanding() throws Exception {
     int leagueId = 1;
     int seasonId = 100001;
@@ -205,7 +205,7 @@ class FootballControllerTest {
       "0, 1",
       "1, 0"
   })
-  @DisplayName("リーグIDとシーズンIDに紐づく順位表を取得する際のIDのバリデーションテスト")
+  @DisplayName("【異常系】リーグIDとシーズンIDに紐づく順位表を取得する際に各IDが0以下の場合、400エラーが返却されること")
   void getStandingWithInvalidId(int leagueId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/standings/" + seasonId))
         .andExpect(status().isBadRequest())
@@ -214,7 +214,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブIDに紐づく選手一覧を取得できること")
+  @DisplayName("【正常系】クラブIDに紐づく選手一覧を取得できること")
   void getPlayersByClub() throws Exception {
     int clubId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + clubId + "/players"))
@@ -223,7 +223,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブに無所属の選手一覧が取得できること")
+  @DisplayName("【正常系】クラブに無所属の選手一覧が取得できること")
   void getPlayersWithNoClub() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/null/players"))
         .andExpect(status().isOk());
@@ -231,7 +231,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブIDに紐づく選手一覧を取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】クラブIDに紐づく選手一覧を取得する際にIDが0以下の場合、400エラーが返却されること")
   void getPlayersByClubWithInvalidClubId() throws Exception {
     int clubId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + clubId + "/players"))
@@ -241,7 +241,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手IDとシーズンIDに紐づく選手の試合成績を取得できること")
+  @DisplayName("【正常系】選手IDとシーズンIDに紐づく選手の試合成績を取得できること")
   void getPlayerGameStatsBySeason() throws Exception {
     int playerId = 1;
     int seasonId = 100001;
@@ -255,7 +255,7 @@ class FootballControllerTest {
       "0, 1",
       "1, 0"
   })
-  @DisplayName("選手IDとシーズンIDに紐づく選手の試合成績を取得する際のIDのバリデーションテスト")
+  @DisplayName("【異常系】選手IDとシーズンIDに紐づく選手の試合成績を取得する際に各IDが0以下の場合、400エラーが返却されること")
   void getPlayerGameStatsBySeasonWithInvalidId(int playerId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-game-stats/" + seasonId))
         .andExpect(status().isBadRequest())
@@ -264,7 +264,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブIDとシーズンIDに紐づく選手のシーズン成績を取得できること")
+  @DisplayName("【正常系】クラブIDとシーズンIDに紐づく選手のシーズン成績を取得できること")
   void getPlayerSeasonStatsByClubIdByClubId() throws Exception {
     int clubId = 1;
     int seasonId = 100001;
@@ -278,7 +278,7 @@ class FootballControllerTest {
       "0, 1",
       "1, 0"
   })
-  @DisplayName("クラブIDとシーズンIDに紐づく選手のシーズン成績を取得する際のIDのバリデーションテスト")
+  @DisplayName("【異常系】クラブIDとシーズンIDに紐づく選手のシーズン成績を取得する際に各IDが0以下の場合、400エラーが返却されること")
   void getPlayerSeasonStatsByClubIdWithInvalidIdByClub(int clubId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/clubs/" + clubId + "/players-season-stats/" + seasonId))
         .andExpect(status().isBadRequest())
@@ -287,7 +287,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手IDとシーズンIDに紐づく選手のシーズン成績を取得できること")
+  @DisplayName("【正常系】選手IDとシーズンIDに紐づく選手のシーズン成績を取得できること")
   void getPlayerSeasonStats() throws Exception {
     int playerId = 1;
     int seasonId = 100001;
@@ -301,7 +301,7 @@ class FootballControllerTest {
       "0, 1",
       "1, 0"
   })
-  @DisplayName("選手IDとシーズンIDに紐づく選手のシーズン成績を取得する際のIDのバリデーションテスト")
+  @DisplayName("【異常系】選手IDとシーズンIDに紐づく選手のシーズン成績を取得する際に各IDが0以下の場合、400エラーが返却されること")
   void getPlayerSeasonStatsWithInvalidId(int playerId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-season-stats/" + seasonId))
         .andExpect(status().isBadRequest())
@@ -310,7 +310,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手IDに紐づく選手の通算成績を取得できること")
+  @DisplayName("【正常系】選手IDに紐づく選手の通算成績を取得できること")
   void getPlayerCareerStatsByPlayerId() throws Exception {
     int playerId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stats"))
@@ -319,7 +319,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手IDに紐づく選手の通算成績を取得する際にIDが0以下の場合、400エラーが返却されること")
+  @DisplayName("【異常系】選手IDに紐づく選手の通算成績を取得する際にIDが0以下の場合、400エラーが返却されること")
   void getPlayerCareerStatsByPlayerIdWithInvalidIdByClub() throws Exception {
     int playerId = 0;
     mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stats"))
@@ -329,7 +329,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("試合IDに紐づく試合結果を取得できること")
+  @DisplayName("【正常系】試合IDに紐づく試合結果を取得できること")
   void getGameResult() throws Exception {
     int id = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
@@ -338,7 +338,17 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("リーグIDとシーズンIDに紐づく試合結果を取得できること")
+  @DisplayName("【異常系】試合IDに紐づく試合結果を取得する際にIDが0以下の場合、400エラーが返却されること")
+  void getGameResultWithInvalidId() throws Exception {
+    int id = 0;
+    mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
+        .andExpect(status().isBadRequest())
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("【正常系】リーグIDとシーズンIDに紐づく試合結果を取得できること")
   void getSeasonGameResult() throws Exception {
     int leagueId = 1;
     int seasonId = 100001;
@@ -352,7 +362,7 @@ class FootballControllerTest {
       "0, 100001",
       "1,  99999"
   })
-  @DisplayName("リーグIDとシーズンIDに紐づく試合結果を取得する際のIDのバリデーションテスト")
+  @DisplayName("【異常系】リーグIDとシーズンIDに紐づく試合結果を取得する際に各IDが0以下の場合、400エラーが返却されること")
   void getSeasonGameResultWithInvalidId(int leagueId, int seasonId) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/leagues/" + leagueId + "/season-game-results/" + seasonId))
         .andExpect(status().isBadRequest())
@@ -361,17 +371,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("試合IDに紐づく試合結果を取得する際にIDが0以下の場合、400エラーが返却されること")
-  void getGameResultWithInvalidId() throws Exception {
-    int id = 0;
-    mockMvc.perform(MockMvcRequestBuilders.get("/game-results/" + id))
-        .andExpect(status().isBadRequest())
-        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
-            result.getResolvedException()));
-  }
-
-  @Test
-  @DisplayName("国の登録ができること")
+  @DisplayName("【正常系】国の登録ができること")
   void registerCountry() throws Exception {
     String name = "Sample Country";
     mockMvc.perform(MockMvcRequestBuilders.post("/country")
@@ -381,7 +381,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("国の登録の際に国名が空文字の場合、400エラーが返却されること")
+  @DisplayName("【異常系】国の登録の際に国名が空文字の場合、400エラーが返却されること")
   void registerCountryWithEmptyName() throws Exception {
     String name = "";
     mockMvc.perform(MockMvcRequestBuilders.post("/country")
@@ -392,7 +392,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("リーグの登録ができること")
+  @DisplayName("【正常系】リーグの登録ができること")
   void registerLeague() throws Exception {
     String requestBody = """
         {
@@ -408,7 +408,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("リーグの登録の際にバリデーションエラーが発生すること")
+  @DisplayName("【異常系】リーグの登録の際にバリデーションエラーが発生すること")
   void registerLeagueWithInvalidRequest() throws Exception {
     // Arrange
     String requestBody = """
@@ -432,7 +432,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブの登録ができること")
+  @DisplayName("【正常系】クラブの登録ができること")
   void registerClub() throws Exception {
     String requestBody = """
         {
@@ -448,7 +448,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブの登録の際にバリデーションエラーが発生すること")
+  @DisplayName("【異常系】クラブの登録の際にバリデーションエラーが発生すること")
   void registerClubWithInvalidRequest() throws Exception {
     // Arrange
     String requestBody = """
@@ -472,7 +472,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の登録ができること")
+  @DisplayName("【正常系】選手の登録ができること")
   void registerPlayer() throws Exception {
     String requestBody = """
         {
@@ -489,7 +489,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の登録の際にバリデーションエラーが発生すること")
+  @DisplayName("【異常系】選手の登録の際にバリデーションエラーが発生すること")
   void registerPlayerWithInvalidRequest() throws Exception {
     // Arrange
     String requestBody = """
@@ -515,7 +515,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("試合結果の登録ができること")
+  @DisplayName("【正常系】試合結果の登録ができること")
   void registerGameResult() throws Exception {
     // Arrange
     String requestBody = """
@@ -568,7 +568,7 @@ class FootballControllerTest {
 
 
   @Test
-  @DisplayName("試合結果の登録の際にGameResultForJson個別フィールドのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】試合結果の登録の際にGameResultForJson個別フィールドのバリデーションエラーが発生すること")
   void registerGameResultWithInvalidGameResultFields() throws Exception {
     // Arrange
     String requestBody = """
@@ -626,7 +626,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("試合結果の登録の際にGameResultのAssertTrueバリデーションエラーが発生すること")
+  @DisplayName("【異常系】試合結果の登録の際にGameResultのAssertTrueバリデーションエラーが発生すること")
   void registerGameResultWithInvalidGameResultAssertTrue() throws Exception {
     // Arrange
     // JSONリクエストボディの作成（homeClubIdとawayClubIdが同じ値）
@@ -682,7 +682,7 @@ class FootballControllerTest {
 
 
   @Test
-  @DisplayName("試合結果の登録の際にPlayerGameStatForJson個別フィールドのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】試合結果の登録の際にPlayerGameStatForJson個別フィールドのバリデーションエラーが発生すること")
   void registerGameResultWithInvalidPlayerGameStatFieldsExceptMax() throws Exception {
     // Arrange
     // JSONリクエストボディの作成：homeClubPlayerGameStatsForJsonでバリデーションエラーを発生させる
@@ -744,7 +744,7 @@ class FootballControllerTest {
 
 
   @Test
-  @DisplayName("試合結果の登録の際にPlayerGameStatの最大値バリデーションエラーが発生すること")
+  @DisplayName("【異常系】試合結果の登録の際にPlayerGameStatの最大値バリデーションエラーが発生すること")
   void registerGameResultWithInvalidPlayerGameStatFieldsMax() throws Exception {
     // Arrange
     // JSONリクエストボディの作成：homeClubPlayerGameStatsの@Maxバリデーションエラーを発生させる
@@ -806,7 +806,7 @@ class FootballControllerTest {
       "false, 0, 0, 1, 0", // yellowCards
       "false, 0, 0, 0, 1" // redCards
   })
-  @DisplayName("試合結果の登録の際にPlayerGameStatのAssertTrueバリデーションエラーが発生すること")
+  @DisplayName("【異常系】試合結果の登録の際にPlayerGameStatのAssertTrueバリデーションエラーが発生すること")
   void registerGameResultWithInvalidPlayerGameStatAssertTrue(
       boolean starter, int goals, int assists, int yellowCards, int redCards
   ) throws Exception {
@@ -862,7 +862,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("シーズンの登録ができること")
+  @DisplayName("【正常系】シーズンの登録ができること")
   void registerSeason() throws Exception {
     // JSONリクエストボディの作成
     String requestBody = """
@@ -880,7 +880,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("シーズンの登録の際にバリデーションエラーが発生すること")
+  @DisplayName("【異常系】シーズンの登録の際にバリデーションエラーが発生すること")
   void registerSeasonWithInvalidRequest() throws Exception {
     // Arrange
     // JSONリクエストボディの作成（nameが空文字、startDateとendDateがnull）
@@ -906,7 +906,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の更新ができること")
+  @DisplayName("【正常系】選手の更新ができること")
   void patchPlayer() throws Exception {
     int playerId = 1;
 
@@ -925,7 +925,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の更新の際にリクエストボディのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】選手の更新の際にリクエストボディのバリデーションエラーが発生すること")
   void patchPlayerWithInvalidRequest() throws Exception {
     int playerId = 1;
 
@@ -951,7 +951,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の更新の際にパスバリアブルのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】選手の更新の際にパスバリアブルのバリデーションエラーが発生すること")
   void patchPlayerWithInvalidPathVariable() throws Exception {
     int playerId = 0;
 
@@ -970,7 +970,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の移籍ができること")
+  @DisplayName("【正常系】選手の移籍ができること")
   void transferPlayer() throws Exception {
     int playerId = 1;
 
@@ -990,7 +990,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の移籍の際にリクエストボディのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】選手の移籍の際にリクエストボディのバリデーションエラーが発生すること")
   void transferPlayerWithInvalidRequest() throws Exception {
     int playerId = 1;
 
@@ -1016,7 +1016,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手の移籍の際にパスバリアブルのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】選手の移籍の際にパスバリアブルのバリデーションエラーが発生すること")
   void transferPlayerWithInvalidPathVariable() throws Exception {
     int playerId = 0;
 
@@ -1036,7 +1036,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブの昇格・降格ができること")
+  @DisplayName("【正常系】クラブの昇格・降格ができること")
   void promoteOrRelegateClub() throws Exception {
     int leagueId = 1;
     int clubId = 1;
@@ -1049,7 +1049,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブの昇格・降格の際にリクエストパラムのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】クラブの昇格・降格の際にリクエストパラムのバリデーションエラーが発生すること")
   void promoteOrRelegateClubWithInvalidRequestParam() throws Exception {
     int leagueId = 0;
     int clubId = 1;
@@ -1062,7 +1062,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("クラブの昇格・降格の際にパスバリアブルのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】クラブの昇格・降格の際にパスバリアブルのバリデーションエラーが発生すること")
   void promoteOrRelegateClubWithInvalidPathVariable() throws Exception {
     int leagueId = 1;
     int clubId = 0;
@@ -1074,7 +1074,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手を無所属状態ににすることができること")
+  @DisplayName("【正常系】選手を無所属状態ににすることができること")
   void makePlayerFree() throws Exception {
     int playerId = 1;
     mockMvc.perform(MockMvcRequestBuilders.patch("/player-make-free/" + playerId))
@@ -1083,7 +1083,7 @@ class FootballControllerTest {
   }
 
   @Test
-  @DisplayName("選手を無所属状態にする際にパスバリアブルのバリデーションエラーが発生すること")
+  @DisplayName("【異常系】選手を無所属状態にする際にパスバリアブルのバリデーションエラーが発生すること")
   void makePlayerFreeWithInvalidPathVariable() throws Exception {
     int playerId = 0;
     mockMvc.perform(MockMvcRequestBuilders.patch("/player-make-free/" + playerId))

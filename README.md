@@ -33,7 +33,7 @@
 ![ER](https://github.com/user-attachments/assets/8e310671-12a8-461a-9374-a7c6b02d1bb0)
 
 ## ドメインクラス図
-![class drawio](https://github.com/user-attachments/assets/8df1f00e-1888-4cc0-bde7-64b584690bc4)
+![class drawio](https://github.com/user-attachments/assets/0bacadfb-6076-4d08-9704-628461b1cf1d)
 
 ## シーケンス図（Sequence Diagram）
 ### 基本フロー
