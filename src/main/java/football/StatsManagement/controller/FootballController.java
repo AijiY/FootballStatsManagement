@@ -2,6 +2,7 @@ package football.StatsManagement.controller;
 
 import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
+import football.StatsManagement.model.domain.PlayerCareerStat;
 import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.json.PlayerForPatch;
@@ -240,10 +241,10 @@ public class FootballController {
    * @return 選手のシーズン成績リスト（通算成績）
    */
   @Operation(summary = "選手通算成績の取得", description = "選手IDに紐づく選手通算成績を取得します")
-  @GetMapping("/players/{playerId}/player-career-stats")
-  public List<PlayerSeasonStat> getPlayerCareerStatsByPlayerId(@PathVariable @Positive int playerId)
+  @GetMapping("/players/{playerId}/player-career-stat")
+  public PlayerCareerStat getPlayerCareerStat(@PathVariable @Positive int playerId)
       throws ResourceNotFoundException {
-    return factoryService.createPlayerCareerStats(playerId);
+    return factoryService.createPlayerCareerStat(playerId);
   }
 
   /**

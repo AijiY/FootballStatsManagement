@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import football.StatsManagement.exception.FootballException;
 import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
+import football.StatsManagement.model.domain.PlayerCareerStat;
+import football.StatsManagement.model.domain.PlayerTotalStat;
 import football.StatsManagement.model.entity.Club;
 import football.StatsManagement.model.entity.Country;
 import football.StatsManagement.model.entity.GameResult;
@@ -415,18 +417,18 @@ class FootballIntegrationTest {
 
   @Test
   @DisplayName("【正常系】選手IDに基づく選手通算成績が取得できること")
-  void getPlayerCareerStatsByPlayerId() throws Exception {
+  void getPlayerCareerStat() throws Exception {
     int playerId = 1;
 
-    List<PlayerSeasonStat> expected = getPlayerCareerStats(playerId);
+    PlayerCareerStat expected = getExpectedPlayerCareerStat(playerId);
     String expectedJson = objectMapper.writeValueAsString(expected);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stats"))
+    mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stat"))
         .andExpect(status().isOk())
         .andExpect(content().json(expectedJson));
   }
 
-  private List<PlayerSeasonStat> getPlayerCareerStats(int playerId) {
+  private PlayerCareerStat getExpectedPlayerCareerStat(int playerId) {
     //    (player_id, club_id, number, starter, goals, assists, minutes, yellow_cards, red_cards, game_id)
 //    1:(1, 1, 1, 1, 1, 0, 90, 0, 0, 1),:201920
 //    9:(1, 1, 1, 1, 0, 0, 90, 0, 0, 3),:201920
@@ -446,15 +448,14 @@ class FootballIntegrationTest {
         new PlayerSeasonStat(playerId, playerGameStats2, 202021, 1, 1, 0, 1, 0, 0, 90, 0, 0, "PlayerAAAA", "ClubAAA", "2020-21")
     );
 
-    // 通算成績を作成
-    PlayerSeasonStat playerSeasonStatTotal = new PlayerSeasonStat(playerId, new ArrayList<>(), 0, 0, 3, 2, 1, 1, 0, 270, 0, 0, "Total", "Total", "Total");
+    List<PlayerSeasonStat> playerSeasonStats = new ArrayList<>();
+    playerSeasonStats.addAll(playerSeasonStats1);
+    playerSeasonStats.addAll(playerSeasonStats2);
 
-    List<PlayerSeasonStat> expected = new ArrayList<>();
-    expected.addAll(playerSeasonStats1);
-    expected.addAll(playerSeasonStats2);
-    expected.add(playerSeasonStatTotal);
+    // 合計成績を作成
+    PlayerTotalStat playerTotalStat = new PlayerTotalStat(playerId, 3, 2, 1, 1, 0, 270, 0, 0, "PlayerAAAA");
 
-    return expected;
+    return new PlayerCareerStat(playerSeasonStats, playerTotalStat);
   }
 
   @Test

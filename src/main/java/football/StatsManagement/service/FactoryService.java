@@ -3,7 +3,9 @@ package football.StatsManagement.service;
 
 import football.StatsManagement.model.domain.ClubForStanding;
 import football.StatsManagement.model.domain.DayGameResult;
+import football.StatsManagement.model.domain.PlayerCareerStat;
 import football.StatsManagement.model.domain.PlayerSeasonStat;
+import football.StatsManagement.model.domain.PlayerTotalStat;
 import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.domain.Standing;
 import football.StatsManagement.exception.ResourceNotFoundException;
@@ -117,6 +119,21 @@ public class FactoryService {
   }
 
   /**
+   * 選手の通算成績を作成する
+   * @param playerId 選手ID
+   * @return new PlayerCareerStat 選手の通算成績
+   */
+  public PlayerCareerStat createPlayerCareerStat(int playerId) throws ResourceNotFoundException {
+    List<Season> seasons = footballService.getSeasons();
+    List<PlayerSeasonStat> playerSeasonStats = new ArrayList<>();
+    for (Season season : seasons) {
+      playerSeasonStats.addAll(createPlayerSeasonStats(playerId, season.getId()));
+    }
+    PlayerTotalStat playerTotalStat = createPlayerTotalStatFromPlayerSeasonStats(playerSeasonStats);
+    return new PlayerCareerStat(playerSeasonStats, playerTotalStat);
+  }
+
+  /**
    * 選手のシーズン成績（1つのクラブに対応）を作成する
    * @param playerId 選手ID
    * @param seasonId シーズンID
@@ -168,7 +185,7 @@ public class FactoryService {
     for (int clubId : clubIds) {
       playerSeasonStats.add(createPlayerSeasonStat(playerId, seasonId, clubId));
     }
-    return playerSeasonStats;
+    return playerSeasonStats; // clubIdsが空である場合、空のリストが返ることに注意
   }
 
   /**
@@ -187,56 +204,44 @@ public class FactoryService {
   }
 
   /**
-   * 選手の通算成績を作成する
-   * @param playerId 選手ID
-   * @return 選手の通算成績（シーズン成績一覧）
+   * 各シーズン成績から選手の全シーズンでの合計成績を作成する
+   * @param playerSeasonStats 選手のシーズン成績一覧
+   * @return 選手の全シーズンでの合計成績
    */
-  public List<PlayerSeasonStat> createPlayerCareerStats(int playerId) throws ResourceNotFoundException {
-    List<PlayerSeasonStat> playerCareerStats = new ArrayList<>();
-    List<Season> seasons = footballService.getSeasons();
-    for (Season season : seasons) {
-      List<PlayerSeasonStat> playerSeasonStats = createPlayerSeasonStats(playerId, season.getId());
-      playerCareerStats.addAll(playerSeasonStats);
+  public PlayerTotalStat createPlayerTotalStatFromPlayerSeasonStats(List<PlayerSeasonStat> playerSeasonStats) {
+    // 先にplayerSeasonStatsが空である場合、カスタムオブジェクトを返す
+    if (playerSeasonStats.isEmpty()) {
+      return new PlayerTotalStat(0, 0, 0, 0, 0, 0, 0, 0, 0, "");
     }
-    // 通算成績を作成（クラスの検討の余地あり）
-    int idForTotal = 0;
-    Season total = new Season(idForTotal, "Total", null, null, false);
-    playerCareerStats.add(createPlayerStatTotal(playerId, playerCareerStats, total));
 
-    return playerCareerStats;
-  }
-
-  private PlayerSeasonStat createPlayerStatTotal(int playerId, List<PlayerSeasonStat> playerCareerStats, Season total) {
-    int games = playerCareerStats.stream()
+    int playerId = playerSeasonStats.getFirst().playerId();
+    int games = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::games)
         .sum();
-    int starterGames = playerCareerStats.stream()
+    int starterGames = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::starterGames)
         .sum();
-    int substituteGames = playerCareerStats.stream()
+    int substituteGames = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::substituteGames)
         .sum();
-    int goals = playerCareerStats.stream()
+    int goals = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::goals)
         .sum();
-    int assists = playerCareerStats.stream()
+    int assists = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::assists)
         .sum();
-    int minutes = playerCareerStats.stream()
+    int minutes = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::minutes)
         .sum();
-    int yellowCards = playerCareerStats.stream()
+    int yellowCards = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::yellowCards)
         .sum();
-    int redCards = playerCareerStats.stream()
+    int redCards = playerSeasonStats.stream()
         .mapToInt(PlayerSeasonStat::redCards)
         .sum();
-    String playerName = "Total";
-    String clubName = "Total";
-    String seasonName = total.getName();
+    String playerName = playerSeasonStats.getFirst().playerName();
 
-    return new PlayerSeasonStat(playerId, new ArrayList<>(), total.getId(), 0, games,
-        starterGames, substituteGames, goals, assists, minutes, yellowCards, redCards, playerName, clubName, seasonName);
+    return new PlayerTotalStat(playerId, games, starterGames, substituteGames, goals, assists, minutes, yellowCards, redCards, playerName);
   }
 
   /**

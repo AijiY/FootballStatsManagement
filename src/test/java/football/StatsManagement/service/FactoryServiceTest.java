@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import football.StatsManagement.model.domain.ClubForStanding;
 import football.StatsManagement.model.domain.DayGameResult;
 import football.StatsManagement.model.domain.PlayerSeasonStat;
+import football.StatsManagement.model.domain.PlayerTotalStat;
 import football.StatsManagement.model.domain.SeasonGameResult;
 import football.StatsManagement.model.domain.Standing;
 import football.StatsManagement.exception.ResourceNotFoundException;
@@ -74,6 +75,36 @@ class FactoryServiceTest {
     assertEquals(expected, actual);
     verify(footballService, times(1)).getGameResultsByClubAndSeason(1, 1);
   }
+
+  @Test
+  @DisplayName("【正常系】選手の通算成績を作成できること_モックオブジェクトの呼び出しの検証")
+  void createPlayerCareerStat() throws ResourceNotFoundException {
+    int playerId = 1;
+
+    // Arrange
+    FactoryService spySut = spy(sut);
+
+    Season season1 = mock(Season.class);
+    when(season1.getId()).thenReturn(1);
+    Season season2 = mock(Season.class);
+    when(season2.getId()).thenReturn(2);
+    when(footballService.getSeasons()).thenReturn(List.of(season1, season2));
+
+    doReturn(new ArrayList<>()).when(spySut).createPlayerSeasonStats(playerId, 1);
+    doReturn(new ArrayList<>()).when(spySut).createPlayerSeasonStats(playerId, 2);
+
+    doReturn(mock(PlayerTotalStat.class)).when(spySut).createPlayerTotalStatFromPlayerSeasonStats(any());
+
+    // Act
+    spySut.createPlayerCareerStat(playerId);
+
+    // Assert
+    verify(footballService, times(1)).getSeasons();
+    verify(spySut, times(1)).createPlayerSeasonStats(playerId, 1);
+    verify(spySut, times(1)).createPlayerSeasonStats(playerId, 2);
+    verify(spySut, times(1)).createPlayerTotalStatFromPlayerSeasonStats(any());
+  }
+
 
   @Test
   @DisplayName("【正常系】選手シーズン成績を作成できること_クラブが1つの場合_モックオブジェクトの呼び出しおよび結果の検証")
@@ -175,31 +206,36 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("【正常系】選手通算成績を作成できること_モックオブジェクトの呼び出しの検証")
-  void createPlayerCareerStats() throws ResourceNotFoundException {
-    int playerId = 1;
+  @DisplayName("【正常系】各シーズン成績から選手の全シーズンでの合計成績を作成できること_ブラックボックステスト")
+  void createPlayerTotalStatFromPlayerSeasonStats() {
+    List<PlayerGameStat> playerGameStats = mock(List.class);
+    List<PlayerSeasonStat> playerSeasonStats = List.of(
+        new PlayerSeasonStat(1, playerGameStats, 1, 1, 2, 1, 1, 1, 1, 90, 1, 1, "SampleName", "null", "null"),
+        new PlayerSeasonStat(1, playerGameStats, 1, 1, 2, 1, 1, 1, 1, 90, 1, 1, "SampleName", "null", "null")
+    );
 
     // Arrange
-    FactoryService spySut = spy(sut);
-
-    List<Season> seasons = List.of(
-        new Season(1, "Sample Season1", null, null, false),
-        new Season(2, "Sample Season2", null, null, true)
-    );
-    when(footballService.getSeasons()).thenReturn(seasons);
-
-    PlayerSeasonStat playerSeasonStat1 = mock(PlayerSeasonStat.class);
-    doReturn(List.of(playerSeasonStat1)).when(spySut).createPlayerSeasonStats(playerId, 1);
-    PlayerSeasonStat playerSeasonStat2 = mock(PlayerSeasonStat.class);
-    doReturn(List.of(playerSeasonStat2)).when(spySut).createPlayerSeasonStats(playerId, 2);
+    PlayerTotalStat expected = new PlayerTotalStat(1, 4, 2, 2, 2, 2, 180, 2, 2, "SampleName");
 
     // Act
-    List<PlayerSeasonStat> actual = spySut.createPlayerCareerStats(playerId);
+    PlayerTotalStat actual = sut.createPlayerTotalStatFromPlayerSeasonStats(playerSeasonStats);
 
     // Assert
-    verify(footballService, times(1)).getSeasons();
-    verify(spySut, times(1)).createPlayerSeasonStats(playerId, 1);
-    verify(spySut, times(1)).createPlayerSeasonStats(playerId, 2);
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  @DisplayName("【正常系】各シーズン成績から選手の全シーズンでの合計成績を作成できること_シーズン成績一覧が空の場合_ブラックボックステスト")
+  void createPlayerTotalStatFromPlayerSeasonStatsWhenNoGameResults() {
+    List<PlayerSeasonStat> playerSeasonStats = mock(List.class);
+    // playerGameStatsはisEmpty
+    when(playerSeasonStats.isEmpty()).thenReturn(true);
+
+    // Arrange
+    PlayerTotalStat expected = new PlayerTotalStat(0, 0, 0, 0, 0, 0, 0, 0, 0, "");
+
+    // Act
+    PlayerTotalStat actual = sut.createPlayerTotalStatFromPlayerSeasonStats(playerSeasonStats);
   }
 
   @Test

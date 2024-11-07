@@ -311,18 +311,18 @@ class FootballControllerTest {
 
   @Test
   @DisplayName("【正常系】選手IDに紐づく選手の通算成績を取得できること")
-  void getPlayerCareerStatsByPlayerId() throws Exception {
+  void getPlayerCareerStat() throws Exception {
     int playerId = 1;
-    mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stats"))
+    mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stat"))
         .andExpect(status().isOk());
-    verify(factoryService, times(1)).createPlayerCareerStats(playerId);
+    verify(factoryService, times(1)).createPlayerCareerStat(playerId);
   }
 
   @Test
   @DisplayName("【異常系】選手IDに紐づく選手の通算成績を取得する際にIDが0以下の場合、400エラーが返却されること")
-  void getPlayerCareerStatsByPlayerIdWithInvalidIdByClub() throws Exception {
+  void getPlayerCareerStatWithInvalidIdByClub() throws Exception {
     int playerId = 0;
-    mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stats"))
+    mockMvc.perform(MockMvcRequestBuilders.get("/players/" + playerId + "/player-career-stat"))
         .andExpect(status().isBadRequest())
         .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
             result.getResolvedException()));
