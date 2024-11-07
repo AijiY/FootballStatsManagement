@@ -71,7 +71,7 @@
 - **表現の統一** ：ユーザーがメッセージに対して対処しやすいように、メッセージの表現を統一
 
 ## AWS構成（AWS Configuration）
-※作成中
+![AWS drawio_API](https://github.com/user-attachments/assets/823f67d4-df3c-4a82-90b9-4caf8cbe9199)
 
 ## License
 This project is built with [Spring Boot](https://spring.io/projects/spring-boot) and is licensed under the [MIT License](LICENSE).
