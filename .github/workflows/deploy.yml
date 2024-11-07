@@ -8,7 +8,7 @@ on:
 
 env:
   EC2_USER: 'ec2-user'
-  EC2_HOST: '54.248.239.107' # EC2再起動時は変更
+  EC2_HOST: '54.248.239.107' # Elastic IP
   SRC_PATH: 'build/libs/*.jar'
   DST_PATH: '/home/ec2-user/app.jar'
 
