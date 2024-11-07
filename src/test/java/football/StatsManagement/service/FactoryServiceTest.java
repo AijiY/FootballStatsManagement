@@ -38,6 +38,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@SuppressWarnings("unchecked") // モックの挙動の確認を目的とするため、未チェックキャストの警告を抑制
 @ExtendWith(MockitoExtension.class)
 class FactoryServiceTest {
 
