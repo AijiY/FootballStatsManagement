@@ -72,3 +72,6 @@
 
 ## AWS構成（AWS Configuration）
 ※作成中
+
+## License
+This project is built with [Spring Boot](https://spring.io/projects/spring-boot) and is licensed under the [MIT License](LICENSE).
