@@ -6,13 +6,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import football.StatsManagement.model.entity.Club;
+import football.StatsManagement.model.entity.ComparisonItem;
 import football.StatsManagement.model.entity.Country;
 import football.StatsManagement.model.entity.GameResult;
 import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -158,6 +161,55 @@ class FootballRepositoryTest {
     // Act
     sut.insertSeason(season);
     int actualCount = sut.selectSeasons().size();
+
+    // Assert
+    assertEquals(expectedCount, actualCount);
+  }
+
+  @Test
+  @DisplayName("リーグ規定を挿入できること_挿入前後で件数が1件増えていること_ComparisonItemIdsStrにカンマがない場合")
+  void insertLeagueRegulationWithNoComma() {
+    // Arrange
+    LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
+    when(leagueRegulation.getLeagueId()).thenReturn(4); // 外部キー制約を満たすために設定
+    when(leagueRegulation.getComparisonItemIdsStr()).thenReturn("1"); // コンストラクタの処理の関係で、数値でないとエラーになる
+    int expectedCount = sut.selectLeagueRegulations().size() + 1;
+
+    // Act
+    sut.insertLeagueRegulation(leagueRegulation);
+    int actualCount = sut.selectLeagueRegulations().size();
+
+    // Assert
+    assertEquals(expectedCount, actualCount);
+  }
+
+  @Test
+  @DisplayName("リーグ規定を挿入できること_挿入前後で件数が1件増えていること_ComparisonItemIdsStrにカンマがない場合")
+  void insertLeagueRegulationWithCommas() {
+    // Arrange
+    LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
+    when(leagueRegulation.getLeagueId()).thenReturn(4); // 外部キー制約を満たすために設定
+    when(leagueRegulation.getComparisonItemIdsStr()).thenReturn("1,2,3"); // コンストラクタの処理の関係で、数値でないとエラーになる
+    int expectedCount = sut.selectLeagueRegulations().size() + 1;
+
+    // Act
+    sut.insertLeagueRegulation(leagueRegulation);
+    int actualCount = sut.selectLeagueRegulations().size();
+
+    // Assert
+    assertEquals(expectedCount, actualCount);
+  }
+
+  @Test
+  @DisplayName("順位比較項目を挿入できること_挿入前後で件数が1件増えていること")
+  void insertComparisonItem() {
+    // Arrange
+    ComparisonItem comparisonItem = mock(ComparisonItem.class);
+    int expectedCount = sut.selectComparisonItems().size() + 1;
+
+    // Act
+    sut.insertComparisonItem(comparisonItem);
+    int actualCount = sut.selectComparisonItems().size();
 
     // Assert
     assertEquals(expectedCount, actualCount);
@@ -394,6 +446,36 @@ class FootballRepositoryTest {
     // Assert
     assertThat(actual.size()).isEqualTo(expected.size());
     assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+  }
+
+  @Test
+  @DisplayName("リーグIDを指定してリーグ規定を検索できること_件数と情報が適切であること")
+  void selectLeagueRegulationByLeague() {
+    int leagueId = 1;
+
+    // Arrange
+    LeagueRegulation expected = new LeagueRegulation(1, leagueId, "1,2,3", List.of(1, 2, 3), new ArrayList<>());
+
+    // Act
+    Optional<LeagueRegulation> actual = sut.selectLeagueRegulationByLeague(leagueId);
+
+    // Assert
+    assertThat(actual).isEqualTo(Optional.of(expected));
+  }
+
+  @Test
+  @DisplayName("IDを指定して順位比較項目を検索できること_情報が適切であること")
+  void selectComparisonItem() {
+    int id = 1;
+
+    // Arrange
+    ComparisonItem expected = new ComparisonItem(id, "points");
+
+    // Act
+    Optional<ComparisonItem> actual = sut.selectComparisonItem(id);
+
+    // Assert
+    assertThat(actual).isEqualTo(Optional.of(expected));
   }
 
   @Test
@@ -651,6 +733,45 @@ class FootballRepositoryTest {
 
     // Act
     List<Season> actual = sut.selectSeasons();
+
+    // Assert
+    assertThat(actual.size()).isEqualTo(expected.size());
+    assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+  }
+
+  @Test
+  @DisplayName("リーグ規定を全件検索できること_件数と情報が適切であること")
+  void selectLeagueRegulations() {
+    // Arrange
+    List<LeagueRegulation> expected = List.of(
+        new LeagueRegulation(1, 1, "1,2,3", List.of(1, 2, 3), new ArrayList<>()),
+        new LeagueRegulation(2, 2, "1,4,5", List.of(1, 4, 5), new ArrayList<>()),
+        new LeagueRegulation(3, 3, "1,2,3", List.of(1, 2, 3), new ArrayList<>())
+    );
+
+    // Act
+    List<LeagueRegulation> actual = sut.selectLeagueRegulations();
+
+    // Assert
+    assertThat(actual.size()).isEqualTo(expected.size());
+    assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+  }
+
+  @Test
+  @DisplayName("順位比較項目を全件検索できること_件数と情報が適切であること")
+  void selectComparisonItems() {
+    // Arrange
+    List<ComparisonItem> expected = List.of(
+        new ComparisonItem(1, "points"),
+        new ComparisonItem(2, "points_against"),
+        new ComparisonItem(3, "goal_differences_against"),
+        new ComparisonItem(4, "goal_differences"),
+        new ComparisonItem(5, "goals"),
+        new ComparisonItem(6, "away_goals_against")
+    );
+
+    // Act
+    List<ComparisonItem> actual = sut.selectComparisonItems();
 
     // Assert
     assertThat(actual.size()).isEqualTo(expected.size());

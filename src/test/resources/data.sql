@@ -110,3 +110,18 @@ INSERT INTO player_game_stats (player_id, club_id, number, starter, goals, assis
   (6, 3, 2, 1, 0, 0, 0, 90, 0, 0, 6),
   (7, 4, 1, 0, 0, 0, 0, 90, 0, 0, 6),
   (8, 4, 2, 0, 0, 0, 0, 90, 0, 0, 6);
+
+-- 後から追加
+INSERT INTO league_regulations (league_id, comparison_item_ids_str) VALUES
+  (1, '1,2,3'),
+  (2, '1,4,5'),
+  (3, '1,2,3');
+
+INSERT INTO comparison_items (name) VALUES
+  ('points'),
+  ('points_against'),
+  ('goal_differences_against'),
+  ('goal_differences'),
+  ('goals'),
+  ('away_goals_against');
+

@@ -140,14 +140,14 @@ class DifferenceCalculatorBetweenTwoClubsTest {
 
   @Test
   @DisplayName("当該チーム間のアウェーゴールが正しく計算されること")
-  void awayGoalsDifference() {
+  void awayGoalsAgainstDifference() {
     // Arrange
     commonArrangeWhenHeadToHead(c1, c2, club1, club2);
     when(c1.getAwayGoalsAgainst(2)).thenReturn(10);
     when(c2.getAwayGoalsAgainst(1)).thenReturn(20);
 
     // Act
-    int actual = sut.awayGoalsDifference(c1, c2);
+    int actual = sut.awayGoalsAgainstDifference(c1, c2);
 
     // Assert
     assertEquals(10, actual);

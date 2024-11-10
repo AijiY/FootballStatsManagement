@@ -75,6 +75,21 @@ CREATE TABLE `player_game_stats` (
   FOREIGN KEY (`game_id`) REFERENCES `game_results`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- 後から追加
+CREATE TABLE `league_regulations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `league_id` int DEFAULT NULL,
+  `comparison_item_ids_str` VARCHAR(30) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`league_id`) REFERENCES `leagues`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE `comparison_items` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
 
 
 

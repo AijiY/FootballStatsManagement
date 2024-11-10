@@ -116,7 +116,7 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
     int expected = 1;
-    when(calculator.awayGoalsDifference(c1, c2)).thenReturn(expected);
+    when(calculator.awayGoalsAgainstDifference(c1, c2)).thenReturn(expected);
 
     // Act
     int actual = sut.compare(c1, c2);
@@ -127,7 +127,7 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
     verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
-    verify(calculator, times(1)).awayGoalsDifference(c1, c2);
+    verify(calculator, times(1)).awayGoalsAgainstDifference(c1, c2);
   }
 
   @Test
@@ -138,7 +138,7 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
     when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
-    when(calculator.awayGoalsDifference(c1, c2)).thenReturn(0);
+    when(calculator.awayGoalsAgainstDifference(c1, c2)).thenReturn(0);
     int expected = 0;
 
     // Act
@@ -150,6 +150,6 @@ class ClubForStandingComparatorInEnglishPremierLeagueTest {
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
     verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
-    verify(calculator, times(1)).awayGoalsDifference(c1, c2);
+    verify(calculator, times(1)).awayGoalsAgainstDifference(c1, c2);
   }
 }
