@@ -49,7 +49,7 @@ public class ClubForStandingComparatorInEnglishPremierLeague implements Comparat
     }
 
     // ⑤当該チーム間のアウェーゴール
-    comparisonResult = calculator.awayGoalsDifference(c1, c2);
+    comparisonResult = calculator.awayGoalsAgainstDifference(c1, c2);
     if (comparisonResult != 0) {
       return comparisonResult;
     }

@@ -1,9 +1,11 @@
 package football.StatsManagement.repository;
 
 import football.StatsManagement.model.entity.Club;
+import football.StatsManagement.model.entity.ComparisonItem;
 import football.StatsManagement.model.entity.Country;
 import football.StatsManagement.model.entity.GameResult;
 import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
@@ -75,6 +77,22 @@ public interface FootballRepository {
   @Insert("INSERT INTO seasons (id, name, start_date, end_date, current) VALUES (#{id}, #{name}, #{startDate}, #{endDate}, #{current})")
   @Options( keyProperty = "id")
   void insertSeason(Season season);
+
+  /**
+   * リーグ規定（順位決定方法）の登録
+   * @param leagueRegulation リーグ規定
+   */
+  @Insert("INSERT INTO league_regulations (league_id, comparison_item_ids_str) VALUES (#{leagueId}, #{comparisonItemIdsStr})")
+  @Options(useGeneratedKeys = true, keyProperty = "id")
+  void insertLeagueRegulation(LeagueRegulation leagueRegulation);
+
+  /**
+   * 順位比較項目の登録
+   * @param comparisonItem 比較項目
+   */
+  @Insert("INSERT INTO comparison_items (name) VALUES (#{name})")
+  @Options(useGeneratedKeys = true, keyProperty = "id")
+  void insertComparisonItem(ComparisonItem comparisonItem);
 
 //  Select
 
@@ -186,6 +204,22 @@ public interface FootballRepository {
   List<League> selectLeaguesByCountry(int countryId);
 
   /**
+   * リーグIDによるリーグ規定（順位決定方法）の取得
+   * @param leagueId リーグID
+   * @return リーグ規定
+   */
+  @Select("SELECT * FROM league_regulations WHERE league_id = #{leagueId}")
+  Optional<LeagueRegulation> selectLeagueRegulationByLeague(int leagueId);
+
+  /**
+   * 比較項目の取得
+   * @param id 比較項目ID
+   * @return 比較項目
+   */
+  @Select("SELECT * FROM comparison_items WHERE id = #{id}")
+  Optional<ComparisonItem> selectComparisonItem(int id);
+
+  /**
    * 国一覧の取得
    * @return 国一覧
    */
@@ -240,6 +274,20 @@ public interface FootballRepository {
    */
   @Select("SELECT * FROM seasons")
   List<Season> selectSeasons();
+
+  /**
+   * リーグ規定一覧の取得
+   * @return リーグ規定一覧
+   */
+  @Select("SELECT * FROM league_regulations")
+  List<LeagueRegulation> selectLeagueRegulations();
+
+  /**
+   * 比較項目一覧の取得
+   * @return 比較項目一覧
+   */
+  @Select("SELECT * FROM comparison_items")
+  List<ComparisonItem> selectComparisonItems();
 
   /**
    * 試合IDによる選手の試合成績一覧の取得
