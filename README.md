@@ -32,8 +32,8 @@
 ## ER図（Entity Relationship Diagram）
 ![ER](https://github.com/user-attachments/assets/8e310671-12a8-461a-9374-a7c6b02d1bb0)
 
-## ドメインクラス図
-![class drawio](https://github.com/user-attachments/assets/32e110c0-ea12-4b17-8419-1bb3d2a1d8e2)
+## ドメインクラス図（Domain Class Diagram）
+![class drawio](https://github.com/user-attachments/assets/664902e6-9c00-461c-b34d-26dd21d2ac57)
 
 ## シーケンス図（Sequence Diagram）
 ### 基本フロー
@@ -43,7 +43,7 @@
 ![SD-basic_02](https://github.com/user-attachments/assets/ad1e86f3-9b66-476f-bb88-20753458ea5e)
 
 ## API仕様（API Specification）
-[こちら](http://54.248.239.107:8080/swagger-ui/index.html#/)のページにてAPI仕様を確認できます。
+[こちらのページ](http://54.248.239.107:8080/swagger-ui/index.html#/)にてAPI仕様を確認できます。
 
 ## テスト
 下記テストをGithub Actionsで自動実行しています。
@@ -70,8 +70,14 @@
 - **可読性改善** ：特にバリデーションの@AssertTrueアノテーションによる例外処理メッセージの改善
 - **表現の統一** ：ユーザーがメッセージに対して対処しやすいように、メッセージの表現を統一
 
+## 反省点（Reflection Points）
+- **スケジュール見積もりの甘さ**<br>
+想定作業時間に対して余裕期間を同程度設けていたので、目標の1ヶ月での完成（クライアントページおよびAWSへのデプロイ含む）は達成できました。しかし、各タスクの作業時間の見積もり精度を向上させる必要があり、特にテストコードの作成において想定以上の時間を要したため、経験として今後の開発に活用します。
+- **DB設計の不備**<br>
+DBのカラム（エンティティクラスのフィールド）設定において、必要最小限のデータのみを設定することにしたため、クライアントページでのデータ取得および表示で不便を感じることがありました。工夫点で述べた通りエンティティクラスのフィールド設定により対処しましたが、DB設計時点で予め考慮しておくべき事案でした。
+
 ## AWS構成（AWS Configuration）
-![AWS drawio_API](https://github.com/user-attachments/assets/823f67d4-df3c-4a82-90b9-4caf8cbe9199)
+![AWS drawio_API](https://github.com/user-attachments/assets/8e793e98-f7aa-4c99-be33-6115f9cd2a40)
 
 ## License
 This project is built with [Spring Boot](https://spring.io/projects/spring-boot) and is licensed under the [MIT License](LICENSE).
