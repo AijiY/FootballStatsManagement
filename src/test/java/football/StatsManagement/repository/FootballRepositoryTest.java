@@ -763,12 +763,12 @@ class FootballRepositoryTest {
     // Arrange
     List<ComparisonItem> expected = List.of(
         new ComparisonItem(1, "Points"),
-        new ComparisonItem(2, "Points Against (At least 2 Games)"),
-        new ComparisonItem(3, "Goal Differences Against (At least 2 Games)"),
+        new ComparisonItem(2, "Points Head-to-head (At least 2 Games)"),
+        new ComparisonItem(3, "Goal Differences Head-to-head (At least 2 Games)"),
         new ComparisonItem(4, "Goal Differences"),
-        new ComparisonItem(5, "Goals"),
-        new ComparisonItem(6, "Away Goals Against"),
-        new ComparisonItem(7, "Points Against")
+        new ComparisonItem(5, "Goals For"),
+        new ComparisonItem(6, "Away Goals Head-to-head"),
+        new ComparisonItem(7, "Points Head-to-head")
     );
 
     // Act

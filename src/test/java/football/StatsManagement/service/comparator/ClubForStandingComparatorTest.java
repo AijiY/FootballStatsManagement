@@ -65,7 +65,7 @@ class ClubForStandingComparatorTest {
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
     int expected = 1;
-    when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(expected);
+    when(calculator.pointsHeadToHeadDifference(c1, c2)).thenReturn(expected);
 
     // Act
     int actual = sut.compare(c1, c2);
@@ -73,7 +73,7 @@ class ClubForStandingComparatorTest {
     // Assert
     assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
-    verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
+    verify(calculator, times(1)).pointsHeadToHeadDifference(c1, c2);
   }
 
   @Test
@@ -83,9 +83,9 @@ class ClubForStandingComparatorTest {
     commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
-    when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
+    when(calculator.pointsHeadToHeadDifference(c1, c2)).thenReturn(0);
     int expected = 1;
-    when(calculator.goalDifferencesAgainstDifference(c1, c2)).thenReturn(expected);
+    when(calculator.goalDifferencesHeadToHeadDifference(c1, c2)).thenReturn(expected);
 
     // Act
     int actual = sut.compare(c1, c2);
@@ -93,8 +93,8 @@ class ClubForStandingComparatorTest {
     // Assert
     assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
-    verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
-    verify(calculator, times(1)).goalDifferencesAgainstDifference(c1, c2);
+    verify(calculator, times(1)).pointsHeadToHeadDifference(c1, c2);
+    verify(calculator, times(1)).goalDifferencesHeadToHeadDifference(c1, c2);
   }
 
   @Test
@@ -122,8 +122,8 @@ class ClubForStandingComparatorTest {
     commonArrangeWhenHeadToHead(c2, club2);
     when(calculator.pointsDifference(c1, c2)).thenReturn(0);
     when(c1.getGamesAgainst(2)).thenReturn(2);
-    when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
-    when(calculator.goalDifferencesAgainstDifference(c1, c2)).thenReturn(0);
+    when(calculator.pointsHeadToHeadDifference(c1, c2)).thenReturn(0);
+    when(calculator.goalDifferencesHeadToHeadDifference(c1, c2)).thenReturn(0);
     int expected = 1;
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(expected);
 
@@ -133,8 +133,8 @@ class ClubForStandingComparatorTest {
     // Assert
     assertEquals(expected, actual);
     verify(calculator, times(1)).pointsDifference(c1, c2);
-    verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
-    verify(calculator, times(1)).goalDifferencesAgainstDifference(c1, c2);
+    verify(calculator, times(1)).pointsHeadToHeadDifference(c1, c2);
+    verify(calculator, times(1)).goalDifferencesHeadToHeadDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
   }
 
@@ -169,7 +169,7 @@ class ClubForStandingComparatorTest {
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
     int expected = 1;
-    when(calculator.awayGoalsAgainstDifference(c1, c2)).thenReturn(expected);
+    when(calculator.awayGoalsHeadToHeadDifference(c1, c2)).thenReturn(expected);
 
     // Act
     int actual = sut.compare(c1, c2);
@@ -179,7 +179,7 @@ class ClubForStandingComparatorTest {
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
-    verify(calculator, times(1)).awayGoalsAgainstDifference(c1, c2);
+    verify(calculator, times(1)).awayGoalsHeadToHeadDifference(c1, c2);
   }
 
   @Test
@@ -191,9 +191,9 @@ class ClubForStandingComparatorTest {
     when(c1.getGamesAgainst(2)).thenReturn(1);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
-    when(calculator.awayGoalsAgainstDifference(c1, c2)).thenReturn(0);
+    when(calculator.awayGoalsHeadToHeadDifference(c1, c2)).thenReturn(0);
     int expected = 1;
-    when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(expected);
+    when(calculator.pointsHeadToHeadDifference(c1, c2)).thenReturn(expected);
 
     // Act
     int actual = sut.compare(c1, c2);
@@ -203,8 +203,8 @@ class ClubForStandingComparatorTest {
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
-    verify(calculator, times(1)).awayGoalsAgainstDifference(c1, c2);
-    verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
+    verify(calculator, times(1)).awayGoalsHeadToHeadDifference(c1, c2);
+    verify(calculator, times(1)).pointsHeadToHeadDifference(c1, c2);
   }
 
   @Test
@@ -216,8 +216,8 @@ class ClubForStandingComparatorTest {
     when(c1.getGamesAgainst(2)).thenReturn(1);
     when(calculator.goalDifferenceDifference(c1, c2)).thenReturn(0);
     when(calculator.goalsForDifference(c1, c2)).thenReturn(0);
-    when(calculator.awayGoalsAgainstDifference(c1, c2)).thenReturn(0);
-    when(calculator.pointsAgainstDifference(c1, c2)).thenReturn(0);
+    when(calculator.awayGoalsHeadToHeadDifference(c1, c2)).thenReturn(0);
+    when(calculator.pointsHeadToHeadDifference(c1, c2)).thenReturn(0);
     int expected = 0;
 
     // Act
@@ -228,8 +228,8 @@ class ClubForStandingComparatorTest {
     verify(calculator, times(1)).pointsDifference(c1, c2);
     verify(calculator, times(1)).goalDifferenceDifference(c1, c2);
     verify(calculator, times(1)).goalsForDifference(c1, c2);
-    verify(calculator, times(1)).awayGoalsAgainstDifference(c1, c2);
-    verify(calculator, times(1)).pointsAgainstDifference(c1, c2);
+    verify(calculator, times(1)).awayGoalsHeadToHeadDifference(c1, c2);
+    verify(calculator, times(1)).pointsHeadToHeadDifference(c1, c2);
   }
 
 

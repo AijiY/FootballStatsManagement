@@ -24,7 +24,7 @@ public class LeagueRegulation {
   private List<Integer> comparisonItemIds;
   private List<ComparisonItem> comparisonItems;
 
-  // @INSERT用 ToDo:comparisonItemIdsが1要素でも正常に動作するか（結合テスト）
+  // @INSERT用
   public LeagueRegulation(LeagueRegulationForJson leagueRegulationForJson) {
     this.leagueId = leagueRegulationForJson.getLeagueId();
     // comparisonItemIdsの要素をカンマ区切りの文字列に変換

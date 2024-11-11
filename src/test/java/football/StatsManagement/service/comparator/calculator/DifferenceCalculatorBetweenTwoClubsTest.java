@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import football.StatsManagement.model.entity.Club;
 import football.StatsManagement.model.domain.ClubForStanding;
-import football.StatsManagement.service.comparator.calculator.DifferenceCalculatorBetweenTwoClubs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,14 +64,14 @@ class DifferenceCalculatorBetweenTwoClubsTest {
 
   @Test
   @DisplayName("当該チーム間の勝ち点の差が正しく計算されること")
-  void pointsAgainstDifference() {
+  void pointsHeadToHeadDifference() {
     // Arrange
     commonArrangeWhenHeadToHead(c1, c2, club1, club2);
     when(c1.getPointsAgainst(2)).thenReturn(10);  // c1 の getPointsAgainst(2) が 10 を返すように設定
     when(c2.getPointsAgainst(1)).thenReturn(20);  // c2 の getPointsAgainst(1) が 20 を返すように設定
 
     // Act
-    int actual = sut.pointsAgainstDifference(c1, c2);
+    int actual = sut.pointsHeadToHeadDifference(c1, c2);
 
     // Assert
     assertEquals(10, actual);
@@ -87,14 +86,14 @@ class DifferenceCalculatorBetweenTwoClubsTest {
 
   @Test
   @DisplayName("当該チーム間の得失点差が正しく計算されること")
-  void goalDifferencesAgainstDifference() {
+  void goalDifferencesHeadToHeadDifference() {
     // Arrange
     commonArrangeWhenHeadToHead(c1, c2, club1, club2);
     when(c1.getGoalDifferencesAgainst(2)).thenReturn(10);
     when(c2.getGoalDifferencesAgainst(1)).thenReturn(20);
 
     // Act
-    int actual = sut.goalDifferencesAgainstDifference(c1, c2);
+    int actual = sut.goalDifferencesHeadToHeadDifference(c1, c2);
 
     // Assert
     assertEquals(10, actual);
@@ -141,14 +140,14 @@ class DifferenceCalculatorBetweenTwoClubsTest {
 
   @Test
   @DisplayName("当該チーム間のアウェーゴールが正しく計算されること")
-  void awayGoalsAgainstDifference() {
+  void awayGoalsHeadToHeadDifference() {
     // Arrange
     commonArrangeWhenHeadToHead(c1, c2, club1, club2);
     when(c1.getAwayGoalsAgainst(2)).thenReturn(10);
     when(c2.getAwayGoalsAgainst(1)).thenReturn(20);
 
     // Act
-    int actual = sut.awayGoalsAgainstDifference(c1, c2);
+    int actual = sut.awayGoalsHeadToHeadDifference(c1, c2);
 
     // Assert
     assertEquals(10, actual);

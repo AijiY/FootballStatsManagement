@@ -38,18 +38,18 @@ public class ClubForStandingComparator implements Comparator<ClubForStanding> {
     return switch (comparisonItemId) {
       case 1 -> // Points
           calculator.pointsDifference(c1, c2);
-      case 2 -> // Points Against (At least 2 Games)
-          pointsAgainstDifferenceAtLeast2Games(c1, c2);
-      case 3 -> // Goal Differences Against (At least 2 Games)
-          goalDifferenceAgainstDifferenceAtLeast2Games(c1, c2);
+      case 2 -> // Points Head-to-head (At least 2 Games)
+          pointsHeadToHeadDifferenceAtLeast2Games(c1, c2);
+      case 3 -> // Goal Differences Head-to-head (At least 2 Games)
+          goalDifferenceHeadToHeadDifferenceAtLeast2Games(c1, c2);
       case 4 -> // Goal Differences
           calculator.goalDifferenceDifference(c1, c2);
-      case 5 -> // Goals
+      case 5 -> // Goals For
           calculator.goalsForDifference(c1, c2);
-      case 6 -> // Away Goals Against
-          calculator.awayGoalsAgainstDifference(c1, c2);
-      case 7 -> // Points Against
-          calculator.pointsAgainstDifference(c1, c2);
+      case 6 -> // Away Goals Head-to-head
+          calculator.awayGoalsHeadToHeadDifference(c1, c2);
+      case 7 -> // Points Head-to-head
+          calculator.pointsHeadToHeadDifference(c1, c2);
       default -> 0;
     };
   }
@@ -60,11 +60,11 @@ public class ClubForStandingComparator implements Comparator<ClubForStanding> {
    * @param c2 クラブ2
    * @return 当該クラブ間の得点差
    */
-  private int pointsAgainstDifferenceAtLeast2Games(ClubForStanding c1, ClubForStanding c2) {
+  private int pointsHeadToHeadDifferenceAtLeast2Games(ClubForStanding c1, ClubForStanding c2) {
     if (c1.getGamesAgainst(c2.getClub().getId()) < 2) {
       return 0;
     }
-    return calculator.pointsAgainstDifference(c1, c2);
+    return calculator.pointsHeadToHeadDifference(c1, c2);
   }
 
   /**
@@ -73,11 +73,11 @@ public class ClubForStandingComparator implements Comparator<ClubForStanding> {
    * @param c2 クラブ2
    * @return 当該クラブ間の得失点差の差
    */
-  private int goalDifferenceAgainstDifferenceAtLeast2Games(ClubForStanding c1, ClubForStanding c2) {
+  private int goalDifferenceHeadToHeadDifferenceAtLeast2Games(ClubForStanding c1, ClubForStanding c2) {
     if (c1.getGamesAgainst(c2.getClub().getId()) < 2) {
       return 0;
     }
-    return calculator.goalDifferencesAgainstDifference(c1, c2);
+    return calculator.goalDifferencesHeadToHeadDifference(c1, c2);
   }
 
 }

@@ -23,7 +23,7 @@ public class DifferenceCalculatorBetweenTwoClubs {
    * @param c2 順位表作成のためのクラブ2
    * @return 勝利数の差
    */
-  public int pointsAgainstDifference(ClubForStanding c1, ClubForStanding c2) {
+  public int pointsHeadToHeadDifference(ClubForStanding c1, ClubForStanding c2) {
     int c1Id = c1.getClub().getId();
     int c2Id = c2.getClub().getId();
     return c2.getPointsAgainst(c1Id) - c1.getPointsAgainst(c2Id);
@@ -35,7 +35,7 @@ public class DifferenceCalculatorBetweenTwoClubs {
    * @param c2 順位表作成のためのクラブ2
    * @return 得失点差の差
    */
-  public int goalDifferencesAgainstDifference(ClubForStanding c1, ClubForStanding c2) {
+  public int goalDifferencesHeadToHeadDifference(ClubForStanding c1, ClubForStanding c2) {
     int c1Id = c1.getClub().getId();
     int c2Id = c2.getClub().getId();
     return c2.getGoalDifferencesAgainst(c1Id) - c1.getGoalDifferencesAgainst(c2Id);
@@ -67,7 +67,7 @@ public class DifferenceCalculatorBetweenTwoClubs {
    * @param c2 順位表作成のためのクラブ2
    * @return アウェーゴールの差
    */
-  public int awayGoalsAgainstDifference(ClubForStanding c1, ClubForStanding c2) {
+  public int awayGoalsHeadToHeadDifference(ClubForStanding c1, ClubForStanding c2) {
     int c1Id = c1.getClub().getId();
     int c2Id = c2.getClub().getId();
     return c2.getAwayGoalsAgainst(c1Id) - c1.getAwayGoalsAgainst(c2Id);

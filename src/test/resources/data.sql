@@ -119,10 +119,10 @@ INSERT INTO league_regulations (league_id, comparison_item_ids_str) VALUES
 
 INSERT INTO comparison_items (name) VALUES
   ('Points'),
-  ('Points Against (At least 2 Games)'),
-  ('Goal Differences Against (At least 2 Games)'),
+  ('Points Head-to-head (At least 2 Games)'),
+  ('Goal Differences Head-to-head (At least 2 Games)'),
   ('Goal Differences'),
-  ('Goals'),
-  ('Away Goals Against'),
-  ('Points Against');
+  ('Goals For'),
+  ('Away Goals Head-to-head'),
+  ('Points Head-to-head');
 
