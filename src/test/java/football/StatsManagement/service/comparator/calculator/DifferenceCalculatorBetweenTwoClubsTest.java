@@ -1,4 +1,4 @@
-package football.StatsManagement.utils.comparator.calculator;
+package football.StatsManagement.service.comparator.calculator;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import football.StatsManagement.model.entity.Club;
 import football.StatsManagement.model.domain.ClubForStanding;
+import football.StatsManagement.service.comparator.calculator.DifferenceCalculatorBetweenTwoClubs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

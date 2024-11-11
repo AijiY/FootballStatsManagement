@@ -15,9 +15,11 @@ import football.StatsManagement.exception.FootballException;
 import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.entity.Club;
+import football.StatsManagement.model.entity.ComparisonItem;
 import football.StatsManagement.model.entity.Country;
 import football.StatsManagement.model.entity.GameResult;
 import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
@@ -427,6 +429,51 @@ class FootballServiceTest {
   }
 
   @Test
+  @DisplayName("【正常系】リーグIDによるリーグ規定の検索_DBにデータが見つかった場合_リポジトリが適切に処理されること")
+  void getLeagueRegulationByLeagueWhenFound() {
+    int leagueId = 1;
+
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
+    LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
+    when(repository.selectLeagueRegulationByLeague(leagueId)).thenReturn(Optional.of(leagueRegulation));
+    List<ComparisonItem> comparisonItems = mock(List.class);
+    doReturn(comparisonItems).when(sutSpy).getComparisonItems();
+
+    // Act
+    LeagueRegulation actual = sutSpy.getLeagueRegulationByLeague(leagueId);
+
+    // Assert
+    verify(repository, times(1)).selectLeagueRegulationByLeague(leagueId);
+    verify(sutSpy, times(1)).getComparisonItems();
+  }
+
+  @Test
+  @DisplayName("【正常系】リーグIDによるリーグ規定の検索_DBにデータが見つからなかった場合_リポジトリが適切に処理されることおよびデフォルトのリーグ規定が返されること")
+  void getLeagueRegulationByLeagueWhenNotFound() {
+    int leagueId = 1;
+
+    // Arrange
+    FootballService sutSpy = spy(sut);
+
+    when(repository.selectLeagueRegulationByLeague(leagueId)).thenReturn(Optional.empty());
+    ComparisonItem comparisonItemId1 = new ComparisonItem(1, "Points");
+    List<ComparisonItem> comparisonItems = List.of(comparisonItemId1);
+    doReturn(comparisonItems).when(sutSpy).getComparisonItems();
+
+    LeagueRegulation expected = new LeagueRegulation(0, leagueId, "1", List.of(1), List.of(comparisonItemId1));
+
+    // Act
+    LeagueRegulation actual = sutSpy.getLeagueRegulationByLeague(leagueId);
+
+    // Assert
+    assertEquals(expected, actual);
+    verify(repository, times(1)).selectLeagueRegulationByLeague(leagueId);
+    verify(sutSpy, times(1)).getComparisonItems();
+  }
+
+  @Test
   @DisplayName("【正常系】国一覧の検索_リポジトリが適切に処理されること")
   void getCountries() {
     List<Country> actual = sut.getCountries();
@@ -447,6 +494,13 @@ class FootballServiceTest {
   void getSeasons() {
     List<Season> actual = sut.getSeasons();
     verify(repository, times(1)).selectSeasons();
+  }
+
+  @Test
+  @DisplayName("【正常系】順位比較項目一覧の検索_リポジトリが適切に処理されること")
+  void getComparisonItems() {
+    List<ComparisonItem> actual = sut.getComparisonItems();
+    verify(repository, times(1)).selectComparisonItems();
   }
 
   @Test

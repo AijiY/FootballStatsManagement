@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Schema(description = "選手情報を保持するクラス")
+@Schema(description = "選手情報を保持するエンティティクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用

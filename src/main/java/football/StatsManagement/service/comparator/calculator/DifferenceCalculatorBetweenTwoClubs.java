@@ -1,4 +1,4 @@
-package football.StatsManagement.utils.comparator.calculator;
+package football.StatsManagement.service.comparator.calculator;
 
 import football.StatsManagement.model.domain.ClubForStanding;
 

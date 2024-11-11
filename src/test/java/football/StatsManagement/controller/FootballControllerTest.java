@@ -164,6 +164,25 @@ class FootballControllerTest {
   }
 
   @Test
+  @DisplayName("【正常系】リーグIDにリーグ規定を取得できること")
+  void getLeagueRegulationByLeague() throws Exception {
+    int leagueId = 1;
+    mockMvc.perform(MockMvcRequestBuilders.get("/league-regulations/" + leagueId))
+        .andExpect(status().isOk());
+    verify(footballService, times(1)).getLeagueRegulationByLeague(leagueId);
+  }
+
+  @Test
+  @DisplayName("【異常系】リーグIDにリーグ規定を取得する際にIDが0以下の場合、400エラーが返却されること")
+  void getLeagueRegulationByLeagueWithInvalidLeagueId() throws Exception {
+    int leagueId = 0;
+    mockMvc.perform(MockMvcRequestBuilders.get("/league-regulations/" + leagueId))
+        .andExpect(status().isBadRequest())
+        .andExpect(result -> assertInstanceOf(ConstraintViolationException.class,
+            result.getResolvedException()));
+  }
+
+  @Test
   @DisplayName("【正常系】リーグIDに紐づくクラブ一覧を取得できること")
   void getClubsByLeague() throws Exception {
     int leagueId = 1;

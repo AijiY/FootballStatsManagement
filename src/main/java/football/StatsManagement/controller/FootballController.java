@@ -4,6 +4,7 @@ import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.domain.PlayerCareerStat;
 import football.StatsManagement.model.domain.SeasonGameResult;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.json.PlayerForPatch;
 import football.StatsManagement.model.json.PlayerForTransfer;
@@ -139,6 +140,17 @@ public class FootballController {
   @GetMapping("/countries/{countryId}/leagues")
   public List<League> getLeaguesByCountry(@PathVariable @Positive int countryId) {
     return footballService.getLeaguesByCountry(countryId);
+  }
+
+  /**
+   * リーグIDに紐づくリーグ規定の取得
+   * @param leagueId
+   * @return リーグ規定
+   */
+  @Operation(summary = "リーグ規定の取得", description = "リーグIDに紐づくリーグ規定（順位決定方法）を取得します")
+  @GetMapping("/league-regulations/{leagueId}")
+  public LeagueRegulation getLeagueRegulationByLeague(@PathVariable @Positive int leagueId) {
+    return footballService.getLeagueRegulationByLeague(leagueId);
   }
 
   /**

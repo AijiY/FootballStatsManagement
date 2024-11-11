@@ -184,7 +184,7 @@ class FootballRepositoryTest {
   }
 
   @Test
-  @DisplayName("リーグ規定を挿入できること_挿入前後で件数が1件増えていること_ComparisonItemIdsStrにカンマがない場合")
+  @DisplayName("リーグ規定を挿入できること_挿入前後で件数が1件増えていること_ComparisonItemIdsStrにカンマがある場合")
   void insertLeagueRegulationWithCommas() {
     // Arrange
     LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
@@ -469,7 +469,7 @@ class FootballRepositoryTest {
     int id = 1;
 
     // Arrange
-    ComparisonItem expected = new ComparisonItem(id, "points");
+    ComparisonItem expected = new ComparisonItem(id, "Points");
 
     // Act
     Optional<ComparisonItem> actual = sut.selectComparisonItem(id);
@@ -746,7 +746,7 @@ class FootballRepositoryTest {
     List<LeagueRegulation> expected = List.of(
         new LeagueRegulation(1, 1, "1,2,3", List.of(1, 2, 3), new ArrayList<>()),
         new LeagueRegulation(2, 2, "1,4,5", List.of(1, 4, 5), new ArrayList<>()),
-        new LeagueRegulation(3, 3, "1,2,3", List.of(1, 2, 3), new ArrayList<>())
+        new LeagueRegulation(3, 3, "1", List.of(1), new ArrayList<>())
     );
 
     // Act
@@ -762,12 +762,13 @@ class FootballRepositoryTest {
   void selectComparisonItems() {
     // Arrange
     List<ComparisonItem> expected = List.of(
-        new ComparisonItem(1, "points"),
-        new ComparisonItem(2, "points_against"),
-        new ComparisonItem(3, "goal_differences_against"),
-        new ComparisonItem(4, "goal_differences"),
-        new ComparisonItem(5, "goals"),
-        new ComparisonItem(6, "away_goals_against")
+        new ComparisonItem(1, "Points"),
+        new ComparisonItem(2, "Points Against (At least 2 Games)"),
+        new ComparisonItem(3, "Goal Differences Against (At least 2 Games)"),
+        new ComparisonItem(4, "Goal Differences"),
+        new ComparisonItem(5, "Goals"),
+        new ComparisonItem(6, "Away Goals Against"),
+        new ComparisonItem(7, "Points Against")
     );
 
     // Act

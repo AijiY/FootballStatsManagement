@@ -4,9 +4,11 @@ import football.StatsManagement.exception.FootballException;
 import football.StatsManagement.exception.ResourceConflictException;
 import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.entity.Club;
+import football.StatsManagement.model.entity.ComparisonItem;
 import football.StatsManagement.model.entity.Country;
 import football.StatsManagement.model.entity.GameResult;
 import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
@@ -310,6 +312,32 @@ public class FootballService {
   }
 
   /**
+   * リーグ規定の取得
+   * @param leagueId リーグID
+   * @return リーグ規定（指定リーグIDに対するリーグ規定がない場合は、デフォルトのリーグ規定）
+   */
+  public LeagueRegulation getLeagueRegulationByLeague(int leagueId) {
+    // リーグ規定がない場合は、デフォルトのリーグ規定を返す
+    LeagueRegulation defaultRegulation = new LeagueRegulation(0, leagueId, "1", List.of(1), new ArrayList<>());
+
+    LeagueRegulation leagueRegulation = repository.selectLeagueRegulationByLeague(leagueId)
+        .orElse(defaultRegulation);
+    // comparisonItemsをセットして返す
+    return leagueRegulationWithComparisonItems(leagueRegulation);
+  }
+
+  private LeagueRegulation leagueRegulationWithComparisonItems(LeagueRegulation leagueRegulation) {
+    List<Integer> comparisonItemIdsForSet = leagueRegulation.getComparisonItemIds();
+    List<ComparisonItem> comparisonItems = getComparisonItems();
+    List<ComparisonItem> comparisonItemsForSet = new ArrayList<>(
+        comparisonItems.stream()
+        .filter(item -> comparisonItemIdsForSet.contains(item.getId()))
+        .toList());
+    leagueRegulation.setComparisonItems(comparisonItemsForSet);
+    return leagueRegulation;
+  }
+
+  /**
    * 国一覧の取得
    * @return 国一覧
    */
@@ -323,6 +351,14 @@ public class FootballService {
    */
   public List<Season> getSeasons() {
     return repository.selectSeasons();
+  }
+
+  /**
+   * 順位比較項目一覧の取得
+   * @return 順位比較項目一覧
+   */
+  public List<ComparisonItem> getComparisonItems() {
+    return repository.selectComparisonItems();
   }
 
   /**
@@ -454,12 +490,12 @@ public class FootballService {
   /**
    * 選手のクラブIDをnullに更新
    * @param id 選手ID
-   * @throws ResourceConflictException 元々clubIdがnullの場合
+   * @throws ResourceConflictException 元々のclubIdがnullの場合
    */
   @Transactional
   public void updatePlayerClubIdNull(int id) throws ResourceNotFoundException, ResourceConflictException {
     Player player = getPlayer(id);
-    // 元々clubIdがnullの場合はResourceConflictExceptionを投げる
+    // 元々のclubIdがnullの場合はResourceConflictExceptionを投げる
     if (player.getClubId() == null) {
       throw new ResourceConflictException("Player is already free");
     }

@@ -13,9 +13,11 @@ import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.domain.PlayerCareerStat;
 import football.StatsManagement.model.domain.PlayerTotalStat;
 import football.StatsManagement.model.entity.Club;
+import football.StatsManagement.model.entity.ComparisonItem;
 import football.StatsManagement.model.entity.Country;
 import football.StatsManagement.model.entity.GameResult;
 import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
@@ -211,6 +213,68 @@ class FootballIntegrationTest {
     String expectedJson = objectMapper.writeValueAsString(expected);
 
     mockMvc.perform(MockMvcRequestBuilders.get("/countries/" + countryId + "/leagues"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  @DisplayName("【正常系】リーグIDに紐づくリーグ規定が取得できること_比較項目が2つ以上の場合")
+  void getLeagueRegulationByLeagueWhenAtLeastTwoComparisonItems() throws Exception {
+    int leagueId = 1;
+
+    // Arrange
+    List<Integer> comparisonItemIds = List.of(1, 2, 3);
+    List<ComparisonItem> comparisonItems = List.of(
+        new ComparisonItem(1, "Points"),
+        new ComparisonItem(2, "Points Against (At least 2 Games)"),
+        new ComparisonItem(3, "Goal Differences Against (At least 2 Games)")
+    );
+
+    LeagueRegulation expected = new LeagueRegulation(1, leagueId, "1,2,3", comparisonItemIds, comparisonItems);
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    // Act & Assert
+    mockMvc.perform(MockMvcRequestBuilders.get("/league-regulations/" + leagueId))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  @DisplayName("【正常系】リーグIDに紐づくリーグ規定が取得できること_比較項目が1つの場合")
+  void getLeagueRegulationByLeagueWhenOnlyOneComparisonItem() throws Exception {
+    int leagueId = 3;
+
+    // Arrange
+    List<Integer> comparisonItemIds = List.of(1);
+    List<ComparisonItem> comparisonItems = List.of(
+        new ComparisonItem(1, "Points")
+    );
+
+    LeagueRegulation expected = new LeagueRegulation(3, leagueId, "1", comparisonItemIds, comparisonItems);
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    // Act & Assert
+    mockMvc.perform(MockMvcRequestBuilders.get("/league-regulations/" + leagueId))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  @DisplayName("【異常系】リーグIDに紐づくリーグ規定の取得_DBにデータがない場合にデフォルトのリーグ規定が取得できること")
+  void getLeagueRegulationByLeague_Default() throws Exception {
+    int leagueId = 999;
+
+    // Arrange
+    List<Integer> comparisonItemIds = List.of(1);
+    List<ComparisonItem> comparisonItems = List.of(
+        new ComparisonItem(1, "Points")
+    );
+
+    LeagueRegulation expected = new LeagueRegulation(0, leagueId, "1", comparisonItemIds, comparisonItems);
+    String expectedJson = objectMapper.writeValueAsString(expected);
+
+    // Act & Assert
+    mockMvc.perform(MockMvcRequestBuilders.get("/league-regulations/" + leagueId))
         .andExpect(status().isOk())
         .andExpect(content().json(expectedJson));
   }

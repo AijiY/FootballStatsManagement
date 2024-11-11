@@ -1,6 +1,7 @@
 package football.StatsManagement.model.entity;
 
 import football.StatsManagement.model.json.LeagueRegulationForJson;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "リーグ規定（順位決定方法）情報を保持するエンティティクラス")
 @Getter
 @Setter
 @AllArgsConstructor // ToDo:不要であれば削除

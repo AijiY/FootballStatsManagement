@@ -1,10 +1,12 @@
 package football.StatsManagement.model.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "順位比較項目情報を保持するエンティティクラス")
 @Getter
 @Setter
 @AllArgsConstructor

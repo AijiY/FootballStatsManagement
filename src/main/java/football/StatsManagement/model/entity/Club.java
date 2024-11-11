@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Schema(description = "クラブ情報を保持するクラス")
+@Schema(description = "クラブ情報を保持するエンティティクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用

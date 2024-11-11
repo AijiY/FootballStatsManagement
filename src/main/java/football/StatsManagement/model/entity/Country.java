@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Schema(description = "国情報を保持するクラス")
+@Schema(description = "国情報を保持するエンティティクラス")
 @Getter
 @Setter
 @AllArgsConstructor // @Select用

@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import football.StatsManagement.model.domain.ClubForStanding;
 import football.StatsManagement.model.domain.DayGameResult;
 import football.StatsManagement.model.domain.PlayerSeasonStat;
@@ -20,13 +18,13 @@ import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.entity.Club;
 import football.StatsManagement.model.entity.GameResult;
 import football.StatsManagement.model.entity.League;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
 import football.StatsManagement.model.json.GameResultForJson;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.json.PlayerGameStatForJson;
-import football.StatsManagement.utils.RankingUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("unchecked") // モックの挙動の確認を目的とするため、未チェックキャストの警告を抑制
@@ -237,6 +234,9 @@ class FactoryServiceTest {
 
     // Act
     PlayerTotalStat actual = sut.createPlayerTotalStatFromPlayerSeasonStats(playerSeasonStats);
+
+    // Assert
+    assertEquals(expected, actual);
   }
 
   @Test
@@ -278,8 +278,8 @@ class FactoryServiceTest {
   }
 
   @Test
-  @DisplayName("【正常系】順位表を作成できること_モックオブジェクトの呼び出しおよび結果の検証")
-  void createStanding() throws ResourceNotFoundException {
+  @DisplayName("【正常系】順位表を作成できること_モックオブジェクトの呼び出しの検証")
+  void createStanding() throws  Exception {
     int leagueId = 1;
     int seasonId = 1;
 
@@ -291,10 +291,16 @@ class FactoryServiceTest {
     when(footballService.getClubsByLeague(leagueId)).thenReturn(List.of(club1, club2));
 
     ClubForStanding clubForStanding1 = mock(ClubForStanding.class);
-    when(clubForStanding1.getGamesPlayed()).thenReturn(1); // 後から設定
+    when(clubForStanding1.getGamesPlayed()).thenReturn(1); // allMatchがtrueになるように設定（最初のクラブ以外の設定は過剰）
     when(spySut.createClubForStanding(seasonId, club1)).thenReturn(clubForStanding1);
     ClubForStanding clubForStanding2 = mock(ClubForStanding.class);
     when(spySut.createClubForStanding(seasonId, club2)).thenReturn(clubForStanding2);
+    List<ClubForStanding> clubForStandings = List.of(clubForStanding1, clubForStanding2);
+
+    LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
+    when(footballService.getLeagueRegulationByLeague(leagueId)).thenReturn(leagueRegulation);
+    List<Integer> comparisonItemIds = List.of(1);
+    when(leagueRegulation.getComparisonItemIds()).thenReturn(comparisonItemIds);
 
     League league = mock(League.class);
     when(footballService.getLeague(leagueId)).thenReturn(league);
@@ -304,25 +310,19 @@ class FactoryServiceTest {
     when(footballService.getSeason(seasonId)).thenReturn(season);
     when(season.getName()).thenReturn("Sample Season");
 
-    List<ClubForStanding> clubForStandings = List.of(clubForStanding1, clubForStanding2);
+    Standing expected = new Standing(leagueId, seasonId, clubForStandings, "Sample League", "Sample Season");
 
-    try (MockedStatic<RankingUtils> mockedRankingUtils = mockStatic(RankingUtils.class)) {
-      mockedRankingUtils.when(() -> RankingUtils.sortedClubForStandings(leagueId, clubForStandings)).thenReturn(clubForStandings);
+    // Act
+    Standing actual = spySut.createStanding(leagueId, seasonId);
 
-      Standing expected = new Standing(leagueId, seasonId, clubForStandings, "Sample League", "Sample Season");
-
-      // Act
-      Standing actual = spySut.createStanding(leagueId, seasonId);
-
-      // Assert
-      assertEquals(expected, actual);
-      verify(footballService, times(1)).getClubsByLeague(leagueId);
-      verify(spySut, times(1)).createClubForStanding(seasonId, club1);
-      verify(spySut, times(1)).createClubForStanding(seasonId, club2);
-      verify(footballService, times(1)).getLeague(leagueId);
-      verify(footballService, times(1)).getSeason(seasonId);
-      mockedRankingUtils.verify(() -> RankingUtils.sortedClubForStandings(leagueId, clubForStandings));
-    }
+    // Assert
+    assertEquals(expected, actual);
+    verify(spySut, times(1)).createClubForStanding(seasonId, club1);
+    verify(spySut, times(1)).createClubForStanding(seasonId, club2);
+    verify(footballService, times(1)).getClubsByLeague(leagueId);
+    verify(footballService, times(1)).getLeagueRegulationByLeague(leagueId);
+    verify(footballService, times(1)).getLeague(leagueId);
+    verify(footballService, times(1)).getSeason(seasonId);
   }
 
   @Test

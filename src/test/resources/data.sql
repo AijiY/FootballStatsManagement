@@ -115,13 +115,14 @@ INSERT INTO player_game_stats (player_id, club_id, number, starter, goals, assis
 INSERT INTO league_regulations (league_id, comparison_item_ids_str) VALUES
   (1, '1,2,3'),
   (2, '1,4,5'),
-  (3, '1,2,3');
+  (3, '1');
 
 INSERT INTO comparison_items (name) VALUES
-  ('points'),
-  ('points_against'),
-  ('goal_differences_against'),
-  ('goal_differences'),
-  ('goals'),
-  ('away_goals_against');
+  ('Points'),
+  ('Points Against (At least 2 Games)'),
+  ('Goal Differences Against (At least 2 Games)'),
+  ('Goal Differences'),
+  ('Goals'),
+  ('Away Goals Against'),
+  ('Points Against');
 
