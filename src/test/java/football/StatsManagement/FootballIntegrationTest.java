@@ -226,8 +226,8 @@ class FootballIntegrationTest {
     List<Integer> comparisonItemIds = List.of(1, 2, 3);
     List<ComparisonItem> comparisonItems = List.of(
         new ComparisonItem(1, "Points"),
-        new ComparisonItem(2, "Points Against (At least 2 Games)"),
-        new ComparisonItem(3, "Goal Differences Against (At least 2 Games)")
+        new ComparisonItem(2, "Points Head-to-head (At least 2 Games)"),
+        new ComparisonItem(3, "Goal Differences Head-to-head (At least 2 Games)")
     );
 
     LeagueRegulation expected = new LeagueRegulation(1, leagueId, "1,2,3", comparisonItemIds, comparisonItems);
