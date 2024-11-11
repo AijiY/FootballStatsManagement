@@ -30,7 +30,7 @@
 - **更新** ：登録したデータを更新できます。
 
 ## ER図（Entity Relationship Diagram）
-![ER](https://github.com/user-attachments/assets/8e310671-12a8-461a-9374-a7c6b02d1bb0)
+![ER](https://github.com/user-attachments/assets/52db5c16-a838-4a13-a3e7-ac2fb2fc7692)
 
 ## ドメインクラス図（Domain Class Diagram）
 ![class drawio](https://github.com/user-attachments/assets/664902e6-9c00-461c-b34d-26dd21d2ac57)

@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Schema(description = "選手試合成績情報を保持するクラス ")
+@Schema(description = "選手試合成績情報を保持するエンティティクラス ")
 @Getter
 @Setter
 @AllArgsConstructor // テスト用に追加

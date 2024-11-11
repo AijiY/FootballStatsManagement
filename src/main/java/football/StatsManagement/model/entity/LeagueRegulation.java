@@ -1,6 +1,7 @@
 package football.StatsManagement.model.entity;
 
 import football.StatsManagement.model.json.LeagueRegulationForJson;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "リーグ規定（順位決定方法）情報を保持するエンティティクラス")
 @Getter
 @Setter
 @AllArgsConstructor // ToDo:不要であれば削除
@@ -22,7 +24,7 @@ public class LeagueRegulation {
   private List<Integer> comparisonItemIds;
   private List<ComparisonItem> comparisonItems;
 
-  // @INSERT用 ToDo:comparisonItemIdsが1要素でも正常に動作するか（結合テスト）
+  // @INSERT用
   public LeagueRegulation(LeagueRegulationForJson leagueRegulationForJson) {
     this.leagueId = leagueRegulationForJson.getLeagueId();
     // comparisonItemIdsの要素をカンマ区切りの文字列に変換

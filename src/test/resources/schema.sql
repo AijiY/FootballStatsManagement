@@ -86,7 +86,7 @@ CREATE TABLE `league_regulations` (
 
 CREATE TABLE `comparison_items` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) DEFAULT NULL,
+  `name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 

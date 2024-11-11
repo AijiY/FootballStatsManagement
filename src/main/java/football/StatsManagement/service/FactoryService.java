@@ -11,12 +11,13 @@ import football.StatsManagement.model.domain.Standing;
 import football.StatsManagement.exception.ResourceNotFoundException;
 import football.StatsManagement.model.entity.Club;
 import football.StatsManagement.model.entity.GameResult;
+import football.StatsManagement.model.entity.LeagueRegulation;
 import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
 import football.StatsManagement.model.json.GameResultWithPlayerStatsForJson;
 import football.StatsManagement.model.response.GameResultWithPlayerStats;
-import football.StatsManagement.utils.RankingUtils;
+import football.StatsManagement.service.comparator.ClubForStandingComparator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -281,14 +282,23 @@ public class FactoryService {
     List<Club> clubs = footballService.getClubsByLeague(leagueId);
     List<ClubForStanding> clubForStandings = clubs.stream()
         .map(club -> createClubForStanding(seasonId, club))
-        .collect(Collectors.toList());
+        .toList();
+
+    System.out.println("Start if");
 
     // 試合が存在しなければ順位表を作成しない（空のclubForStandingsからなるオブジェクトを返す）
     if (clubForStandings.stream().allMatch(clubForStanding -> clubForStanding.getGamesPlayed() == 0)) {
       return new Standing(leagueId, seasonId, new ArrayList<>(), footballService.getLeague(leagueId).getName(), footballService.getSeason(seasonId).getName());
     }
 
-    List<ClubForStanding> rankedClubForStandings = RankingUtils.sortedClubForStandings(leagueId, clubForStandings);
+    System.out.println("End if");
+
+    // リーグ規定を取得→Comparatorを作成→順位表を作成
+    LeagueRegulation leagueRegulation = footballService.getLeagueRegulationByLeague(leagueId);
+    ClubForStandingComparator clubForStandingComparator = new ClubForStandingComparator(leagueRegulation.getComparisonItemIds());
+    List<ClubForStanding> rankedClubForStandings = clubForStandings.stream()
+        .sorted(clubForStandingComparator)
+        .collect(Collectors.toList());
 
     // 順位をセット
     for (int i = 0; i < rankedClubForStandings.size(); i++) {
