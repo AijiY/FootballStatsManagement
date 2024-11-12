@@ -22,6 +22,7 @@
 ![badge](https://img.shields.io/badge/dbdiagram.io-007ACC?logo=appveyor&logoColor=white)
 ![badge](https://img.shields.io/badge/draw.io-FB9D3A?logo=diagramsdotnet&logoColor=white)
 ![badge](https://img.shields.io/badge/PlantUML-8A2BE2?logo=plantuml&logoColor=white)
+![badge](https://img.shields.io/badge/Amazon%20Web%20Services-232F3E?logo=amazonwebservices&logoColor=white)
 
 
 ## 機能（Function）
@@ -30,17 +31,17 @@
 - **更新** ：登録したデータを更新できます。
 
 ## ER図（Entity Relationship Diagram）
-![ER](https://github.com/user-attachments/assets/52db5c16-a838-4a13-a3e7-ac2fb2fc7692)
+![ER](/docs/svg/ER.svg)
 
 ## ドメインクラス図（Domain Class Diagram）
-![class drawio](https://github.com/user-attachments/assets/664902e6-9c00-461c-b34d-26dd21d2ac57)
+![class](/docs/svg/class.svg)
 
 ## シーケンス図（Sequence Diagram）
 ### 基本フロー
-![SD-basic_01](https://github.com/user-attachments/assets/700a3398-f952-4aba-8b5f-dffa3e713f3d)
+![SD-basic_01](/docs/svg/SD-basic_01.svg)
 
 ### ドメインクラスの作成が必要な場合
-![SD-basic_02](https://github.com/user-attachments/assets/ad1e86f3-9b66-476f-bb88-20753458ea5e)
+![SD-basic_02](/docs/svg/SD-basic_02.svg)
 
 ## API仕様（API Specification）
 [こちらのページ](http://54.248.239.107:8080/swagger-ui/index.html#/)にてAPI仕様を確認できます。
@@ -77,7 +78,7 @@
 DBのカラム（エンティティクラスのフィールド）設定において、必要最小限のデータのみを設定することにしたため、クライアントページでのデータ取得および表示で不便を感じることがありました。工夫点で述べた通りエンティティクラスのフィールド設定により対処しましたが、DB設計時点で予め考慮しておくべき事案でした。
 
 ## AWS構成（AWS Configuration）
-![AWS drawio_API](https://github.com/user-attachments/assets/8e793e98-f7aa-4c99-be33-6115f9cd2a40)
+![AWS_API](/docs/svg/AWS_API.svg)
 
 ## License
 This project is built with [Spring Boot](https://spring.io/projects/spring-boot) and is licensed under the [MIT License](LICENSE).
