@@ -147,10 +147,10 @@ public class FootballController {
    * @param leagueId
    * @return リーグ規定
    */
-  @Operation(summary = "リーグ規定の取得", description = "リーグIDに紐づくリーグ規定（順位決定方法）を取得します")
+  @Operation(summary = "リーグ規定一覧の取得", description = "リーグIDに紐づくリーグ規定（順位決定方法）一覧を取得します")
   @GetMapping("/league-regulations/{leagueId}")
-  public LeagueRegulation getLeagueRegulationByLeague(@PathVariable @Positive int leagueId) {
-    return footballService.getLeagueRegulationByLeague(leagueId);
+  public List<LeagueRegulation> getLeagueRegulationsByLeague(@PathVariable @Positive int leagueId) {
+    return footballService.getLeagueRegulationsByLeague(leagueId);
   }
 
   /**

@@ -312,29 +312,31 @@ public class FootballService {
   }
 
   /**
-   * リーグ規定の取得
+   * リーグ規定一覧の取得
    * @param leagueId リーグID
-   * @return リーグ規定（指定リーグIDに対するリーグ規定がない場合は、デフォルトのリーグ規定）
+   * @return リーグ規定一覧（指定リーグIDに対するリーグ規定がない場合は、デフォルトのリーグ規定）
    */
-  public LeagueRegulation getLeagueRegulationByLeague(int leagueId) {
+  public List<LeagueRegulation> getLeagueRegulationsByLeague(int leagueId) {
+    List<LeagueRegulation> leagueRegulations = repository.selectLeagueRegulationsByLeague(leagueId);
+
     // リーグ規定がない場合は、デフォルトのリーグ規定を返す
-    LeagueRegulation defaultRegulation = new LeagueRegulation(0, leagueId, "1", List.of(1), new ArrayList<>());
+    if (leagueRegulations.isEmpty()) {
+      leagueRegulations = List.of(
+          new LeagueRegulation(1, leagueId, 1, 1)
+      );
+    }
 
-    LeagueRegulation leagueRegulation = repository.selectLeagueRegulationByLeague(leagueId)
-        .orElse(defaultRegulation);
     // comparisonItemsをセットして返す
-    return leagueRegulationWithComparisonItems(leagueRegulation);
-  }
-
-  private LeagueRegulation leagueRegulationWithComparisonItems(LeagueRegulation leagueRegulation) {
-    List<Integer> comparisonItemIdsForSet = leagueRegulation.getComparisonItemIds();
     List<ComparisonItem> comparisonItems = getComparisonItems();
-    List<ComparisonItem> comparisonItemsForSet = new ArrayList<>(
-        comparisonItems.stream()
-        .filter(item -> comparisonItemIdsForSet.contains(item.getId()))
-        .toList());
-    leagueRegulation.setComparisonItems(comparisonItemsForSet);
-    return leagueRegulation;
+    leagueRegulations.forEach(leagueRegulation -> {
+      ComparisonItem comparisonItem = comparisonItems.stream()
+          .filter(item -> item.getId() == leagueRegulation.getComparisonItemId())
+          .findFirst()
+          .orElseThrow();
+      leagueRegulation.setComparisonItemName(comparisonItem.getName());
+    });
+
+    return leagueRegulations;
   }
 
   /**

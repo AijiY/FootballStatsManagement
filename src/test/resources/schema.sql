@@ -76,18 +76,21 @@ CREATE TABLE `player_game_stats` (
 );
 
 -- 後から追加
-CREATE TABLE `league_regulations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `league_id` int DEFAULT NULL,
-  `comparison_item_ids_str` VARCHAR(30) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`league_id`) REFERENCES `leagues`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
-);
-
 CREATE TABLE `comparison_items` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
+);
+
+-- 外部キー制約のため、league_regulationsテーブルは最後に登録
+CREATE TABLE `league_regulations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `league_id` int DEFAULT NULL,
+  `comparison_item_order` int DEFAULT NULL,
+  `comparison_item_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`league_id`) REFERENCES `leagues`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (`comparison_item_id`) REFERENCES `comparison_items`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 

@@ -82,7 +82,7 @@ public interface FootballRepository {
    * リーグ規定（順位決定方法）の登録
    * @param leagueRegulation リーグ規定
    */
-  @Insert("INSERT INTO league_regulations (league_id, comparison_item_ids_str) VALUES (#{leagueId}, #{comparisonItemIdsStr})")
+  @Insert("INSERT INTO league_regulations (league_id, comparison_item_order, comparison_item_id) VALUES (#{leagueId}, #{comparisonItemOrder}, #{comparisonItemId})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertLeagueRegulation(LeagueRegulation leagueRegulation);
 
@@ -204,12 +204,12 @@ public interface FootballRepository {
   List<League> selectLeaguesByCountry(int countryId);
 
   /**
-   * リーグIDによるリーグ規定（順位決定方法）の取得
+   * リーグIDによるリーグ規定（順位決定方法）一覧の取得
    * @param leagueId リーグID
-   * @return リーグ規定
+   * @return リーグ規定一覧
    */
-  @Select("SELECT * FROM league_regulations WHERE league_id = #{leagueId}")
-  Optional<LeagueRegulation> selectLeagueRegulationByLeague(int leagueId);
+  @Select("SELECT * FROM league_regulations WHERE league_id = #{leagueId} ORDER BY comparison_item_order")
+  List<LeagueRegulation> selectLeagueRegulationsByLeague(int leagueId);
 
   /**
    * 比較項目の取得

@@ -112,11 +112,6 @@ INSERT INTO player_game_stats (player_id, club_id, number, starter, goals, assis
   (8, 4, 2, 0, 0, 0, 0, 90, 0, 0, 6);
 
 -- 後から追加
-INSERT INTO league_regulations (league_id, comparison_item_ids_str) VALUES
-  (1, '1,2,3'),
-  (2, '1,4,5'),
-  (3, '1');
-
 INSERT INTO comparison_items (name) VALUES
   ('Points'),
   ('Points Head-to-head (At least 2 Games)'),
@@ -125,4 +120,14 @@ INSERT INTO comparison_items (name) VALUES
   ('Goals For'),
   ('Away Goals Head-to-head'),
   ('Points Head-to-head');
+
+-- 外部キー制約のため、league_regulationsテーブルは最後に登録
+INSERT INTO league_regulations (league_id, comparison_item_order, comparison_item_id) VALUES
+  (1, 1, 1),
+  (1, 2, 2),
+  (1, 3, 3),
+  (2, 1, 1),
+  (2, 2, 4),
+  (2, 3, 5),
+  (3, 1, 1);
 
