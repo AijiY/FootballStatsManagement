@@ -165,11 +165,11 @@ class FootballControllerTest {
 
   @Test
   @DisplayName("【正常系】リーグIDにリーグ規定を取得できること")
-  void getLeagueRegulationByLeague() throws Exception {
+  void getLeagueRegulationsByLeague() throws Exception {
     int leagueId = 1;
     mockMvc.perform(MockMvcRequestBuilders.get("/league-regulations/" + leagueId))
         .andExpect(status().isOk());
-    verify(footballService, times(1)).getLeagueRegulationByLeague(leagueId);
+    verify(footballService, times(1)).getLeagueRegulationsByLeague(leagueId);
   }
 
   @Test

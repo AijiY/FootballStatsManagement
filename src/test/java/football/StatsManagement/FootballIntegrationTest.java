@@ -218,39 +218,16 @@ class FootballIntegrationTest {
   }
 
   @Test
-  @DisplayName("【正常系】リーグIDに紐づくリーグ規定が取得できること_比較項目が2つ以上の場合")
-  void getLeagueRegulationByLeagueWhenAtLeastTwoComparisonItems() throws Exception {
+  @DisplayName("【正常系】リーグIDに紐づくリーグ規定が取得できること")
+  void getLeagueRegulationsByLeague() throws Exception {
     int leagueId = 1;
 
     // Arrange
-    List<Integer> comparisonItemIds = List.of(1, 2, 3);
-    List<ComparisonItem> comparisonItems = List.of(
-        new ComparisonItem(1, "Points"),
-        new ComparisonItem(2, "Points Head-to-head (At least 2 Games)"),
-        new ComparisonItem(3, "Goal Differences Head-to-head (At least 2 Games)")
+    List<LeagueRegulation> expected = List.of(
+        new LeagueRegulation(1, leagueId, 1, 1, "Points"),
+        new LeagueRegulation(2, leagueId, 2, 2, "Points Head-to-head (At least 2 Games)"),
+        new LeagueRegulation(3, leagueId, 3, 3, "Goal Differences Head-to-head (At least 2 Games)")
     );
-
-    LeagueRegulation expected = new LeagueRegulation(1, leagueId, "1,2,3", comparisonItemIds, comparisonItems);
-    String expectedJson = objectMapper.writeValueAsString(expected);
-
-    // Act & Assert
-    mockMvc.perform(MockMvcRequestBuilders.get("/league-regulations/" + leagueId))
-        .andExpect(status().isOk())
-        .andExpect(content().json(expectedJson));
-  }
-
-  @Test
-  @DisplayName("【正常系】リーグIDに紐づくリーグ規定が取得できること_比較項目が1つの場合")
-  void getLeagueRegulationByLeagueWhenOnlyOneComparisonItem() throws Exception {
-    int leagueId = 3;
-
-    // Arrange
-    List<Integer> comparisonItemIds = List.of(1);
-    List<ComparisonItem> comparisonItems = List.of(
-        new ComparisonItem(1, "Points")
-    );
-
-    LeagueRegulation expected = new LeagueRegulation(3, leagueId, "1", comparisonItemIds, comparisonItems);
     String expectedJson = objectMapper.writeValueAsString(expected);
 
     // Act & Assert
@@ -265,12 +242,9 @@ class FootballIntegrationTest {
     int leagueId = 999;
 
     // Arrange
-    List<Integer> comparisonItemIds = List.of(1);
-    List<ComparisonItem> comparisonItems = List.of(
-        new ComparisonItem(1, "Points")
+    List<LeagueRegulation> expected = List.of(
+      new LeagueRegulation(1, leagueId, 1, 1, "Points")
     );
-
-    LeagueRegulation expected = new LeagueRegulation(0, leagueId, "1", comparisonItemIds, comparisonItems);
     String expectedJson = objectMapper.writeValueAsString(expected);
 
     // Act & Assert

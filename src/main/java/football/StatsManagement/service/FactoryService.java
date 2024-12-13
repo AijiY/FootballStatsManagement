@@ -294,8 +294,11 @@ public class FactoryService {
     System.out.println("End if");
 
     // リーグ規定を取得→Comparatorを作成→順位表を作成
-    LeagueRegulation leagueRegulation = footballService.getLeagueRegulationByLeague(leagueId);
-    ClubForStandingComparator clubForStandingComparator = new ClubForStandingComparator(leagueRegulation.getComparisonItemIds());
+    List<LeagueRegulation> leagueRegulations = footballService.getLeagueRegulationsByLeague(leagueId);
+    List<Integer> comparisonItemIds = leagueRegulations.stream()
+        .map(LeagueRegulation::getComparisonItemId)
+        .toList();
+    ClubForStandingComparator clubForStandingComparator = new ClubForStandingComparator(comparisonItemIds);
     List<ClubForStanding> rankedClubForStandings = clubForStandings.stream()
         .sorted(clubForStandingComparator)
         .collect(Collectors.toList());

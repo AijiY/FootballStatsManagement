@@ -297,10 +297,8 @@ class FactoryServiceTest {
     when(spySut.createClubForStanding(seasonId, club2)).thenReturn(clubForStanding2);
     List<ClubForStanding> clubForStandings = List.of(clubForStanding1, clubForStanding2);
 
-    LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
-    when(footballService.getLeagueRegulationByLeague(leagueId)).thenReturn(leagueRegulation);
-    List<Integer> comparisonItemIds = List.of(1);
-    when(leagueRegulation.getComparisonItemIds()).thenReturn(comparisonItemIds);
+    List<LeagueRegulation> leagueRegulations = mock(List.class);
+    when(footballService.getLeagueRegulationsByLeague(leagueId)).thenReturn(leagueRegulations);
 
     League league = mock(League.class);
     when(footballService.getLeague(leagueId)).thenReturn(league);
@@ -320,7 +318,7 @@ class FactoryServiceTest {
     verify(spySut, times(1)).createClubForStanding(seasonId, club1);
     verify(spySut, times(1)).createClubForStanding(seasonId, club2);
     verify(footballService, times(1)).getClubsByLeague(leagueId);
-    verify(footballService, times(1)).getLeagueRegulationByLeague(leagueId);
+    verify(footballService, times(1)).getLeagueRegulationsByLeague(leagueId);
     verify(footballService, times(1)).getLeague(leagueId);
     verify(footballService, times(1)).getSeason(seasonId);
   }

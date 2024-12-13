@@ -15,7 +15,6 @@ import football.StatsManagement.model.entity.Player;
 import football.StatsManagement.model.entity.PlayerGameStat;
 import football.StatsManagement.model.entity.Season;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -167,29 +166,12 @@ class FootballRepositoryTest {
   }
 
   @Test
-  @DisplayName("リーグ規定を挿入できること_挿入前後で件数が1件増えていること_ComparisonItemIdsStrにカンマがない場合")
-  void insertLeagueRegulationWithNoComma() {
+  @DisplayName("リーグ規定を挿入できること_挿入前後で件数が1件増えていること")
+  void insertLeagueRegulation() {
     // Arrange
     LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
-    when(leagueRegulation.getLeagueId()).thenReturn(4); // 外部キー制約を満たすために設定
-    when(leagueRegulation.getComparisonItemIdsStr()).thenReturn("1"); // コンストラクタの処理の関係で、数値でないとエラーになる
-    int expectedCount = sut.selectLeagueRegulations().size() + 1;
-
-    // Act
-    sut.insertLeagueRegulation(leagueRegulation);
-    int actualCount = sut.selectLeagueRegulations().size();
-
-    // Assert
-    assertEquals(expectedCount, actualCount);
-  }
-
-  @Test
-  @DisplayName("リーグ規定を挿入できること_挿入前後で件数が1件増えていること_ComparisonItemIdsStrにカンマがある場合")
-  void insertLeagueRegulationWithCommas() {
-    // Arrange
-    LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
-    when(leagueRegulation.getLeagueId()).thenReturn(4); // 外部キー制約を満たすために設定
-    when(leagueRegulation.getComparisonItemIdsStr()).thenReturn("1,2,3"); // コンストラクタの処理の関係で、数値でないとエラーになる
+    when(leagueRegulation.getLeagueId()).thenReturn(1); // 外部キー制約を満たすために設定
+    when(leagueRegulation.getComparisonItemId()).thenReturn(1); // 外部キー制約を満たすために設定
     int expectedCount = sut.selectLeagueRegulations().size() + 1;
 
     // Act
@@ -450,17 +432,24 @@ class FootballRepositoryTest {
 
   @Test
   @DisplayName("リーグIDを指定してリーグ規定を検索できること_件数と情報が適切であること")
-  void selectLeagueRegulationByLeague() {
+  void selectLeagueRegulationsByLeague() {
     int leagueId = 1;
 
     // Arrange
-    LeagueRegulation expected = new LeagueRegulation(1, leagueId, "1,2,3", List.of(1, 2, 3), new ArrayList<>());
+    List<LeagueRegulation> expected = List.of(
+        new LeagueRegulation(1, leagueId, 1, 1),
+        new LeagueRegulation(2, leagueId, 2, 2),
+        new LeagueRegulation(3, leagueId, 3, 3)
+    );
 
     // Act
-    Optional<LeagueRegulation> actual = sut.selectLeagueRegulationByLeague(leagueId);
+    List<LeagueRegulation> actual = sut.selectLeagueRegulationsByLeague(leagueId);
+
+    System.out.println("expected: " + expected);
+    System.out.println("actual: " + actual);
 
     // Assert
-    assertThat(actual).isEqualTo(Optional.of(expected));
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test
@@ -744,9 +733,13 @@ class FootballRepositoryTest {
   void selectLeagueRegulations() {
     // Arrange
     List<LeagueRegulation> expected = List.of(
-        new LeagueRegulation(1, 1, "1,2,3", List.of(1, 2, 3), new ArrayList<>()),
-        new LeagueRegulation(2, 2, "1,4,5", List.of(1, 4, 5), new ArrayList<>()),
-        new LeagueRegulation(3, 3, "1", List.of(1), new ArrayList<>())
+        new LeagueRegulation(1, 1, 1, 1),
+        new LeagueRegulation(2, 1, 2, 2),
+        new LeagueRegulation(3, 1, 3, 3),
+        new LeagueRegulation(4, 2, 1, 1),
+        new LeagueRegulation(5, 2, 2, 4),
+        new LeagueRegulation(6, 2, 3, 5),
+        new LeagueRegulation(7, 3, 1, 1)
     );
 
     // Act

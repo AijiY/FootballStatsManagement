@@ -430,47 +430,45 @@ class FootballServiceTest {
 
   @Test
   @DisplayName("【正常系】リーグIDによるリーグ規定の検索_DBにデータが見つかった場合_リポジトリが適切に処理されること")
-  void getLeagueRegulationByLeagueWhenFound() {
+  void getLeagueRegulationsByLeagueWhenFound() {
     int leagueId = 1;
 
     // Arrange
-    FootballService sutSpy = spy(sut);
 
-    LeagueRegulation leagueRegulation = mock(LeagueRegulation.class);
-    when(repository.selectLeagueRegulationByLeague(leagueId)).thenReturn(Optional.of(leagueRegulation));
-    List<ComparisonItem> comparisonItems = mock(List.class);
-    doReturn(comparisonItems).when(sutSpy).getComparisonItems();
+    List<LeagueRegulation> leagueRegulations = mock(List.class);
+    when(repository.selectLeagueRegulationsByLeague(leagueId)).thenReturn(leagueRegulations);
 
     // Act
-    LeagueRegulation actual = sutSpy.getLeagueRegulationByLeague(leagueId);
+    List<LeagueRegulation> actual = sut.getLeagueRegulationsByLeague(leagueId);
 
     // Assert
-    verify(repository, times(1)).selectLeagueRegulationByLeague(leagueId);
-    verify(sutSpy, times(1)).getComparisonItems();
+    verify(repository, times(1)).selectLeagueRegulationsByLeague(leagueId);
   }
 
   @Test
   @DisplayName("【正常系】リーグIDによるリーグ規定の検索_DBにデータが見つからなかった場合_リポジトリが適切に処理されることおよびデフォルトのリーグ規定が返されること")
-  void getLeagueRegulationByLeagueWhenNotFound() {
+  void getLeagueRegulationsByLeagueWhenNotFound() {
     int leagueId = 1;
 
     // Arrange
     FootballService sutSpy = spy(sut);
+    List<LeagueRegulation> leagueRegulations = new ArrayList<>();
+    when(repository.selectLeagueRegulationsByLeague(leagueId)).thenReturn(leagueRegulations);
+    List<LeagueRegulation> expected = List.of(
+        new LeagueRegulation(1, leagueId, 1, 1, "Points")
+    );
 
-    when(repository.selectLeagueRegulationByLeague(leagueId)).thenReturn(Optional.empty());
-    ComparisonItem comparisonItemId1 = new ComparisonItem(1, "Points");
-    List<ComparisonItem> comparisonItems = List.of(comparisonItemId1);
+    List<ComparisonItem> comparisonItems = List.of(
+        new ComparisonItem(1, "Points")
+    );
     doReturn(comparisonItems).when(sutSpy).getComparisonItems();
 
-    LeagueRegulation expected = new LeagueRegulation(0, leagueId, "1", List.of(1), List.of(comparisonItemId1));
-
     // Act
-    LeagueRegulation actual = sutSpy.getLeagueRegulationByLeague(leagueId);
+    List<LeagueRegulation> actual = sutSpy.getLeagueRegulationsByLeague(leagueId);
 
     // Assert
     assertEquals(expected, actual);
-    verify(repository, times(1)).selectLeagueRegulationByLeague(leagueId);
-    verify(sutSpy, times(1)).getComparisonItems();
+    verify(repository, times(1)).selectLeagueRegulationsByLeague(leagueId);
   }
 
   @Test
